@@ -1,0 +1,6 @@
+{
+  "landingCreateAccountPrompt": "Create an account in just some seconds.",
+  "@landingCreateAccountPrompt": {
+    "description": "The text on the landing page to prompt the user to create an account."
+  }
+}
