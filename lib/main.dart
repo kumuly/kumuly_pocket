@@ -111,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              copy.landingCreateAccountPrompt,
+              copy.pocket,
             ),
             Text(
               '$_counter',
