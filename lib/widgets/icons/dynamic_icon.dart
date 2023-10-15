@@ -5,13 +5,13 @@ class DynamicIcon extends StatelessWidget {
   const DynamicIcon({
     Key? key,
     required this.icon,
-    required this.color,
-    required this.size,
+    this.color,
+    this.size,
   }) : super(key: key);
 
   final dynamic icon;
-  final Color color;
-  final double size;
+  final Color? color;
+  final double? size;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +24,17 @@ class DynamicIcon extends StatelessWidget {
                 width: size,
                 height: size,
               )
-            : icon;
+            : icon is String
+                ? SvgPicture.asset(
+                    icon,
+                    colorFilter: color != null
+                        ? ColorFilter.mode(color!, BlendMode.srcIn)
+                        : null,
+                    width: size,
+                    height: size,
+                  )
+                : icon is Widget
+                    ? icon
+                    : const SizedBox();
   }
 }

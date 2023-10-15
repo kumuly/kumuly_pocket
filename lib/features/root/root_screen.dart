@@ -32,7 +32,7 @@ class RootScreen extends ConsumerWidget {
       );
 
       // Todo: Remove the following delay, it is just to test the loading dialog
-      await Future.delayed(const Duration(seconds: 5));
+      await Future.delayed(const Duration(seconds: 2));
 
       router.pop();
 

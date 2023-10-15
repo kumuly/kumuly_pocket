@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kumuly_pocket/features/pocket/pocket_screen.dart';
 import 'package:kumuly_pocket/widgets/navigation/pocket_mode_scaffold_with_nested_navigation.dart';
 
 // Private navigators
@@ -25,23 +26,8 @@ final pocketModeRoute = StatefulShellRoute.indexedStack(
         GoRoute(
           path: '/pocket',
           name: 'pocket',
-          pageBuilder: (context, state) => NoTransitionPage(
-            child: Scaffold(
-              backgroundColor: Colors.white,
-              appBar: AppBar(
-                title: const Text('Tab root - pocket'),
-              ),
-              body: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text('Screen pocket',
-                        style: Theme.of(context).textTheme.titleLarge),
-                    const Padding(padding: EdgeInsets.all(4)),
-                  ],
-                ),
-              ),
-            ), // PocketScreen(),
+          pageBuilder: (context, state) => const NoTransitionPage(
+            child: PocketScreen(),
           ),
           routes: const [
             // child route
@@ -70,7 +56,7 @@ final pocketModeRoute = StatefulShellRoute.indexedStack(
         ),
       ],
     ),
-    // second branch (For You)
+    // third branch (For You)
     StatefulShellBranch(
       navigatorKey: _shellNavigatorForYouKey,
       routes: [

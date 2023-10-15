@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:kumuly_pocket/constants.dart';
-import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/buttons/focus_mark_icon_button.dart';
-import 'package:kumuly_pocket/widgets/drawer/menu_drawer.dart';
 import 'package:kumuly_pocket/widgets/headers/wallet_header.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 import 'package:kumuly_pocket/widgets/lists/transaction_list.dart';
 import 'package:kumuly_pocket/widgets/modals/actions_bottom_sheet_modal.dart';
-import 'package:kumuly_pocket/widgets/navigation/pocket_mode_scaffold_with_nested_navigation.dart';
+import 'package:kumuly_pocket/widgets/navigation/merchant_mode_scaffold_with_nested_navigation.dart';
 
-class PocketScreen extends StatelessWidget {
-  const PocketScreen({super.key});
+class SalesScreen extends StatelessWidget {
+  const SalesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final copy = AppLocalizations.of(context)!;
-    final textTheme = Theme.of(context).textTheme;
 
     const balance = '5.756.589';
     const unit = 'SAT';
@@ -38,7 +35,7 @@ class PocketScreen extends StatelessWidget {
                 icon: Icons.menu_outlined,
                 color: Palette.neutral[120]!,
               ),
-              onPressed: pocketModeScaffoldKey.currentState!.openEndDrawer,
+              onPressed: merchantModeScaffoldKey.currentState!.openEndDrawer,
             ),
           ),
         ],
@@ -49,7 +46,7 @@ class PocketScreen extends StatelessWidget {
           children: [
             const SizedBox(height: kExtraLargeSpacing),
             WalletHeader(
-              title: copy.pocketBalance.toUpperCase(),
+              title: copy.totalSales.toUpperCase(),
               balance: balance,
               unit: unit,
               balanceInFiat: balanceInFiat,

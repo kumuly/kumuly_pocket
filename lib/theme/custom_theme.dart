@@ -15,6 +15,28 @@ class CustomTheme {
     ),
   );
 
+  static NavigationBarThemeData lightNavigationBarTheme =
+      NavigationBarThemeData(
+    backgroundColor: Colors.white,
+    indicatorColor: Colors.transparent,
+    elevation: 0,
+    shadowColor: Colors.transparent,
+    labelTextStyle: MaterialStateProperty.resolveWith<TextStyle?>(
+      (Set<MaterialState> states) {
+        if (states.contains(MaterialState.selected)) {
+          return TextStyle(
+            color: Palette.russianViolet[100], // Color for selected labels
+            fontWeight: FontWeight.w700, // Font weight for selected labels
+          );
+        } else {
+          return TextStyle(
+            color: Palette.neutral[50], // Color for unselected labels
+          );
+        }
+      },
+    ),
+  );
+
   static ThemeData lightTheme(
     BuildContext context,
   ) =>
@@ -25,6 +47,7 @@ class CustomTheme {
         appBarTheme: Theme.of(context).appBarTheme.copyWith(
               systemOverlayStyle: SystemUiOverlayStyle.light,
             ),
+        navigationBarTheme: lightNavigationBarTheme,
         useMaterial3: true,
       );
 

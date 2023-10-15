@@ -8,13 +8,19 @@ import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 class ScaffoldWithNestedNavigation extends StatelessWidget {
   const ScaffoldWithNestedNavigation({
     Key? key,
+    required this.scaffoldKey,
     required this.navigationShell,
+    this.endDrawer,
     required this.destinationIcons,
+    this.destinationSelectedIcons,
     required this.destinationLabels,
   }) : super(key: key);
 
+  final GlobalKey<ScaffoldState> scaffoldKey;
   final StatefulNavigationShell navigationShell;
+  final Widget? endDrawer;
   final List<dynamic> destinationIcons;
+  final List<dynamic>? destinationSelectedIcons;
   final List<String> destinationLabels;
 
   void _goBranch(int index) {
@@ -31,23 +37,40 @@ class ScaffoldWithNestedNavigation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       body: navigationShell,
-      bottomNavigationBar: NavigationBar(
-        backgroundColor: Colors.white, // Set the background color to white
-        elevation: 0,
-        selectedIndex: navigationShell.currentIndex,
-        destinations: List.generate(
-          destinationIcons.length,
-          (index) => NavigationDestination(
-            icon: DynamicIcon(
-              icon: destinationIcons[index],
-              color: Palette.russianViolet[100]!,
-              size: 24.0,
+      endDrawer: endDrawer,
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              color: Palette.neutral[30]!, // Color of the border
+              width: 1.0, // Width of the border
             ),
-            label: destinationLabels[index],
           ),
         ),
-        onDestinationSelected: _goBranch,
+        child: NavigationBar(
+          selectedIndex: navigationShell.currentIndex,
+          destinations: List.generate(
+            destinationIcons.length,
+            (index) => NavigationDestination(
+              icon: DynamicIcon(
+                icon: destinationIcons[index],
+                color: Palette.neutral[50]!,
+                size: 24.0,
+              ),
+              selectedIcon: destinationSelectedIcons != null
+                  ? DynamicIcon(
+                      icon: destinationSelectedIcons?[index],
+                      color: Palette.russianViolet[100]!,
+                      size: 24.0,
+                    )
+                  : null,
+              label: destinationLabels[index],
+            ),
+          ),
+          onDestinationSelected: _goBranch,
+        ),
       ),
     );
   }
