@@ -37,11 +37,11 @@ class RootScreen extends ConsumerWidget {
       router.pop();
 
       if (false) {
-        router.replaceNamed('landing');
+        router.goNamed('landing');
       } else if (false) {
-        router.replaceNamed('sign-in');
+        router.goNamed('sign-in');
       } else {
-        router.replaceNamed('pocket');
+        router.goNamed('pocket');
       }
     });
 
