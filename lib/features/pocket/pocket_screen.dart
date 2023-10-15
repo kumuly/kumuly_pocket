@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:kumuly_pocket/constants.dart';
-import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/buttons/focus_mark_icon_button.dart';
-import 'package:kumuly_pocket/widgets/drawer/menu_drawer.dart';
 import 'package:kumuly_pocket/widgets/headers/wallet_header.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 import 'package:kumuly_pocket/widgets/lists/transaction_list.dart';
@@ -17,7 +15,6 @@ class PocketScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final copy = AppLocalizations.of(context)!;
-    final textTheme = Theme.of(context).textTheme;
 
     const balance = '5.756.589';
     const unit = 'SAT';
