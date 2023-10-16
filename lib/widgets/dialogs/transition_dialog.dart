@@ -4,6 +4,20 @@ import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/backgrounds/background_container.dart';
 import 'package:lottie/lottie.dart';
 
+void showTransitionDialog(BuildContext context, String caption) =>
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierColor: Colors.black45,
+      transitionDuration: const Duration(milliseconds: 200),
+      pageBuilder: (context, animation1, animation2) {
+        return TransitionDialog(
+          caption: caption,
+        );
+      },
+    );
+
 class TransitionDialog extends StatelessWidget {
   const TransitionDialog({super.key, required this.caption});
 

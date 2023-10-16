@@ -7,10 +7,15 @@ import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 
 class MenuDrawer extends ConsumerWidget {
-  const MenuDrawer({Key? key, required this.alias, required this.children})
+  const MenuDrawer(
+      {Key? key,
+      required this.alias,
+      required this.avatarAssetName,
+      required this.children})
       : super(key: key);
 
   final String alias;
+  final String avatarAssetName;
 
   /// The widgets to display in the drawer beneath the ID header.
   /// Typically, this will be a list of
@@ -58,9 +63,8 @@ class MenuDrawer extends ConsumerWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  const CircleAvatar(
-                    backgroundImage:
-                        AssetImage('assets/images/dummy_avatar.png'),
+                  CircleAvatar(
+                    backgroundImage: AssetImage(avatarAssetName),
                     radius: 24.0,
                   ),
                   const SizedBox(width: kSmallSpacing),

@@ -36,6 +36,7 @@ class PocketModeScaffoldWithNestedNavigation extends StatelessWidget {
       navigationShell: navigationShell,
       endDrawer: MenuDrawer(
         alias: alias,
+        avatarAssetName: 'assets/images/dummy_avatar.png',
         children: [
           const DrawerSectionSpace(),
           DrawerItem(

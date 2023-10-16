@@ -16,6 +16,7 @@
   "receive": "Receive",
   "buyBitcoin": "Buy bitcoin",
   "saveInBitcoin": "Save in bitcoin",
+  "moveToPocket": "Move to pocket",
   "switchToMerchantMode": "Switch to merchant mode",
   "switchToPocketMode": "Switch to pocket mode",
   "notifications": "Notifications",

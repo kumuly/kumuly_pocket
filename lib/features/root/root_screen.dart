@@ -17,19 +17,7 @@ class RootScreen extends ConsumerWidget {
     // Schedule the dialog presentation after the current build phase.
     Future.microtask(() async {
       // Show loading screen while checking for accounts and connection
-      showGeneralDialog(
-        context: context,
-        barrierDismissible: true,
-        barrierLabel:
-            MaterialLocalizations.of(context).modalBarrierDismissLabel,
-        barrierColor: Colors.black45,
-        transitionDuration: const Duration(milliseconds: 200),
-        pageBuilder: (context, animation1, animation2) {
-          return TransitionDialog(
-            caption: copy.oneMomentPlease,
-          );
-        },
-      );
+      showTransitionDialog(context, copy.oneMomentPlease);
 
       // Todo: Remove the following delay, it is just to test the loading dialog
       await Future.delayed(const Duration(seconds: 2));

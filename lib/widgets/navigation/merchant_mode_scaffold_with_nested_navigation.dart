@@ -33,6 +33,7 @@ class MerchantModeScaffoldWithNestedNavigation extends StatelessWidget {
       navigationShell: navigationShell,
       endDrawer: MenuDrawer(
         alias: merchantName,
+        avatarAssetName: 'assets/images/dummy_merchant_avatar.png',
         children: [
           const DrawerSectionSpace(),
           DrawerItem(
@@ -111,7 +112,7 @@ class MerchantModeScaffoldWithNestedNavigation extends StatelessWidget {
         ],
       ),
       destinationIcons: const [
-        Icons.store_outlined,
+        Icons.storefront_outlined,
         Icons.point_of_sale_outlined,
         Icons.discount_outlined,
       ],

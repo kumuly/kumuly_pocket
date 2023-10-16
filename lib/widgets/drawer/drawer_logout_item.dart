@@ -22,19 +22,7 @@ class DrawerLogoutItem extends StatelessWidget {
           ),
       onTap: () async {
         try {
-          showGeneralDialog(
-            context: context,
-            barrierDismissible: true,
-            barrierLabel:
-                MaterialLocalizations.of(context).modalBarrierDismissLabel,
-            barrierColor: Colors.black45,
-            transitionDuration: const Duration(milliseconds: 200),
-            pageBuilder: (context, animation1, animation2) {
-              return TransitionDialog(
-                caption: copy.oneMomentPlease,
-              );
-            },
-          );
+          showTransitionDialog(context, copy.oneMomentPlease);
         } catch (e) {
           print(e);
           router.pop();

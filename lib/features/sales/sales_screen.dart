@@ -73,38 +73,14 @@ class SalesScreen extends StatelessWidget {
                       builder: (context) => ActionsBottomSheetModal(
                         actionIcons: [
                           DynamicIcon(
-                            icon: 'assets/icons/qr_code_scanner.svg',
-                            color: Palette.neutral[80]!,
-                          ),
-                          DynamicIcon(
-                            icon: 'assets/icons/send_arrow.svg',
-                            color: Palette.neutral[80]!,
-                          ),
-                          DynamicIcon(
-                            icon: 'assets/icons/receive_arrow.svg',
-                            color: Palette.neutral[80]!,
-                          ),
-                          DynamicIcon(
-                            icon: 'assets/icons/coin_addition.svg',
-                            color: Palette.neutral[80]!,
-                          ),
-                          DynamicIcon(
-                            icon: 'assets/icons/safe_outlined.svg',
+                            icon: 'assets/icons/pocket.svg',
                             color: Palette.neutral[80]!,
                           ),
                         ],
                         actionTitles: [
-                          copy.scan,
-                          copy.send,
-                          copy.receive,
-                          copy.buyBitcoin,
-                          copy.saveInBitcoin,
+                          copy.moveToPocket,
                         ],
                         actionOnPresseds: [
-                          () {},
-                          () {},
-                          () {},
-                          () {},
                           () {},
                         ],
                       ),

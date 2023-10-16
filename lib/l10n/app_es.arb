@@ -16,6 +16,7 @@
   "receive": "Recibe",
   "buyBitcoin": "Compra bitcoin",
   "saveInBitcoin": "Ahorra en bitcoin",
+  "moveToPocket": "Mueve a bolsillo",
   "switchToMerchantMode": "Cambia a modo comercio",
   "switchToPocketMode": "Cambia a modo bolsillo",
   "notifications": "Notificaciones",
