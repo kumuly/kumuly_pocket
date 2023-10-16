@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
+import 'package:kumuly_pocket/widgets/dialogs/transition_dialog.dart';
 import 'package:kumuly_pocket/widgets/drawer/drawer_item.dart';
 import 'package:kumuly_pocket/widgets/drawer/drawer_logout_item.dart';
 import 'package:kumuly_pocket/widgets/drawer/drawer_section_space.dart';
@@ -22,6 +23,7 @@ class MerchantModeScaffoldWithNestedNavigation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final router = GoRouter.of(context);
     final copy = AppLocalizations.of(context)!;
     const merchantName = 'A company name here';
     const nrOfNotifications = 3;
@@ -46,7 +48,11 @@ class MerchantModeScaffoldWithNestedNavigation extends StatelessWidget {
               icon: 'assets/icons/switch.svg',
               color: Palette.neutral[80],
             ),
-            onTap: () => context.goNamed('pocket'),
+            onTap: () async {
+              showTransitionDialog(context, copy.oneMomentPlease);
+              await Future.delayed(const Duration(milliseconds: 1500));
+              router.goNamed('pocket');
+            },
           ),
           const DrawerSectionSpace(),
           Divider(
@@ -114,7 +120,12 @@ class MerchantModeScaffoldWithNestedNavigation extends StatelessWidget {
       destinationIcons: const [
         Icons.storefront_outlined,
         Icons.point_of_sale_outlined,
-        Icons.discount_outlined,
+        'assets/icons/posts.svg',
+      ],
+      destinationSelectedIcons: const [
+        Icons.storefront,
+        Icons.point_of_sale,
+        'assets/icons/posts.svg',
       ],
       destinationLabels: [
         copy.salesRegister,
