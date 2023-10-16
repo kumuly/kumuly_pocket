@@ -107,7 +107,10 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
 
 flutter_launcher_icons:
-  android: "launcher_icon"
+  android: true
+  adaptive_icon_background: "#8260ED"
+  adaptive_icon_foreground: "assets/icons/kumuly_pocket_berry.png"
   ios: true
+  remove_alpha_ios: true
   image_path: "assets/icons/kumuly_pocket.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
