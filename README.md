@@ -28,3 +28,11 @@ When implementing a new feature which involves new views with new copy, first ad
 In the end it is less work to directly add the copy to the internationalization files than to add it hardcoded to the views first and then later having to search for it again and replace it with the internationalization key.
 
 Before adding a new label, check if it already exists in the internationalization files. If it does, use the existing key instead of creating a new one.
+
+# Problems and solutions encountered during development
+
+## (Xcode): Target release_ios_bundle_flutter_assets failed: Exception: Failed to codesign
+
+### Solution
+
+Run `xattr -cr assets` or `find assets -type f -exec xattr -c {} \;` from the project root directory.
