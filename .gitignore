@@ -1,3 +1,6 @@
+# Generated dart code
+*.g.dart
+
 # Miscellaneous
 *.class
 *.log
@@ -20,6 +23,7 @@ migrate_working_dir/
 # VS Code which you may wish to be included in version control, so this line
 # is commented out by default.
 #.vscode/
+.vscode/launch.json
 
 # Flutter/Dart/Pub related
 **/doc/api/

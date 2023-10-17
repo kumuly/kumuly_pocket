@@ -41,8 +41,24 @@ dependencies:
   flutter_riverpod: ^2.4.3
   riverpod_annotation: ^2.2.0
   lottie: ^2.6.0
-  google_fonts: ^6.1.0
+  google_fonts: ^4.0.4
   flutter_svg: ^2.0.7
+  flutter_bip39:
+    path: ../fluttoshi_packages/packages/flutter_bip39
+  breez_sdk:
+    git:
+      url: https://github.com/breez/breez-sdk-flutter.git
+  flutter_secure_storage: ^9.0.0
+  shared_preferences: ^2.2.2
+  firebase_core: ^2.18.0
+  cloud_functions: ^4.5.0
+  firebase_auth: ^4.11.0
+  cloud_firestore: ^4.10.0
+  firebase_app_check: ^0.2.1
+  crypto: ^3.0.3
+  equatable: ^2.0.5
+  path_provider: ^2.1.1
+  path: ^1.8.3
 
 dev_dependencies:
   flutter_test:
