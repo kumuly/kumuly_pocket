@@ -1,4 +1,8 @@
 {
+  "createAccountPrompt": "Create an account in seconds",
+  "createAccount": "Create account",
+  "alreadyHaveAnAccount": "Already have an account?",
+  "importAccount": "Import existing account",
   "oneMomentPlease": "One moment, please.",
   "pocketBalance": "Pocket balance",
   "totalSales": "Total sales",

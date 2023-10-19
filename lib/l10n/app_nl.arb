@@ -1,4 +1,8 @@
 {
+  "createAccountPrompt": "Een account in enkele seconden",
+  "createAccount": "Account aanmaken",
+  "alreadyHaveAnAccount": "Heb je al een account?",
+  "importAccount": "Importeer bestaand account",
   "oneMomentPlease": "Een ogenblik aub.",
   "pocketBalance": "Pocket saldo",
   "totalSales": "Totaal sales",

@@ -1,4 +1,8 @@
 {
+  "createAccountPrompt": "Crea una cuenta en segundos",
+  "createAccount": "Crear cuenta",
+  "alreadyHaveAnAccount": "¿Ya tienes una cuenta?",
+  "importAccount": "Importar cuenta existente",
   "oneMomentPlease": "Un momento por favor.",
   "pocketBalance": "Saldo del bolsillo",
   "totalSales": "Total ventas",
