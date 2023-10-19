@@ -7,7 +7,7 @@ part 'merchant_service.g.dart';
 
 @riverpod
 MerchantService firebaseMerchantService(FirebaseMerchantServiceRef ref) {
-  final merchantRepository = ref.read(firebaseMerchantRepositoryProvider);
+  final merchantRepository = ref.watch(firebaseMerchantRepositoryProvider);
 
   return FirebaseMerchantService(
     merchantRepository: merchantRepository,

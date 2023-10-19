@@ -18,8 +18,8 @@ part 'lightning_node_service.g.dart';
 LightningNodeService breezeSdkLightningNodeService(
     BreezeSdkLightningNodeServiceRef ref) {
   final lightningNodeRepository =
-      ref.read(breezeSdkLightningNodeRepositoryProvider);
-  final mnemonicRepository = ref.read(secureStorageMnemonicRepositoryProvider);
+      ref.watch(breezeSdkLightningNodeRepositoryProvider);
+  final mnemonicRepository = ref.watch(secureStorageMnemonicRepositoryProvider);
   return BreezSdkLightningNodeService(
     lightningNodeRepository,
     mnemonicRepository,

@@ -10,8 +10,8 @@ part 'product_repository.g.dart';
 @riverpod
 ProductRepository firebaseProductRepository(FirebaseProductRepositoryRef ref) {
   return FirebaseProductRepository(
-    firestore: ref.read(firebaseFirestoreProvider),
-    functions: ref.read(firebaseFunctionsProvider),
+    firestore: ref.watch(firebaseFirestoreProvider),
+    functions: ref.watch(firebaseFunctionsProvider),
   );
 }
 

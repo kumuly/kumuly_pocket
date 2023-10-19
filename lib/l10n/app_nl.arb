@@ -44,5 +44,15 @@
   "privacyPolicy": "Privacy beleid",
   "fees": "Kosten",
   "version": "Versie",
-  "logout": "Uitloggen"
+  "logout": "Uitloggen",
+  "continueLabel": "Ga verder",
+  "accountCreationPolicyPart1": "Door een account aan te maken, gaat u akkoord met onze",
+  "accountCreationPolicyPart2": "Gebruiksvoorwaarden",
+  "accountCreationPolicyPart3": "en",
+  "accountCreationPolicyPart4": "Privacybeleid",
+  "noDataCollectedOrSharedForCommercialPurposes": "Kumuly zal uw gegevens nooit verzamelen of delen voor commerciële doeleinden.",
+  "assignAliasDescriptionPart1": "Een naam of alias stelt je in staat om deze rekening gemakkelijker te identificeren tussen andere die je mogelijk op dit apparaat aanmaakt.",
+  "assignAliasDescriptionPart2": "Deze alias wordt alleen op je apparaat opgeslagen. Het wordt met niemand gedeeld en je kunt het op elk moment wijzigen.",
+  "insertNameOrAliasHere": "Voer name of alias hier in",
+  "confirmAlias": "Bevestig alias"
 }

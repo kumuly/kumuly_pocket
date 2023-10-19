@@ -30,27 +30,34 @@ class RootScreen extends ConsumerWidget {
       // Show loading screen while checking for accounts and connection
       showTransitionDialog(context, copy.oneMomentPlease);
 
-      // Todo: Remove the following delay, it is just to test the loading dialog
+      // Show the transition dialog for at least 1.5 seconds while checking
+      // for accounts and connection.
       await Future.delayed(const Duration(milliseconds: 1500));
 
       // If no accounts exist on the device yet, go to the landing screen.
       if (savedAccounts.isEmpty) {
         router.pop();
         router.goNamed('landing');
-      }
+      } else {
+        // If accounts exist, check if one is still connected.
+        if (connectedAccount.isLoading) {
+          // Do not pop here to keep the loading dialog
+          return Container(color: Palette.russianViolet[100]);
+        }
 
-      // If accounts exist, check if one is still connected.
-      if (connectedAccount.hasError) {
-        router.pop();
-        // Todo: Show error dialog or return a widget with error message and instructions
-        // to try again later.
-        return Container(
+        if (connectedAccount.hasError) {
+          router.pop();
+          // Todo: Show error dialog or return a widget with error message and instructions
+          // to try again later.
+          return Container(
             color: Palette.error[100],
-            child: Text(connectedAccount.error.toString()));
-      }
+            child: Text(
+              connectedAccount.error.toString(),
+            ),
+          );
+        }
 
-      if (!connectedAccount.isLoading) {
-        // No error and not loading,
+        // Not loading and no error,
         //  so we have readable data and can check for a connected account
         final isAccountConnected = connectedAccount.asData?.value != null
             ? connectedAccount.value!.isNotEmpty

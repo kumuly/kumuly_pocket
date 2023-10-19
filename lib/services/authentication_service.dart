@@ -29,10 +29,13 @@ AuthenticationService firebaseAuthenticationService(
 }
 
 @riverpod
-Stream<AccountEntity> connectedAccount(ConnectedAccountRef ref) {
-  final authenticationService =
-      ref.watch(firebaseAuthenticationServiceProvider);
-  return authenticationService.connectedAccount;
+class ConnectedAccount extends _$ConnectedAccount {
+  @override
+  Stream<AccountEntity> build() {
+    final authenticationService =
+        ref.watch(firebaseAuthenticationServiceProvider);
+    return authenticationService.connectedAccount;
+  }
 }
 
 abstract class AuthenticationService {
@@ -57,7 +60,10 @@ class FirebaseLightningMessageAuthenticationService
 
   @override
   Stream<AccountEntity> get connectedAccount {
-    return _authenticationRepository.authUser.map((authUser) {
+    return _authenticationRepository.authUser
+        //.distinct((prev, next) => prev.id == next.id)
+        .map((authUser) {
+      print('connectedAccount rebuild');
       if (authUser.isEmpty) {
         return AccountEntity.empty;
       } else {

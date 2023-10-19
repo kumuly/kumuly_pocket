@@ -8,7 +8,7 @@ part 'authentication_repository.g.dart';
 @riverpod
 AuthenticationRepository firebaseAuthenticationRepository(
     FirebaseAuthenticationRepositoryRef ref) {
-  final firebaseAuth = ref.read(firebaseAuthProvider);
+  final firebaseAuth = ref.watch(firebaseAuthProvider);
   return FirebaseAuthenticationRepository(firebaseAuth);
 }
 
@@ -33,6 +33,7 @@ class FirebaseAuthenticationRepository implements AuthenticationRepository {
   @override
   Stream<AuthUserEntity> get authUser {
     return _firebaseAuth.authStateChanges().map((firebaseUser) {
+      print('authUser rebuild');
       final authUserEntity = firebaseUser == null
           ? AuthUserEntity.empty
           : AuthUserEntity.fromFirebaseAuthUser(firebaseUser);

@@ -12,6 +12,7 @@ FirebaseFunctions firebaseFunctions(FirebaseFunctionsRef ref) {
 
 @riverpod
 FirebaseAuth firebaseAuth(FirebaseAuthRef ref) {
+  print('firebaseAuth rebuild');
   return FirebaseAuth.instance;
 }
 

@@ -10,7 +10,7 @@ part 'account_repository.g.dart';
 @riverpod
 AccountRepository sharedPreferencesAccountRepository(
     SharedPreferencesAccountRepositoryRef ref) {
-  final sharedPreferences = ref.read(sharedPreferencesProvider);
+  final sharedPreferences = ref.watch(sharedPreferencesProvider);
   return SharedPreferencesAccountRepository(sharedPreferences);
 }
 

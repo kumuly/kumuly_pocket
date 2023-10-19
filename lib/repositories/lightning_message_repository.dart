@@ -9,7 +9,7 @@ part 'lightning_message_repository.g.dart';
 @riverpod
 LightningMessageRepository firebaseLightningMessageRepository(
     FirebaseLightningMessageRepositoryRef ref) {
-  final functions = ref.read(firebaseFunctionsProvider);
+  final functions = ref.watch(firebaseFunctionsProvider);
   return FirebaseLightningMessageRepository(
     functions: functions,
   );

@@ -1,4 +1,8 @@
 // const variable = String.fromEnvironment('VARIABLE', defaultValue: 'default');
+const mnemonic0 = String.fromEnvironment('MNEMONIC_0');
+const mnemonic1 = String.fromEnvironment('MNEMONIC_1');
+const mnemonic2 = String.fromEnvironment('MNEMONIC_2');
+const mnemonic3 = String.fromEnvironment('MNEMONIC_3');
 const breezSdkInviteCode0 = String.fromEnvironment('BREEZ_SDK_INVITE_CODE_0');
 const breezSdkInviteCode1 = String.fromEnvironment('BREEZ_SDK_INVITE_CODE_1');
 const breezSdkInviteCode2 = String.fromEnvironment('BREEZ_SDK_INVITE_CODE_2');

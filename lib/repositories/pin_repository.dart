@@ -9,7 +9,7 @@ part 'pin_repository.g.dart';
 
 @riverpod
 PinRepository secureStoragePinRepository(SecureStoragePinRepositoryRef ref) {
-  final secureStorage = ref.read(secureStorageProvider);
+  final secureStorage = ref.watch(secureStorageProvider);
   return SecureStoragePinRepository(secureStorage);
 }
 

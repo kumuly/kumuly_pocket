@@ -10,8 +10,8 @@ part 'merchant_repository.g.dart';
 @riverpod
 MerchantRepository firebaseMerchantRepository(
     FirebaseMerchantRepositoryRef ref) {
-  final firestore = ref.read(firebaseFirestoreProvider);
-  final functions = ref.read(firebaseFunctionsProvider);
+  final firestore = ref.watch(firebaseFirestoreProvider);
+  final functions = ref.watch(firebaseFunctionsProvider);
 
   return FirebaseMerchantRepository(
     firestore: firestore,

@@ -88,7 +88,7 @@ class PromoEntity extends Equatable {
     if (products != null) {
       map['products'] = products?.map((e) => e.toMapForCreation()).toList();
     }
-    if (merchantId!.isNotEmpty) {
+    if (merchantId.isNotEmpty) {
       map['merchantId'] = merchantId;
     }
 

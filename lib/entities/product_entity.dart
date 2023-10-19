@@ -80,7 +80,7 @@ class ProductEntity extends Equatable {
     if (visibility.stringValue.isNotEmpty) {
       map['visibility'] = visibility.stringValue;
     }
-    if (merchantId!.isNotEmpty) {
+    if (merchantId.isNotEmpty) {
       map['merchantId'] = merchantId;
     }
 

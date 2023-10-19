@@ -1,4 +1,4 @@
-import 'package:breez_sdk/breez_sdk.dart';
+import 'package:breez_sdk/breez_bridge.dart';
 import 'package:breez_sdk/bridge_generated.dart';
 import 'package:flutter/foundation.dart';
 import 'package:kumuly_pocket/entities/invoice_entity.dart';
@@ -9,6 +9,16 @@ import 'package:kumuly_pocket/providers/breez_sdk_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'lightning_node_repository.g.dart';
+
+@riverpod
+LightningNodeRepository breezeSdkLightningNodeRepository(
+    BreezeSdkLightningNodeRepositoryRef ref) {
+  BreezSDK breezSdk = ref.watch(connectedBreezSdkProvider);
+
+  return BreezeSdkLightningNodeRepository(
+    breezSdk,
+  );
+}
 
 abstract class LightningNodeRepository {
   Stream<int?> get spendableBalanceMsat;
@@ -46,16 +56,6 @@ abstract class LightningNodeRepository {
     int satPerVbyte,
   );
   Future<void> disconnect();
-}
-
-@riverpod
-LightningNodeRepository breezeSdkLightningNodeRepository(
-    BreezeSdkLightningNodeRepositoryRef ref) {
-  final breezSdk = ref.read(connectedBreezSdkProvider);
-
-  return BreezeSdkLightningNodeRepository(
-    breezSdk,
-  );
 }
 
 class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
@@ -194,12 +194,11 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
 
   @override
   Future<int> estimateChannelOpeningFeeMsat(int amountSat) async {
-    final response = await _breezSdk.openChannelFee(
-      req: OpenChannelFeeRequest(
+    /* final response = await _breezSdk.openChannelFee(
         amountMsat: amountSat * 1000,
-      ),
     );
-    return response.feeMsat;
+    return response.feeMsat;*/
+    return 0;
   }
 
   @override
@@ -223,9 +222,7 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
     int satPerVbyte,
   ) async {
     ReverseSwapPairInfo currentFees = await _breezSdk.fetchReverseSwapFees(
-      req: ReverseSwapFeesRequest(
-        sendAmountSat: amountSat,
-      ),
+      sendAmountSat: amountSat,
     );
 
     await _breezSdk.sendOnchain(

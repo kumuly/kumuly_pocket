@@ -29,11 +29,6 @@ GoRouter appRouter(AppRouterRef ref) {
         name: 'landing',
         builder: (context, state) => const LandingScreen(),
       ),
-      GoRoute(
-        path: '/landing',
-        name: 'landing',
-        builder: (context, state) => const LandingScreen(),
-      ),
       signUpRoute,
       GoRoute(
         path: '/import-account',

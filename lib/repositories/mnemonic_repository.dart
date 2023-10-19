@@ -12,7 +12,7 @@ part 'mnemonic_repository.g.dart';
 @riverpod
 MnemonicRepository secureStorageMnemonicRepository(
     SecureStorageMnemonicRepositoryRef ref) {
-  final secureStorage = ref.read(secureStorageProvider);
+  final secureStorage = ref.watch(secureStorageProvider);
   return SecureStorageMnemonicRepository(secureStorage);
 }
 
