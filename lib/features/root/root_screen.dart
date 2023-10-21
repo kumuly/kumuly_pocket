@@ -36,8 +36,8 @@ class RootScreen extends ConsumerWidget {
 
       // If no accounts exist on the device yet, go to the landing screen.
       if (savedAccounts.isEmpty) {
-        router.pop();
         router.goNamed('landing');
+        return Container(color: Palette.russianViolet[100]);
       } else {
         // If accounts exist, check if one is still connected.
         if (connectedAccount.isLoading) {

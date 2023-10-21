@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:convert/convert.dart';
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:kumuly_pocket/enums/mnemonic_language.dart';
 import 'package:kumuly_pocket/providers/local_storage_providers.dart';
-import 'package:flutter_bip39/flutter_bip39.dart' as bip39;
+import 'package:bip39_mnemonic/bip39_mnemonic.dart' as bip39;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'mnemonic_repository.g.dart';
@@ -17,10 +19,13 @@ MnemonicRepository secureStorageMnemonicRepository(
 }
 
 abstract class MnemonicRepository {
-  Future<List<String>> newMnemonicWords(
+  List<String> newMnemonicWords(
     MnemonicLanguage language,
   );
-  Future<Uint8List> wordsToSeed(List<String> mnemonicWords);
+  Uint8List wordsToSeed(
+    List<String> mnemonicWords,
+    MnemonicLanguage language,
+  );
   Future<void> saveWords(String id, List<String> words);
   Future<List<String>> getWords(String id);
   Future<void> deleteWords(String id);
@@ -33,21 +38,36 @@ class SecureStorageMnemonicRepository implements MnemonicRepository {
   static const _mnemonicKeyPrefix = 'mnemonic_';
 
   @override
-  Future<List<String>> newMnemonicWords(
+  List<String> newMnemonicWords(
     MnemonicLanguage language,
-  ) async {
-    final mnemonic = await bip39.generateIn(
+  ) {
+    final mnemonic = bip39.Mnemonic.generate(
       language.bip39Language,
-      bip39.WordCount.Words12,
     );
 
     return mnemonic.words;
   }
 
   @override
-  Future<Uint8List> wordsToSeed(List<String> mnemonicWords) async {
-    final mnemonic = await bip39.parse(mnemonicWords);
-    return await mnemonic.toSeed(passphrase: '');
+  Uint8List wordsToSeed(
+    List<String> mnemonicWords,
+    MnemonicLanguage language,
+  ) {
+    final mnemonic = bip39.Mnemonic.fromSentence(
+      mnemonicWords.join(language.bip39Language.separator),
+      language.bip39Language,
+    );
+    final hexSeed = hex.encode(mnemonic.seed);
+
+    final length = hexSeed.length;
+    final bytes = Uint8List(length ~/ 2);
+
+    for (var i = 0; i < length; i += 2) {
+      final byte = int.parse(hexSeed.substring(i, i + 2), radix: 16);
+      bytes[i ~/ 2] = byte;
+    }
+
+    return bytes;
   }
 
   @override

@@ -54,5 +54,10 @@
   "assignAliasDescriptionPart1": "Een naam of alias stelt je in staat om deze rekening gemakkelijker te identificeren tussen andere die je mogelijk op dit apparaat aanmaakt.",
   "assignAliasDescriptionPart2": "Deze alias wordt alleen op je apparaat opgeslagen. Het wordt met niemand gedeeld en je kunt het op elk moment wijzigen.",
   "insertNameOrAliasHere": "Voer name of alias hier in",
-  "confirmAlias": "Bevestig alias"
+  "confirmAlias": "Bevestig alias",
+  "createPIN": "Kies PIN",
+  "confirmPIN": "Bevestig PIN",
+  "createPINDescription": "De PIN code zal je account beveiligen en je in staat stellen om transacties te bevestigen.",
+  "confirmPINDescription": "Voer je PIN code opnieuw in om te bevestigen.",
+  "pinDoesNotMatch": "De PIN code komt niet overeen met de bevestiging."
 }

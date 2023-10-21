@@ -19,10 +19,10 @@ class AssignAliasScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final copy = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
-    final authService = ref.watch(firebaseAuthenticationServiceProvider);
+    final authService = ref.watch(firebaseAuthenticationServiceProvider(null));
     final accountService = ref.watch(sharedPreferencesAccountServiceProvider);
     final lightningNodeService =
-        ref.watch(breezeSdkLightningNodeServiceProvider);
+        ref.watch(breezeSdkLightningNodeServiceProvider(null));
     final signUpControllerNotifier = ref.read(
       signUpControllerProvider(
         authService,

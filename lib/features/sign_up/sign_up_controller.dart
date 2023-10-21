@@ -100,6 +100,7 @@ class SignUpController extends _$SignUpController {
     final (nodeId, workingDirPath) = await lightningNodeService.newNodeConnect(
       state.alias,
       mnemonicWords,
+      MnemonicLanguage.english,
       AppNetwork.bitcoin, // Todo: Get network from App Network Provider
       breezSdkApiKey,
       inviteCode: inviteCode,

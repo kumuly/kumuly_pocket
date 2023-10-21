@@ -1,4 +1,4 @@
-import 'package:breez_sdk/breez_bridge.dart';
+import 'package:breez_sdk/breez_sdk.dart';
 import 'package:breez_sdk/bridge_generated.dart';
 import 'package:flutter/foundation.dart';
 import 'package:kumuly_pocket/entities/invoice_entity.dart';
@@ -12,11 +12,19 @@ part 'lightning_node_repository.g.dart';
 
 @riverpod
 LightningNodeRepository breezeSdkLightningNodeRepository(
-    BreezeSdkLightningNodeRepositoryRef ref) {
-  BreezSDK breezSdk = ref.watch(connectedBreezSdkProvider);
-
+  BreezeSdkLightningNodeRepositoryRef ref,
+  String? nodeId,
+) {
+  BreezSDK breezSdk;
+  final breezSdkMap = ref.watch(breezSdkMapProvider);
+  if (nodeId == null || !breezSdkMap.containsKey(nodeId)) {
+    breezSdk = BreezSDK();
+  } else {
+    breezSdk = breezSdkMap[nodeId]!;
+  }
   return BreezeSdkLightningNodeRepository(
     breezSdk,
+    ref.read(breezSdkMapProvider.notifier),
   );
 }
 
@@ -35,7 +43,7 @@ abstract class LightningNodeRepository {
   });
   Future<String> signMessage(String message);
   Future<InvoiceEntity> createInvoice({
-    required int amountSat,
+    required int amountMsat,
     String? description,
     Uint8List? preimage,
     OpeningFeeParams? openingFeeParams,
@@ -43,7 +51,7 @@ abstract class LightningNodeRepository {
     int? expiry,
     int? cltv,
   });
-  Future<void> payInvoice({required String bolt11, int? amountSat});
+  Future<void> payInvoice({required String bolt11, int? amountMsat});
   Future<void> sendToKey(
     String nodeId,
     int amountSat,
@@ -61,9 +69,11 @@ abstract class LightningNodeRepository {
 class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
   BreezeSdkLightningNodeRepository(
     this._breezSdk,
+    this._breezSdkMapNotifier,
   );
 
   final BreezSDK _breezSdk;
+  final BreezSdkMap _breezSdkMapNotifier;
 
   @override
   Stream<int?> get spendableBalanceMsat {
@@ -128,12 +138,18 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
       }
       await _breezSdk.connectLSP(lspId);
 
+      //_breezSdk.initialize();
+
       final nodeInfo = await _breezSdk.nodeInfo();
       if (nodeInfo == null) {
         throw Exception('Failed to obtain Breez node info');
       }
 
-      return nodeInfo.id;
+      final nodeId = nodeInfo.id;
+      // Add the breezSdk to the breezSdkMap
+      _breezSdkMapNotifier.add(nodeId, _breezSdk);
+
+      return nodeId;
     } catch (e) {
       if (kDebugMode) {
         print(e);
@@ -151,7 +167,7 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
 
   @override
   Future<InvoiceEntity> createInvoice({
-    required int amountSat,
+    required int amountMsat,
     String? description,
     Uint8List? preimage,
     OpeningFeeParams? openingFeeParams,
@@ -160,11 +176,11 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
     int? cltv,
   }) async {
     final paymentRequest = ReceivePaymentRequest(
-      amountSats: amountSat,
+      amountMsat: amountMsat,
       description: description ?? '',
     );
     final receivePaymentResponse =
-        await _breezSdk.receivePayment(reqData: paymentRequest);
+        await _breezSdk.receivePayment(request: paymentRequest);
     return InvoiceEntity(
       bolt11: receivePaymentResponse.lnInvoice.bolt11,
       payeePubkey: receivePaymentResponse.lnInvoice.payeePubkey,
@@ -182,8 +198,10 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
   }
 
   @override
-  Future<void> payInvoice({required String bolt11, int? amountSat}) async {
-    await _breezSdk.sendPayment(bolt11: bolt11, amountSats: amountSat);
+  Future<void> payInvoice({required String bolt11, int? amountMsat}) async {
+    await _breezSdk.sendPayment(bolt11: bolt11, amountMsat: amountMsat);
+
+    //await _breezSdk.sendPayment(bolt11: bolt11, amountSats: amountSats);
   }
 
   @override
@@ -221,8 +239,11 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
     int amountSat,
     int satPerVbyte,
   ) async {
-    ReverseSwapPairInfo currentFees = await _breezSdk.fetchReverseSwapFees(
+    final reverseSwapFeesRequest = ReverseSwapFeesRequest(
       sendAmountSat: amountSat,
+    );
+    ReverseSwapPairInfo currentFees = await _breezSdk.fetchReverseSwapFees(
+      req: reverseSwapFeesRequest,
     );
 
     await _breezSdk.sendOnchain(

@@ -54,5 +54,10 @@
   "assignAliasDescriptionPart1": "Un nombre o alias te permitirá identificar más fácilmente esta cuenta entre otras que podrías crear en este dispositivo.",
   "assignAliasDescriptionPart2": "Este alias se almacena solamente en tu dispositivo. No se compartirá con nadie y puedes cambiarlo en cualquier momento.",
   "insertNameOrAliasHere": "Ingresa nombre o alias aquí",
-  "confirmAlias": "Confirmar alias"
+  "confirmAlias": "Confirmar alias",
+  "createPIN": "Crear PIN",
+  "createPINDescription": "El codigo PIN sera usado para proteger el accesso a tu cuenta y sera solicitado para confirmar ciertas transacciones.",
+  "confirmPIN": "Confirmar PIN",
+  "confirmPINDescription": "Vuelve a ingresar el PIN para confirmar.",
+  "pinDoesNotMatch": "No coincide con el PIN ingresado antes."
 }

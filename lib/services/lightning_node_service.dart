@@ -5,9 +5,11 @@ import 'package:crypto/crypto.dart';
 import 'package:kumuly_pocket/entities/recommended_fees_entity.dart';
 import 'package:kumuly_pocket/entities/swap_in_info_entity.dart';
 import 'package:kumuly_pocket/enums/app_network.dart';
+import 'package:kumuly_pocket/enums/mnemonic_language.dart';
 import 'package:kumuly_pocket/environment_variables.dart';
 import 'package:kumuly_pocket/repositories/lightning_node_repository.dart';
 import 'package:kumuly_pocket/repositories/mnemonic_repository.dart';
+import 'package:kumuly_pocket/services/authentication_service.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -16,9 +18,9 @@ part 'lightning_node_service.g.dart';
 
 @riverpod
 LightningNodeService breezeSdkLightningNodeService(
-    BreezeSdkLightningNodeServiceRef ref) {
+    BreezeSdkLightningNodeServiceRef ref, String? nodeId) {
   final lightningNodeRepository =
-      ref.watch(breezeSdkLightningNodeRepositoryProvider);
+      ref.watch(breezeSdkLightningNodeRepositoryProvider(nodeId));
   final mnemonicRepository = ref.watch(secureStorageMnemonicRepositoryProvider);
   return BreezSdkLightningNodeService(
     lightningNodeRepository,
@@ -28,20 +30,38 @@ LightningNodeService breezeSdkLightningNodeService(
 
 @riverpod
 Stream<int?> spendableBalanceSat(SpendableBalanceSatRef ref) {
-  final lightningNodeService = ref.watch(breezeSdkLightningNodeServiceProvider);
-  return lightningNodeService.spendableBalanceSat;
+  final connectedAccount = ref.watch(connectedAccountProvider);
+  return connectedAccount.when(data: (account) {
+    final lightningNodeService =
+        ref.watch(breezeSdkLightningNodeServiceProvider(account.nodeId));
+    return lightningNodeService.spendableBalanceSat;
+  }, error: (err, stack) {
+    return Stream.error(err, stack);
+  }, loading: () {
+    return const Stream.empty();
+  });
 }
 
 @riverpod
 Stream<int?> onChainBalanceSat(OnChainBalanceSatRef ref) {
-  final lightningNodeService = ref.watch(breezeSdkLightningNodeServiceProvider);
-  return lightningNodeService.onChainBalanceSat;
+  final connectedAccount = ref.watch(connectedAccountProvider);
+
+  return connectedAccount.when(data: (account) {
+    final lightningNodeService =
+        ref.watch(breezeSdkLightningNodeServiceProvider(account.nodeId));
+    return lightningNodeService.onChainBalanceSat;
+  }, error: (err, stack) {
+    return Stream.error(err, stack);
+  }, loading: () {
+    return const Stream.empty();
+  });
 }
 
 abstract class LightningNodeService {
   Future<(String nodeId, String workingDirPath)> newNodeConnect(
     String alias,
     List<String> mnemonicWords,
+    MnemonicLanguage language,
     AppNetwork network,
     String apiKey, {
     String? inviteCode,
@@ -76,13 +96,14 @@ class BreezSdkLightningNodeService implements LightningNodeService {
   Future<(String nodeId, String workingDirPath)> newNodeConnect(
     String alias,
     List<String> mnemonicWords,
+    MnemonicLanguage language,
     AppNetwork network,
     String apiKey, {
     String? inviteCode,
     String? partnerCredentials,
   }) async {
     // The node needs to be initialized with a seed derived from the mnemonic.
-    final seed = await _mnemonicRepository.wordsToSeed(mnemonicWords);
+    final seed = await _mnemonicRepository.wordsToSeed(mnemonicWords, language);
 
     // The node needs a working directory to store its data.
     final path = await _setupWorkingDirectory(alias);
@@ -107,7 +128,9 @@ class BreezSdkLightningNodeService implements LightningNodeService {
   ) async {
     // Get the mnemonic for the alias from secure storage.
     List<String> words = await _mnemonicRepository.getWords(nodeId);
-    final seed = await _mnemonicRepository.wordsToSeed(words);
+    // Todo: take correct language instead of hardcoding english.
+    final seed =
+        await _mnemonicRepository.wordsToSeed(words, MnemonicLanguage.english);
 
     // Connect to the breez node.
     await _lightningNodeRepository.connect(
@@ -120,8 +143,9 @@ class BreezSdkLightningNodeService implements LightningNodeService {
 
   @override
   Future<String> createInvoice(int amountSat, String? description) async {
+    final amountMsat = amountSat * 1000;
     final invoice = await _lightningNodeRepository.createInvoice(
-      amountSat: amountSat,
+      amountMsat: amountMsat,
       description: description,
     );
 
@@ -130,9 +154,10 @@ class BreezSdkLightningNodeService implements LightningNodeService {
 
   @override
   Future<void> payInvoice({required String bolt11, int? amountSat}) async {
+    final amountMsat = amountSat == null ? null : amountSat * 1000;
     await _lightningNodeRepository.payInvoice(
       bolt11: bolt11,
-      amountSat: amountSat,
+      amountMsat: amountMsat,
     );
   }
 

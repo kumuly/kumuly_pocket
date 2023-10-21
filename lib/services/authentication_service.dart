@@ -1,4 +1,5 @@
 import 'package:kumuly_pocket/entities/account_entity.dart';
+import 'package:kumuly_pocket/providers/breez_sdk_providers.dart';
 import 'package:kumuly_pocket/repositories/authentication_repository.dart';
 import 'package:kumuly_pocket/repositories/lightning_message_repository.dart';
 import 'package:kumuly_pocket/repositories/lightning_node_repository.dart';
@@ -10,7 +11,7 @@ part 'authentication_service.g.dart';
 // Todo: use entities instead of view models in service classes
 @riverpod
 AuthenticationService firebaseAuthenticationService(
-    FirebaseAuthenticationServiceRef ref) {
+    FirebaseAuthenticationServiceRef ref, String? nodeId) {
   final authenticationRepository =
       ref.watch(firebaseAuthenticationRepositoryProvider);
   final accountRepository =
@@ -18,7 +19,7 @@ AuthenticationService firebaseAuthenticationService(
   final lightningMessageRepository =
       ref.watch(firebaseLightningMessageRepositoryProvider);
   final lightningNodeRepository =
-      ref.watch(breezeSdkLightningNodeRepositoryProvider);
+      ref.watch(breezeSdkLightningNodeRepositoryProvider(nodeId));
 
   return FirebaseLightningMessageAuthenticationService(
     authenticationRepository,
@@ -33,7 +34,7 @@ class ConnectedAccount extends _$ConnectedAccount {
   @override
   Stream<AccountEntity> build() {
     final authenticationService =
-        ref.watch(firebaseAuthenticationServiceProvider);
+        ref.watch(firebaseAuthenticationServiceProvider(null));
     return authenticationService.connectedAccount;
   }
 }
@@ -75,7 +76,9 @@ class FirebaseLightningMessageAuthenticationService
   @override
   Future<void> logIn(String nodeId) async {
     // Get the sign in message from the server.
+    print("LOG IN");
     final signInMessage = await _lightningMessageRepository.getSignInMessage();
+    print("SIGN IN MESSAGE: ${signInMessage.message}");
 
     // Sign the message.
     final signature =
@@ -100,7 +103,5 @@ class FirebaseLightningMessageAuthenticationService
   Future<void> logOut() async {
     print('Logging out...');
     await _authenticationRepository.logOut();
-    print('Disconnecting breez node');
-    await _lightningNodeRepository.disconnect();
   }
 }

@@ -20,10 +20,10 @@ class CreatePinScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final copy = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
-    final authService = ref.watch(firebaseAuthenticationServiceProvider);
+    final authService = ref.watch(firebaseAuthenticationServiceProvider(null));
     final accountService = ref.watch(sharedPreferencesAccountServiceProvider);
     final lightningNodeService =
-        ref.watch(breezeSdkLightningNodeServiceProvider);
+        ref.watch(breezeSdkLightningNodeServiceProvider(null));
     final signUpControllerNotifier = ref.read(
       signUpControllerProvider(
         authService,
@@ -41,7 +41,7 @@ class CreatePinScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Crear PIN',
+          copy.createPIN,
           style: textTheme.display4(
             Palette.neutral[100],
             FontWeight.w600,
@@ -64,21 +64,12 @@ class CreatePinScreen extends ConsumerWidget {
               children: [
                 SizedBox(
                   height: 35,
-                  child: RichText(
+                  child: Text(
+                    copy.createPINDescription,
                     textAlign: TextAlign.center,
-                    text: TextSpan(
-                      style: textTheme.body2(
-                          Palette.neutral[100]!.withOpacity(0.3),
-                          FontWeight.w400),
-                      children: const <TextSpan>[
-                        TextSpan(
-                          text: 'Lo usarás para acceder a esta aplicación ',
-                        ),
-                        TextSpan(
-                          text: 'y confirmar pagos ocasionalmente.',
-                        ),
-                      ],
-                    ),
+                    style: textTheme.body2(
+                        Palette.neutral[100]!.withOpacity(0.3),
+                        FontWeight.w400),
                   ),
                 ),
                 const SizedBox(height: kLargeSpacing),
@@ -102,7 +93,7 @@ class CreatePinScreen extends ConsumerWidget {
           ),
           const SizedBox(height: kSmallSpacing),
           PrimaryFilledButton(
-            text: 'Siguiente',
+            text: copy.continueLabel,
             onPressed:
                 pin.length != 4 ? null : () => context.pushNamed('confirm-pin'),
           ),

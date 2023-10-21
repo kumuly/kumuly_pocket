@@ -22,10 +22,10 @@ class ConfirmPinScreen extends ConsumerWidget {
     final router = GoRouter.of(context);
     final copy = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
-    final authService = ref.watch(firebaseAuthenticationServiceProvider);
+    final authService = ref.watch(firebaseAuthenticationServiceProvider(null));
     final accountService = ref.watch(sharedPreferencesAccountServiceProvider);
     final lightningNodeService =
-        ref.watch(breezeSdkLightningNodeServiceProvider);
+        ref.watch(breezeSdkLightningNodeServiceProvider(null));
     final signUpControllerNotifier = ref.read(
       signUpControllerProvider(
         authService,
@@ -44,7 +44,7 @@ class ConfirmPinScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Confirmar PIN',
+          copy.confirmPIN,
           style: textTheme.display4(
             Palette.neutral[100],
             FontWeight.w600,
@@ -74,9 +74,9 @@ class ConfirmPinScreen extends ConsumerWidget {
                       style: textTheme.body2(
                           Palette.neutral[100]!.withOpacity(0.3),
                           FontWeight.w400),
-                      children: const <TextSpan>[
+                      children: <TextSpan>[
                         TextSpan(
-                          text: 'Vuelve a ingresar el PIN',
+                          text: copy.confirmPINDescription,
                         ),
                       ],
                     ),
@@ -93,9 +93,9 @@ class ConfirmPinScreen extends ConsumerWidget {
                           text: TextSpan(
                             style: textTheme.body2(
                                 Colors.red.withOpacity(0.7), FontWeight.w400),
-                            children: const <TextSpan>[
+                            children: <TextSpan>[
                               TextSpan(
-                                text: 'No coincide con el PIN ingresado antes.',
+                                text: copy.pinDoesNotMatch,
                               ),
                             ],
                           ),
@@ -119,14 +119,13 @@ class ConfirmPinScreen extends ConsumerWidget {
           ),
           const SizedBox(height: kSmallSpacing),
           PrimaryFilledButton(
-            text: 'Confirmar',
+            text: copy.confirmPIN,
             onPressed: pin != pinConfirmation
                 ? null
                 : () async {
                     try {
                       showTransitionDialog(context, copy.oneMomentPlease);
                       await signUpControllerNotifier.createAccount();
-                      router.pop();
                       router.goNamed('pocket');
                     } catch (e) {
                       print(e);
