@@ -44,7 +44,8 @@ dependencies:
   google_fonts: ^4.0.4
   flutter_svg: ^2.0.7
   breez_sdk:
-    path: ../../breez/breez-sdk-flutter-0.2.6
+    git:
+      url: https://www.github.com/kumulynja/breez_sdk_flutter.git
   flutter_secure_storage: ^9.0.0
   shared_preferences: ^2.2.2
   firebase_core: ^2.18.0

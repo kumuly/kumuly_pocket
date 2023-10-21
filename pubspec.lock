@@ -76,9 +76,11 @@ packages:
   breez_sdk:
     dependency: "direct main"
     description:
-      path: "../../breez/breez-sdk-flutter-0.2.6"
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: "6122624045a111c4839658eeeea67cf861901ae2"
+      url: "https://www.github.com/kumulynja/breez_sdk_flutter.git"
+    source: git
     version: "0.2.6"
   build:
     dependency: transitive
