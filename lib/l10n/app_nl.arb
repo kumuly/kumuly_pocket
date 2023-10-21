@@ -60,5 +60,15 @@
   "confirmPIN": "Bevestig PIN",
   "createPINDescription": "De PIN code zal je account beveiligen en je in staat stellen om transacties te bevestigen.",
   "confirmPINDescription": "Voer je PIN code opnieuw in om te bevestigen.",
-  "pinDoesNotMatch": "De PIN code komt niet overeen met de bevestiging."
+  "pinDoesNotMatch": "De PIN code komt niet overeen met de bevestiging.",
+  "signInWith": "Inloggen met",
+  "hasNotSignedInYet": "Heeft nog niet ingelogd",
+  "lastSignInSince": "Laatste login",
+  "secondsAgo": "seconden geleden",
+  "minutesAgo": "minuten geleden",
+  "hoursAgo": "uur geleden",
+  "daysAgo": "dag(en) geleden",
+  "insertPIN": "Voer PIN in",
+  "insertYourPINToUnlock": "Voer je PIN code in om te ontgrendelen",
+  "incorrectPIN": "Onjuiste PIN code"
 }

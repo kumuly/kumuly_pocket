@@ -60,5 +60,15 @@
   "createPINDescription": "El codigo PIN sera usado para proteger el accesso a tu cuenta y sera solicitado para confirmar ciertas transacciones.",
   "confirmPIN": "Confirmar PIN",
   "confirmPINDescription": "Vuelve a ingresar el PIN para confirmar.",
-  "pinDoesNotMatch": "No coincide con el PIN ingresado antes."
+  "pinDoesNotMatch": "No coincide con el PIN ingresado antes.",
+  "signInWith": "Acceder con",
+  "hasNotSignedInYet": "No ha iniciado sesión aún",
+  "lastSignInSince": "Último inicio de sesión hace",
+  "secondsAgo": "segundos",
+  "minutesAgo": "minutos",
+  "hoursAgo": "horas",
+  "daysAgo": "dias",
+  "insertPIN": "Ingresa PIN",
+  "insertYourPINToUnlock": "Ingresa tu PIN para desbloquear",
+  "incorrectPIN": "PIN incorrecto"
 }

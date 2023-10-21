@@ -22,25 +22,17 @@ class ConfirmPinScreen extends ConsumerWidget {
     final router = GoRouter.of(context);
     final copy = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
-    final authService = ref.watch(firebaseAuthenticationServiceProvider);
-    final accountService = ref.watch(sharedPreferencesAccountServiceProvider);
-    final lightningNodeService =
-        ref.watch(breezeSdkLightningNodeServiceProvider);
-    final signUpControllerNotifier = ref.read(
-      signUpControllerProvider(
-        authService,
-        accountService,
-        lightningNodeService,
-      ).notifier,
+    final signUpController = signUpControllerProvider(
+      ref.watch(firebaseAuthenticationServiceProvider),
+      ref.watch(sharedPreferencesAccountServiceProvider),
+      ref.watch(breezeSdkLightningNodeServiceProvider),
     );
-    final signUpController = ref.watch(signUpControllerProvider(
-      authService,
-      accountService,
-      lightningNodeService,
-    ));
-    final pinConfirmation = signUpController.pinConfirmation;
-    final pin = signUpController.pin;
-    final mnemonicWords = signUpController.mnemonicWords;
+    final signUpControllerNotifier = ref.read(
+      signUpController.notifier,
+    );
+    final pinConfirmation = ref.watch(signUpController).pinConfirmation;
+    final pin = ref.watch(signUpController).pin;
+    final mnemonicWords = ref.watch(signUpController).mnemonicWords;
 
     return Scaffold(
       appBar: AppBar(

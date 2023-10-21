@@ -1,21 +1,16 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kumuly_pocket/features/sign_in/insert_pin_screen.dart';
+import 'package:kumuly_pocket/features/sign_in/sign_in_screen.dart';
 
 final signInRoute = GoRoute(
   path: '/sign-in',
   name: 'sign-in',
-  builder: (context, state) => Container(
-    color: Colors.white,
-    child: const Text('Sign in screen'),
-  ), // SignInScreen(),
+  builder: (context, state) => const SignInScreen(),
   routes: [
     GoRoute(
       path: 'insert-pin',
       name: 'insert-pin',
-      builder: (context, state) => Container(
-        color: Colors.white,
-        child: const Text('Insert pin screen'),
-      ), // InsertPinScreen(),
+      builder: (context, state) => const InsertPinScreen(),
     ),
   ],
 );

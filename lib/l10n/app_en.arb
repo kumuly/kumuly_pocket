@@ -60,5 +60,15 @@
   "createPINDescription": "The PIN will be used to secure your account and be requested to authorize certain transactions.",
   "confirmPIN": "Confirm PIN",
   "confirmPINDescription": "Please confirm the choosen PIN.",
-  "pinDoesNotMatch": "The PIN you entered does not match the previous one."
+  "pinDoesNotMatch": "The PIN you entered does not match the previous one.",
+  "signInWith": "Sign in with",
+  "hasNotSignedInYet": "Has not signed in yet",
+  "lastSignInSince": "Last sign-in",
+  "secondsAgo": "seconds ago",
+  "minutesAgo": "minutes ago",
+  "hoursAgo": "hours ago",
+  "daysAgo": "days ago",
+  "insertPIN": "Enter PIN",
+  "insertYourPINToUnlock": "Enter your PIN to unlock",
+  "incorrectPIN": "Incorrect PIN"
 }

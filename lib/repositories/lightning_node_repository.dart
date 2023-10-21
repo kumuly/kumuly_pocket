@@ -117,15 +117,13 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
       // Connect
       await _breezSdk.connect(config: config, seed: seed);
       // Connect to an LSP
-      final lspList = await _breezSdk.listLsps();
-      print('LSP list: $lspList');
       String? lspId = await _breezSdk.lspId();
       // Todo: organize code so that the LSP might be down,
       // but at least the node can be connected and it doesn't prevent the user of using the app
       if (lspId == null) {
         throw Exception('Failed to obtain LSP id');
       }
-      await _breezSdk.connectLSP(lspId);
+      _breezSdk.connectLSP(lspId);
 
       final nodeInfo = await _breezSdk.nodeInfo();
       if (nodeInfo == null) {

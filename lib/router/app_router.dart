@@ -3,6 +3,7 @@ import 'package:kumuly_pocket/features/landing/landing_screen.dart';
 import 'package:kumuly_pocket/features/root/root_screen.dart';
 import 'package:kumuly_pocket/router/merchant_mode_route.dart';
 import 'package:kumuly_pocket/router/pocket_mode_route.dart';
+import 'package:kumuly_pocket/router/sign_in_route.dart';
 import 'package:kumuly_pocket/router/sign_up_route.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:go_router/go_router.dart';
@@ -30,12 +31,14 @@ GoRouter appRouter(AppRouterRef ref) {
         builder: (context, state) => const LandingScreen(),
       ),
       signUpRoute,
+      signInRoute,
       GoRoute(
         path: '/import-account',
         name: 'import-account',
         builder: (context, state) => Scaffold(
           appBar: AppBar(
             title: const Text('Import Account'),
+            centerTitle: true,
           ),
           body: const Center(
             child: Text('>>> Insert seed phrase here <<<'),
