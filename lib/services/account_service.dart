@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kumuly_pocket/enums/mnemonic_language.dart';
 import 'package:kumuly_pocket/entities/account_entity.dart';
 import 'package:kumuly_pocket/repositories/mnemonic_repository.dart';
@@ -49,7 +48,7 @@ Future<bool> checkPin(CheckPinRef ref, String nodeId, String pin) {
 abstract class AccountService {
   List<AccountEntity> get accounts;
   Stream<List<AccountEntity>> get accountsStateChanged;
-  Future<List<String>> generateAccountWallet(MnemonicLanguage language);
+  List<String> generateAccountWallet(MnemonicLanguage language);
   Future<void> addAccount(
     AccountEntity account,
     List<String> mnemonicWords,
@@ -80,8 +79,8 @@ class SharedPreferencesAccountsService implements AccountService {
       _accountRepository.accountsStateChanged;
 
   @override
-  Future<List<String>> generateAccountWallet(MnemonicLanguage language) async {
-    final mnemonicWords = await _mnemonicRepository.newMnemonicWords(
+  List<String> generateAccountWallet(MnemonicLanguage language) {
+    final mnemonicWords = _mnemonicRepository.newMnemonicWords(
       language,
     );
     return mnemonicWords;

@@ -86,7 +86,7 @@ class BreezSdkLightningNodeService implements LightningNodeService {
     String? partnerCredentials,
   }) async {
     // The node needs to be initialized with a seed derived from the mnemonic.
-    final seed = await _mnemonicRepository.wordsToSeed(mnemonicWords, language);
+    final seed = _mnemonicRepository.wordsToSeed(mnemonicWords, language);
 
     // The node needs a working directory to store its data.
     final path = await _setupWorkingDirectory(alias);
@@ -113,7 +113,7 @@ class BreezSdkLightningNodeService implements LightningNodeService {
     List<String> words = await _mnemonicRepository.getWords(nodeId);
     // Todo: take correct language instead of hardcoding english.
     final seed =
-        await _mnemonicRepository.wordsToSeed(words, MnemonicLanguage.english);
+        _mnemonicRepository.wordsToSeed(words, MnemonicLanguage.english);
 
     // Connect to the breez node.
     await _lightningNodeRepository.connect(
