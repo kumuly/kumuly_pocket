@@ -51,6 +51,7 @@
   "accountCreationPolicyPart3": "y",
   "accountCreationPolicyPart4": "Politica de Privacidad",
   "noDataCollectedOrSharedForCommercialPurposes": "Kumuly nunca colecionará o cederá tus datos con fines comerciales.",
+  "assignAlias": "Asignar alias",
   "assignAliasDescriptionPart1": "Un nombre o alias te permitirá identificar más fácilmente esta cuenta entre otras que podrías crear en este dispositivo.",
   "assignAliasDescriptionPart2": "Este alias se almacena solamente en tu dispositivo. No se compartirá con nadie y puedes cambiarlo en cualquier momento.",
   "insertNameOrAliasHere": "Ingresa nombre o alias aquí",

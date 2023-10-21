@@ -9,7 +9,6 @@ import 'package:kumuly_pocket/enums/mnemonic_language.dart';
 import 'package:kumuly_pocket/environment_variables.dart';
 import 'package:kumuly_pocket/repositories/lightning_node_repository.dart';
 import 'package:kumuly_pocket/repositories/mnemonic_repository.dart';
-import 'package:kumuly_pocket/services/authentication_service.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -18,9 +17,9 @@ part 'lightning_node_service.g.dart';
 
 @riverpod
 LightningNodeService breezeSdkLightningNodeService(
-    BreezeSdkLightningNodeServiceRef ref, String? nodeId) {
+    BreezeSdkLightningNodeServiceRef ref) {
   final lightningNodeRepository =
-      ref.watch(breezeSdkLightningNodeRepositoryProvider(nodeId));
+      ref.watch(breezeSdkLightningNodeRepositoryProvider);
   final mnemonicRepository = ref.watch(secureStorageMnemonicRepositoryProvider);
   return BreezSdkLightningNodeService(
     lightningNodeRepository,
@@ -30,31 +29,14 @@ LightningNodeService breezeSdkLightningNodeService(
 
 @riverpod
 Stream<int?> spendableBalanceSat(SpendableBalanceSatRef ref) {
-  final connectedAccount = ref.watch(connectedAccountProvider);
-  return connectedAccount.when(data: (account) {
-    final lightningNodeService =
-        ref.watch(breezeSdkLightningNodeServiceProvider(account.nodeId));
-    return lightningNodeService.spendableBalanceSat;
-  }, error: (err, stack) {
-    return Stream.error(err, stack);
-  }, loading: () {
-    return const Stream.empty();
-  });
+  final lightningNodeService = ref.watch(breezeSdkLightningNodeServiceProvider);
+  return lightningNodeService.spendableBalanceSat;
 }
 
 @riverpod
 Stream<int?> onChainBalanceSat(OnChainBalanceSatRef ref) {
-  final connectedAccount = ref.watch(connectedAccountProvider);
-
-  return connectedAccount.when(data: (account) {
-    final lightningNodeService =
-        ref.watch(breezeSdkLightningNodeServiceProvider(account.nodeId));
-    return lightningNodeService.onChainBalanceSat;
-  }, error: (err, stack) {
-    return Stream.error(err, stack);
-  }, loading: () {
-    return const Stream.empty();
-  });
+  final lightningNodeService = ref.watch(breezeSdkLightningNodeServiceProvider);
+  return lightningNodeService.onChainBalanceSat;
 }
 
 abstract class LightningNodeService {
@@ -81,6 +63,7 @@ abstract class LightningNodeService {
   Stream<int?> get onChainBalanceSat;
   //Future<ReceptionAmountLimitsEntity> get receptionAmountLimits;
   Future<RecommendedFeesEntity> get recommendedFees;
+  Future<void> disconnect();
 }
 
 class BreezSdkLightningNodeService implements LightningNodeService {
@@ -256,5 +239,10 @@ class BreezSdkLightningNodeService implements LightningNodeService {
     final bytes = utf8.encode(message);
     final hash = sha256.convert(bytes);
     return hash.toString();
+  }
+
+  @override
+  Future<void> disconnect() async {
+    await _lightningNodeRepository.disconnect();
   }
 }

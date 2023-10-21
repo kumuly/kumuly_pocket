@@ -20,10 +20,10 @@ class CreatePinScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final copy = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
-    final authService = ref.watch(firebaseAuthenticationServiceProvider(null));
+    final authService = ref.watch(firebaseAuthenticationServiceProvider);
     final accountService = ref.watch(sharedPreferencesAccountServiceProvider);
     final lightningNodeService =
-        ref.watch(breezeSdkLightningNodeServiceProvider(null));
+        ref.watch(breezeSdkLightningNodeServiceProvider);
     final signUpControllerNotifier = ref.read(
       signUpControllerProvider(
         authService,

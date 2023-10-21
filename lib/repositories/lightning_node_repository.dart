@@ -13,18 +13,9 @@ part 'lightning_node_repository.g.dart';
 @riverpod
 LightningNodeRepository breezeSdkLightningNodeRepository(
   BreezeSdkLightningNodeRepositoryRef ref,
-  String? nodeId,
 ) {
-  BreezSDK breezSdk;
-  final breezSdkMap = ref.watch(breezSdkMapProvider);
-  if (nodeId == null || !breezSdkMap.containsKey(nodeId)) {
-    breezSdk = BreezSDK();
-  } else {
-    breezSdk = breezSdkMap[nodeId]!;
-  }
   return BreezeSdkLightningNodeRepository(
-    breezSdk,
-    ref.read(breezSdkMapProvider.notifier),
+    ref.watch(breezSdkProvider),
   );
 }
 
@@ -69,11 +60,9 @@ abstract class LightningNodeRepository {
 class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
   BreezeSdkLightningNodeRepository(
     this._breezSdk,
-    this._breezSdkMapNotifier,
   );
 
   final BreezSDK _breezSdk;
-  final BreezSdkMap _breezSdkMapNotifier;
 
   @override
   Stream<int?> get spendableBalanceMsat {
@@ -138,16 +127,12 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
       }
       await _breezSdk.connectLSP(lspId);
 
-      //_breezSdk.initialize();
-
       final nodeInfo = await _breezSdk.nodeInfo();
       if (nodeInfo == null) {
         throw Exception('Failed to obtain Breez node info');
       }
 
       final nodeId = nodeInfo.id;
-      // Add the breezSdk to the breezSdkMap
-      _breezSdkMapNotifier.add(nodeId, _breezSdk);
 
       return nodeId;
     } catch (e) {

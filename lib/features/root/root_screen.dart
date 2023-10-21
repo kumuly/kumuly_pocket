@@ -20,11 +20,6 @@ class RootScreen extends ConsumerWidget {
     final connectedAccount = ref.watch(connectedAccountProvider);
     final savedAccounts = ref.watch(accountsProvider);
 
-    // Make sure the BreezSDKs are initialized for all accounts on the device
-    // This way they can all keep receiving payments while the app is running
-    // instead of only the connected account. (Todo: check if this is true)
-    ref.read(initializeBreezSdksProvider);
-
     // Schedule the dialog presentation after the current build phase.
     Future.microtask(() async {
       // Show loading screen while checking for accounts and connection
@@ -63,7 +58,6 @@ class RootScreen extends ConsumerWidget {
             ? connectedAccount.value!.isNotEmpty
             : false;
 
-        router.pop();
         if (isAccountConnected) {
           router.goNamed('pocket');
         } else {

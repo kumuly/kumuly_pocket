@@ -103,9 +103,7 @@ class FirebaseMerchantRepository implements MerchantRepository {
       await functions
           .httpsCallable(
             'merchant-merchantWalletCreationHandler',
-            options: HttpsCallableOptions(
-              limitedUseAppCheckToken: true,
-            ),
+            options: HttpsCallableOptions(),
           )
           .call();
     } on FirebaseFunctionsException catch (e) {
@@ -121,9 +119,7 @@ class FirebaseMerchantRepository implements MerchantRepository {
       final response = await functions
           .httpsCallable(
             'merchant-merchantWalletBalanceHandler',
-            options: HttpsCallableOptions(
-              limitedUseAppCheckToken: true,
-            ),
+            options: HttpsCallableOptions(),
           )
           .call();
       final balanceMsat = response.data as int;

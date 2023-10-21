@@ -55,9 +55,7 @@ class SignUpController extends _$SignUpController {
     }
   }
 
-  Future<void> createAccount() async {
-    // Todo: Error handling and loading state
-    print('Creating account...');
+  void generateMnemonic() {
     // Create a new wallet for the account.
     // FOR PRODUCTION >>>>>>>>>>
     // Todo: In prod use the following instead of the developmentMnemonics:
@@ -91,38 +89,61 @@ class SignUpController extends _$SignUpController {
     }
 
     final mnemonicWords = mnemonic.split(',');
-    print('Mnemonic words: $mnemonicWords');
     print('Invite code: $inviteCode');
 
     // <<<<<<<<<<<<<<< ONLY FOR DEVELOPMENT
 
+    state = state.copyWith(
+      mnemonicWords: mnemonicWords,
+      inviteCode: inviteCode,
+    );
+
+    print('Generated mnemonic words: $mnemonicWords');
+  }
+
+  Future<void> setupLightningNode() async {
     // Setup a new node for the account.
     final (nodeId, workingDirPath) = await lightningNodeService.newNodeConnect(
       state.alias,
-      mnemonicWords,
+      state.mnemonicWords,
       MnemonicLanguage.english,
       AppNetwork.bitcoin, // Todo: Get network from App Network Provider
       breezSdkApiKey,
-      inviteCode: inviteCode,
+      inviteCode: state.inviteCode,
+    );
+
+    state = state.copyWith(
+      nodeId: nodeId,
+      workingDirPath: workingDirPath,
     );
     print(
       'New node set up with id: $nodeId and working dir path: $workingDirPath',
     );
+  }
 
+  Future<void> saveNewAccount() async {
     // Save the new account on the device.
     await accountService.addAccount(
       AccountEntity(
-        nodeId: nodeId,
+        nodeId: state.nodeId,
         alias: state.alias,
-        workingDirPath: workingDirPath,
+        workingDirPath: state.workingDirPath,
       ),
-      mnemonicWords,
+      state.mnemonicWords,
       state.pin,
     );
     print('Account added with alias: ${state.alias}');
+  }
 
+  Future<void> disconnectNode() async {
+    // Disconnect the node.
+    await lightningNodeService.disconnect();
+    print('Node with id: ${state.nodeId} disconnected');
+  }
+
+  Future<void> logIn() async {
     // Log in the new user.
-    await authenticationService.logIn(nodeId);
-    print('User logged in to account with id: $nodeId');
+    await authenticationService.logIn(state.nodeId);
+    print('User logged in to account with id: ${state.nodeId}');
   }
 }

@@ -35,9 +35,7 @@ class FirebaseLightningMessageRepository implements LightningMessageRepository {
       final response = await functions
           .httpsCallable(
             'auth-generateSignInMessage',
-            options: HttpsCallableOptions(
-              limitedUseAppCheckToken: true,
-            ),
+            options: HttpsCallableOptions(),
           )
           .call();
       final data = response.data as Map<String, dynamic>;
@@ -59,9 +57,7 @@ class FirebaseLightningMessageRepository implements LightningMessageRepository {
       final response = await functions
           .httpsCallable(
         'auth-authenticateNode',
-        options: HttpsCallableOptions(
-          limitedUseAppCheckToken: true,
-        ),
+        options: HttpsCallableOptions(),
       )
           .call(
         {

@@ -1,5 +1,4 @@
 import 'package:kumuly_pocket/entities/account_entity.dart';
-import 'package:kumuly_pocket/providers/breez_sdk_providers.dart';
 import 'package:kumuly_pocket/repositories/authentication_repository.dart';
 import 'package:kumuly_pocket/repositories/lightning_message_repository.dart';
 import 'package:kumuly_pocket/repositories/lightning_node_repository.dart';
@@ -11,7 +10,7 @@ part 'authentication_service.g.dart';
 // Todo: use entities instead of view models in service classes
 @riverpod
 AuthenticationService firebaseAuthenticationService(
-    FirebaseAuthenticationServiceRef ref, String? nodeId) {
+    FirebaseAuthenticationServiceRef ref) {
   final authenticationRepository =
       ref.watch(firebaseAuthenticationRepositoryProvider);
   final accountRepository =
@@ -19,7 +18,7 @@ AuthenticationService firebaseAuthenticationService(
   final lightningMessageRepository =
       ref.watch(firebaseLightningMessageRepositoryProvider);
   final lightningNodeRepository =
-      ref.watch(breezeSdkLightningNodeRepositoryProvider(nodeId));
+      ref.watch(breezeSdkLightningNodeRepositoryProvider);
 
   return FirebaseLightningMessageAuthenticationService(
     authenticationRepository,
@@ -34,7 +33,7 @@ class ConnectedAccount extends _$ConnectedAccount {
   @override
   Stream<AccountEntity> build() {
     final authenticationService =
-        ref.watch(firebaseAuthenticationServiceProvider(null));
+        ref.watch(firebaseAuthenticationServiceProvider);
     return authenticationService.connectedAccount;
   }
 }
@@ -103,5 +102,7 @@ class FirebaseLightningMessageAuthenticationService
   Future<void> logOut() async {
     print('Logging out...');
     await _authenticationRepository.logOut();
+    print('Disconnecting from node...');
+    await _lightningNodeRepository.disconnect();
   }
 }

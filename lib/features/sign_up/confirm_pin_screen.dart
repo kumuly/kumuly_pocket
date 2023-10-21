@@ -22,10 +22,10 @@ class ConfirmPinScreen extends ConsumerWidget {
     final router = GoRouter.of(context);
     final copy = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
-    final authService = ref.watch(firebaseAuthenticationServiceProvider(null));
+    final authService = ref.watch(firebaseAuthenticationServiceProvider);
     final accountService = ref.watch(sharedPreferencesAccountServiceProvider);
     final lightningNodeService =
-        ref.watch(breezeSdkLightningNodeServiceProvider(null));
+        ref.watch(breezeSdkLightningNodeServiceProvider);
     final signUpControllerNotifier = ref.read(
       signUpControllerProvider(
         authService,
@@ -40,6 +40,7 @@ class ConfirmPinScreen extends ConsumerWidget {
     ));
     final pinConfirmation = signUpController.pinConfirmation;
     final pin = signUpController.pin;
+    final mnemonicWords = signUpController.mnemonicWords;
 
     return Scaffold(
       appBar: AppBar(
@@ -123,12 +124,24 @@ class ConfirmPinScreen extends ConsumerWidget {
             onPressed: pin != pinConfirmation
                 ? null
                 : () async {
+                    showTransitionDialog(context, copy.oneMomentPlease);
                     try {
-                      showTransitionDialog(context, copy.oneMomentPlease);
-                      await signUpControllerNotifier.createAccount();
+                      if (mnemonicWords.isEmpty) {
+                        // Only generate a mnemonic if it hasn't been generated yet.
+                        signUpControllerNotifier.generateMnemonic();
+                      }
+                      await signUpControllerNotifier.setupLightningNode();
+                      await signUpControllerNotifier.saveNewAccount();
+                      await signUpControllerNotifier.logIn();
                       router.goNamed('pocket');
                     } catch (e) {
                       print(e);
+                      try {
+                        // Disconnect node here
+                        await signUpControllerNotifier.disconnectNode();
+                      } catch (e) {
+                        print(e);
+                      }
                       router.pop();
                     }
                   },
