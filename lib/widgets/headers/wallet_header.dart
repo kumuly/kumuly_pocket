@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kumuly_pocket/constants.dart';
+import 'package:kumuly_pocket/enums/bitcoin_unit.dart';
+import 'package:kumuly_pocket/enums/local_currency.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 
@@ -15,10 +17,10 @@ class WalletHeader extends StatelessWidget {
   });
 
   final String title;
-  final String balance;
-  final String unit;
-  final String balanceInFiat;
-  final String fiatCurrency;
+  final int? balance;
+  final BitcoinUnit unit;
+  final int? balanceInFiat;
+  final LocalCurrency fiatCurrency;
   final List<Widget>? actions;
 
   @override
@@ -39,20 +41,30 @@ class WalletHeader extends StatelessWidget {
           const SizedBox(
             height: kSmallSpacing,
           ),
-          Text(
-            '$balance $unit',
-            style: textTheme.display7(
-              Palette.neutral[120],
-              FontWeight.w700,
-            ),
-          ),
-          Text(
-            '≈ $balanceInFiat $fiatCurrency',
-            style: textTheme.display2(
-              Palette.neutral[70],
-              FontWeight.normal,
-            ),
-          ),
+          balance == null
+              ? const SizedBox(
+                  height: 32,
+                  width: 32,
+                  child: CircularProgressIndicator(),
+                )
+              : Column(
+                  children: [
+                    Text(
+                      '$balance ${unit.name.toUpperCase()}',
+                      style: textTheme.display7(
+                        Palette.neutral[120],
+                        FontWeight.w700,
+                      ),
+                    ),
+                    Text(
+                      '≈ $balanceInFiat ${fiatCurrency.name.toUpperCase()}',
+                      style: textTheme.display2(
+                        Palette.neutral[70],
+                        FontWeight.normal,
+                      ),
+                    ),
+                  ],
+                ),
           const SizedBox(
             height: kLargeSpacing,
           ),

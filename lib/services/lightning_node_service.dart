@@ -28,9 +28,13 @@ LightningNodeService breezeSdkLightningNodeService(
 }
 
 @riverpod
-Stream<int?> spendableBalanceSat(SpendableBalanceSatRef ref) {
-  final lightningNodeService = ref.watch(breezeSdkLightningNodeServiceProvider);
-  return lightningNodeService.spendableBalanceSat;
+class SpendableBalanceSat extends _$SpendableBalanceSat {
+  @override
+  Stream<int?> build() {
+    final lightningNodeService =
+        ref.watch(breezeSdkLightningNodeServiceProvider);
+    return lightningNodeService.spendableBalanceSat.asBroadcastStream();
+  }
 }
 
 @riverpod

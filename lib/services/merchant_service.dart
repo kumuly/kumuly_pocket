@@ -22,8 +22,7 @@ Stream<MerchantEntity?> connectedMerchant(ConnectedMerchantRef ref) {
     return Stream.value(null);
   }
 
-  final id = connectedAccount
-      .asData!.value.nodeId; // Adjust this if "nodeId" is not the correct field
+  final id = connectedAccount.asData!.value.nodeId;
   final merchantService = ref.watch(firebaseMerchantServiceProvider);
 
   return merchantService.getMerchantStream(id);

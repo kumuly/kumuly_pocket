@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kumuly_pocket/entities/account_entity.dart';
+import 'package:kumuly_pocket/enums/app_network.dart';
 import 'package:kumuly_pocket/services/account_service.dart';
 import 'package:kumuly_pocket/services/authentication_service.dart';
+import 'package:kumuly_pocket/services/lightning_node_service.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/dialogs/transition_dialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -58,6 +61,15 @@ class RootScreen extends ConsumerWidget {
             : false;
 
         if (isAccountConnected) {
+          // Connect the node
+          AccountEntity account = connectedAccount.asData!.value;
+          await ref
+              .read(breezeSdkLightningNodeServiceProvider)
+              .existingNodeConnect(
+                account.nodeId,
+                account.workingDirPath,
+                AppNetwork.bitcoin,
+              );
           router.goNamed('pocket');
         } else {
           router.goNamed('sign-in');
