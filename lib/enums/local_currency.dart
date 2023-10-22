@@ -1,0 +1,4 @@
+enum LocalCurrency {
+  usd,
+  euro,
+}

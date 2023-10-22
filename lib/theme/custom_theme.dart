@@ -43,7 +43,7 @@ class CustomTheme {
       ThemeData(
         brightness: Brightness.light,
         textTheme: lightTextTheme,
-        colorSchemeSeed: Palette.lilac[100],
+        colorSchemeSeed: Palette.neutral[100],
         appBarTheme: Theme.of(context).appBarTheme.copyWith(
               systemOverlayStyle: SystemUiOverlayStyle.light,
             ),
@@ -68,7 +68,7 @@ class CustomTheme {
       ThemeData(
         brightness: Brightness.dark,
         textTheme: darkTextTheme,
-        colorSchemeSeed: Palette.lilac[100],
+        colorSchemeSeed: Palette.neutral[100],
         appBarTheme: Theme.of(context).appBarTheme.copyWith(
               systemOverlayStyle: SystemUiOverlayStyle.dark,
             ),

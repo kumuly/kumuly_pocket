@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "576582491170",
+    "project_id": "dev-store-2416c",
+    "storage_bucket": "dev-store-2416c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:576582491170:android:61db8f188f57d4980ffe7b",
+        "android_client_info": {
+          "package_name": "com.example.kumuly_pocket"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "576582491170-m6rb9v4mfbkamsgm86mv22cjh0bc84tt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrEnvJYsgjcAfC6C9a3CRdK5U9kKOj0Cc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "576582491170-m6rb9v4mfbkamsgm86mv22cjh0bc84tt.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "576582491170-2vl18784lm0lm7r84c484mjqdsnbtdf0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.kumulyStore"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:576582491170:android:c126dfe0cd95c7680ffe7b",
+        "android_client_info": {
+          "package_name": "com.example.kumuly_store"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "576582491170-m6rb9v4mfbkamsgm86mv22cjh0bc84tt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrEnvJYsgjcAfC6C9a3CRdK5U9kKOj0Cc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "576582491170-m6rb9v4mfbkamsgm86mv22cjh0bc84tt.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "576582491170-2vl18784lm0lm7r84c484mjqdsnbtdf0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.kumulyStore"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

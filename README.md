@@ -17,6 +17,14 @@ samples, guidance on mobile development, and a full API reference.
 
 ## Contributing
 
+### Code generation
+
+This project uses riverpod with code generation. To generate the code and keep watching for changes, run `dart run build_runner watch`.
+
+### Internationalization
+
+This project uses the [flutter_localizations](https://pub.dev/packages/flutter_localizations) package for internationalization. The internationalization files are located in `lib/l10n/`. This package also generates the `lib/l10n/l10n.dart` file which contains the `AppLocalizations` class. This class contains all the keys for the internationalization files. To generate the `l10n.dart` file, run `flutter pub run` from the project root directory.
+
 ### Workflow
 
 #### Add new copy to the internationalization files
