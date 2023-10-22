@@ -4,6 +4,7 @@ import 'package:kumuly_pocket/view_models/payment.dart';
 
 @immutable
 class PocketState extends Equatable {
+  // Todo: add on-chain balance
   const PocketState({
     this.balanceInSat,
     this.payments,

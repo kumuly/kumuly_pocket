@@ -70,5 +70,18 @@
   "daysAgo": "days ago",
   "insertPIN": "Enter PIN",
   "insertYourPINToUnlock": "Enter your PIN to unlock",
-  "incorrectPIN": "Incorrect PIN"
+  "incorrectPIN": "Incorrect PIN",
+  "receiveBitcoin": "Receive bitcoin",
+  "howMuchDoYouWantToReceive": "How much do you want to receive?",
+  "confirmAmount": "Confirm amount",
+  "amountToReceive": "Amount to receive",
+  "estimatedFee": "Estimated fee",
+  "ifYouReceiveFrom": "If you receive from",
+  "theBitcoinNetwork": "the Bitcoin network",
+  "bitcoinProcessingTime": "10-30 minutes",
+  "inFees": "in fees",
+  "theLightningNetwork": "the Lightning Network",
+  "lightningProcessingTime": "instant",
+  "unifiedQRExplanation": "A QR code that works for both the Bitcoin as the Lightning Network will be generated.",
+  "generate": "Generate"
 }

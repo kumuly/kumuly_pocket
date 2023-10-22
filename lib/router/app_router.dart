@@ -3,6 +3,7 @@ import 'package:kumuly_pocket/features/landing/landing_screen.dart';
 import 'package:kumuly_pocket/features/root/root_screen.dart';
 import 'package:kumuly_pocket/router/merchant_mode_route.dart';
 import 'package:kumuly_pocket/router/pocket_mode_route.dart';
+import 'package:kumuly_pocket/router/receive_sats_route.dart';
 import 'package:kumuly_pocket/router/sign_in_route.dart';
 import 'package:kumuly_pocket/router/sign_up_route.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -46,6 +47,7 @@ GoRouter appRouter(AppRouterRef ref) {
         ),
       ),
       pocketModeRoute,
+      receiveSatsRoute,
       merchantModeRoute,
     ],
   );

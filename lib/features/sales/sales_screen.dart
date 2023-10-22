@@ -11,7 +11,7 @@ import 'package:kumuly_pocket/widgets/headers/wallet_header.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 import 'package:kumuly_pocket/widgets/lists/transaction_list.dart';
 import 'package:kumuly_pocket/widgets/modals/actions_bottom_sheet_modal.dart';
-import 'package:kumuly_pocket/widgets/navigation/merchant_mode_scaffold_with_nested_navigation.dart';
+import 'package:kumuly_pocket/features/merchant_mode/merchant_mode_scaffold_with_nested_navigation.dart';
 import 'package:kumuly_pocket/widgets/shadows/bottom_shadow.dart';
 
 class SalesScreen extends ConsumerWidget {

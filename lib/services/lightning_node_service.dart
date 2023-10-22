@@ -27,20 +27,20 @@ LightningNodeService breezeSdkLightningNodeService(
   );
 }
 
-@riverpod
+/*@riverpod
 class SpendableBalanceSat extends _$SpendableBalanceSat {
   @override
   Stream<int?> build() {
     final lightningNodeService =
         ref.watch(breezeSdkLightningNodeServiceProvider);
-    return lightningNodeService.spendableBalanceSat.asBroadcastStream();
+    return lightningNodeService.spendableBalanceSat;
   }
-}
+}*/
 
 @riverpod
-Stream<int?> onChainBalanceSat(OnChainBalanceSatRef ref) {
+Future<int> spendableBalanceSat(SpendableBalanceSatRef ref) {
   final lightningNodeService = ref.watch(breezeSdkLightningNodeServiceProvider);
-  return lightningNodeService.onChainBalanceSat;
+  return lightningNodeService.spendableBalanceSat;
 }
 
 abstract class LightningNodeService {
@@ -63,8 +63,8 @@ abstract class LightningNodeService {
   Future<void> swapOut(String bitcoinAddress, int amountSat, int satPerVbyte);
   Future<int> getChannelOpeningFeeEstimate(int amountSat);
   Future<SwapInInfoEntity> getSwapInInfo(int amountSat);
-  Stream<int?> get spendableBalanceSat;
-  Stream<int?> get onChainBalanceSat;
+  Future<int> get spendableBalanceSat;
+  Future<int> get onChainBalanceSat;
   //Future<ReceptionAmountLimitsEntity> get receptionAmountLimits;
   Future<RecommendedFeesEntity> get recommendedFees;
   Future<void> disconnect();
@@ -195,15 +195,15 @@ class BreezSdkLightningNodeService implements LightningNodeService {
   }
 
   @override
-  Stream<int?> get spendableBalanceSat =>
-      _lightningNodeRepository.spendableBalanceMsat.map(
-        (msat) => msat == null ? null : msat ~/ 1000,
+  Future<int> get spendableBalanceSat =>
+      _lightningNodeRepository.spendableBalanceMsat.then(
+        (msat) => msat ~/ 1000,
       );
 
   @override
-  Stream<int?> get onChainBalanceSat =>
-      _lightningNodeRepository.onChainBalanceMsat.map(
-        (msat) => msat == null ? null : msat ~/ 1000,
+  Future<int> get onChainBalanceSat =>
+      _lightningNodeRepository.onChainBalanceMsat.then(
+        (msat) => msat ~/ 1000,
       );
 
   @override

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/features/pocket/pocket_screen.dart';
-import 'package:kumuly_pocket/widgets/navigation/pocket_mode_scaffold_with_nested_navigation.dart';
+import 'package:kumuly_pocket/features/pocket_mode/pocket_mode_scaffold_with_nested_navigation.dart';
 
 // Private navigators
 final _shellNavigatorPocketKey =

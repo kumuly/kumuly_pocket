@@ -70,5 +70,18 @@
   "daysAgo": "dias",
   "insertPIN": "Ingresa PIN",
   "insertYourPINToUnlock": "Ingresa tu PIN para desbloquear",
-  "incorrectPIN": "PIN incorrecto"
+  "incorrectPIN": "PIN incorrecto",
+  "receiveBitcoin": "Recibe bitcoin",
+  "howMuchDoYouWantToReceive": "¿Cuánto quieres recibir?",
+  "confirmAmount": "Confirmar monto",
+  "amountToReceive": "Monto a recibir",
+  "estimatedFee": "Comisión estimada",
+  "ifYouReceiveFrom": "Si recibes desde",
+  "theBitcoinNetwork": "la red Bitcoin",
+  "bitcoinProcessingTime": "10-30 minutos",
+  "inFees": "en comisiones",
+  "theLightningNetwork": "la red Lightning",
+  "lightningProcessingTime": "instantáneo",
+  "unifiedQRExplanation": "Un codigo QR que funciona tanto para la red Bitcoin como para la red Lightning será generado.",
+  "generate": "Generar"
 }

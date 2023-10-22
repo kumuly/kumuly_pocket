@@ -20,8 +20,8 @@ LightningNodeRepository breezeSdkLightningNodeRepository(
 }
 
 abstract class LightningNodeRepository {
-  Stream<int?> get spendableBalanceMsat;
-  Stream<int?> get onChainBalanceMsat;
+  Future<int> get spendableBalanceMsat;
+  Future<int> get onChainBalanceMsat;
   Future<int> get inboundLiquidityMsat;
   Future<RecommendedFeesEntity> get recommendedFees;
   Future<String> connect(
@@ -65,18 +65,14 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
   final BreezSDK _breezSdk;
 
   @override
-  Stream<int?> get spendableBalanceMsat {
-    return _breezSdk.nodeStateStream.map(
-      (nodeState) => nodeState?.maxPayableMsat,
-    );
-  }
+  Future<int> get spendableBalanceMsat => _breezSdk.nodeInfo().then(
+        (nodeInfo) => nodeInfo?.maxPayableMsat ?? 0,
+      );
 
   @override
-  Stream<int?> get onChainBalanceMsat {
-    return _breezSdk.nodeStateStream.map(
-      (nodeState) => nodeState?.onchainBalanceMsat,
-    );
-  }
+  Future<int> get onChainBalanceMsat => _breezSdk.nodeInfo().then(
+        (nodeInfo) => nodeInfo?.onchainBalanceMsat ?? 0,
+      );
 
   @override
   Future<RecommendedFeesEntity> get recommendedFees async {

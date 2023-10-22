@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/features/sales/sales_screen.dart';
-import 'package:kumuly_pocket/widgets/navigation/merchant_mode_scaffold_with_nested_navigation.dart';
+import 'package:kumuly_pocket/features/merchant_mode/merchant_mode_scaffold_with_nested_navigation.dart';
 
 // Private navigators
 final _shellNavigatorSalesKey =

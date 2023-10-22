@@ -13,4 +13,11 @@ class PocketController extends _$PocketController {
       payments: null,
     );
   }
+
+  Future<void> refreshBalance() async {
+    final balance = ref.refresh(spendableBalanceSatProvider).asData?.value;
+    state = state.copyWith(
+      balanceInSat: balance,
+    );
+  }
 }

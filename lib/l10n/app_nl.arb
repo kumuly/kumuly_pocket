@@ -70,5 +70,18 @@
   "daysAgo": "dag(en) geleden",
   "insertPIN": "Voer PIN in",
   "insertYourPINToUnlock": "Voer je PIN code in om te ontgrendelen",
-  "incorrectPIN": "Onjuiste PIN code"
+  "incorrectPIN": "Onjuiste PIN code",
+  "receiveBitcoin": "Ontvang bitcoin",
+  "howMuchDoYouWantToReceive": "Hoeveel wil je ontvangen?",
+  "confirmAmount": "Bevestig bedrag",
+  "amountToReceive": "Te ontvangen bedrag",
+  "estimatedFee": "Geschatte kosten",
+  "ifYouReceiveFrom": "Als je ontvangt van",
+  "theBitcoinNetwork": "het Bitcoin network",
+  "bitcoinProcessingTime": "10-30 minuten",
+  "inFees": "kosten",
+  "theLightningNetwork": "the Lightning Network",
+  "lightningProcessingTime": "instant",
+  "unifiedQRExplanation": "Een QR code die zowel voor het Bitcoin als Lightning netwerk werkt zal gegenereerd worden.",
+  "generate": "Genereer"
 }
