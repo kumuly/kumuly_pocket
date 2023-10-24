@@ -140,7 +140,7 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
   @override
   Future<String> signMessage(String message) async {
     final request = SignMessageRequest(message: message);
-    final response = await _breezSdk.signMessage(request: request);
+    final response = await _breezSdk.signMessage(req: request);
     return response.signature;
   }
 
@@ -159,7 +159,7 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
       description: description ?? '',
     );
     final receivePaymentResponse =
-        await _breezSdk.receivePayment(request: paymentRequest);
+        await _breezSdk.receivePayment(req: paymentRequest);
     return InvoiceEntity(
       bolt11: receivePaymentResponse.lnInvoice.bolt11,
       payeePubkey: receivePaymentResponse.lnInvoice.payeePubkey,
@@ -178,15 +178,20 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
 
   @override
   Future<void> payInvoice({required String bolt11, int? amountMsat}) async {
-    await _breezSdk.sendPayment(bolt11: bolt11, amountMsat: amountMsat);
+    final request = SendPaymentRequest(
+      bolt11: bolt11,
+      amountMsat: amountMsat,
+    );
+    await _breezSdk.sendPayment(req: request);
 
     //await _breezSdk.sendPayment(bolt11: bolt11, amountSats: amountSats);
   }
 
   @override
-  Future<void> sendToKey(String nodeId, int amountSat) async {
-    await _breezSdk.sendSpontaneousPayment(
-        nodeId: nodeId, amountSats: amountSat);
+  Future<void> sendToKey(String nodeId, int amountMsat) async {
+    final request =
+        SendSpontaneousPaymentRequest(nodeId: nodeId, amountMsat: amountMsat);
+    await _breezSdk.sendSpontaneousPayment(req: request);
   }
 
   @override
@@ -201,7 +206,7 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
   @override
   Future<SwapInfoEntity> swapIn() async {
     final swapInfo =
-        await _breezSdk.receiveOnchain(reqData: const ReceiveOnchainRequest());
+        await _breezSdk.receiveOnchain(req: const ReceiveOnchainRequest());
 
     return SwapInfoEntity(
       swapInfo.bitcoinAddress,
@@ -224,13 +229,13 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
     ReverseSwapPairInfo currentFees = await _breezSdk.fetchReverseSwapFees(
       req: reverseSwapFeesRequest,
     );
-
-    await _breezSdk.sendOnchain(
+    final request = SendOnchainRequest(
       onchainRecipientAddress: destinationAddress,
       amountSat: amountSat,
       satPerVbyte: satPerVbyte,
       pairHash: currentFees.feesHash,
     );
+    await _breezSdk.sendOnchain(req: request);
   }
 
   @override

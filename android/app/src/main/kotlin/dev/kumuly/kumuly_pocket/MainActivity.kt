@@ -1,4 +1,4 @@
-package com.example.kumuly_pocket
+package dev.kumuly.kumuly_pocket
 
 import io.flutter.embedding.android.FlutterActivity
 
