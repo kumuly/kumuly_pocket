@@ -7,6 +7,7 @@ class PrimaryTextButton extends StatelessWidget {
     Key? key,
     this.leadingIcon,
     required this.text,
+    this.textStyle,
     this.trailingIcon,
     required this.onPressed,
     this.width = double.infinity,
@@ -16,6 +17,7 @@ class PrimaryTextButton extends StatelessWidget {
 
   final Icon? leadingIcon;
   final String text;
+  final TextStyle? textStyle;
   final Icon? trailingIcon;
   final VoidCallback? onPressed;
   final double width;
@@ -37,10 +39,11 @@ class PrimaryTextButton extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               text,
-              style: Theme.of(context).textTheme.display3(
-                    color,
-                    FontWeight.w600,
-                  ),
+              style: textStyle ??
+                  Theme.of(context).textTheme.display3(
+                        color,
+                        FontWeight.w600,
+                      ),
             ),
             const SizedBox(width: 8),
             if (trailingIcon != null) trailingIcon!,
