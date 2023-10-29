@@ -84,5 +84,6 @@
   "lightningProcessingTime": "instantáneo",
   "unifiedQRExplanation": "Un codigo QR que funciona tanto para la red Bitcoin como para la red Lightning será generado.",
   "generate": "Generar",
-  "moveFundsToPocket": "Mueve fondos a bolsillo"
+  "moveFundsToPocket": "Mueve fondos a bolsillo",
+  "moreDeals": "Más beneficios"
 }

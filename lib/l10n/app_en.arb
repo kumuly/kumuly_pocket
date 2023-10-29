@@ -84,5 +84,6 @@
   "lightningProcessingTime": "instant",
   "unifiedQRExplanation": "A QR code that works for both the Bitcoin as the Lightning Network will be generated.",
   "generate": "Generate",
-  "moveFundsToPocket": "Move funds to pocket"
+  "moveFundsToPocket": "Move funds to pocket",
+  "moreDeals": "More deals"
 }

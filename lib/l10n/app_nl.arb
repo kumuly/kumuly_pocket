@@ -84,5 +84,6 @@
   "lightningProcessingTime": "instant",
   "unifiedQRExplanation": "Een QR code die zowel voor het Bitcoin als Lightning netwerk werkt zal gegenereerd worden.",
   "generate": "Genereer",
-  "moveFundsToPocket": "Verplaats fondsen naar pocket"
+  "moveFundsToPocket": "Verplaats fondsen naar pocket",
+  "moreDeals": "Meer deals"
 }

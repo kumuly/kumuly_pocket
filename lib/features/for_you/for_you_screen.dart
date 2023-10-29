@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
+import 'package:kumuly_pocket/enums/promo_type.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/view_models/promo.dart';
@@ -44,7 +45,44 @@ class PromosRow extends ConsumerWidget {
     Key? key,
   }) : super(key: key);
 
-  final List<Promo> promos = [Promo(), Promo(), Promo(), Promo(), Promo()];
+  final List<Promo> promos = [
+    Promo(
+      type: PromoType.custom,
+      tag: 'Happy Hour',
+      headline:
+          'Savor limitless servings of Japanese tapas and sake between 5 PM and 7 PM.',
+      description:
+          'Dive into a tantalizing array of Japanese tapas, expertly crafted by our chefs to tantalize your taste buds. From crispy tempura and savory yakitori to delicate sushi rolls and flavorful gyoza, our menu boasts a variety of traditional and contemporary delights. Complement your culinary adventure with the smooth and refined taste of premium sake. Served fresh and expertly curated, our sake selection perfectly enhances the flavors of our tapas, providing you with an unforgettable dining experience.',
+      images: [
+        Image.asset(
+          'assets/images/dummy_promo.png',
+          fit: BoxFit.cover,
+        ),
+      ],
+      originalPrice: 32,
+      discountValue: 0,
+      termsAndConditions: const [
+        'This promotion is only valid for payments made with Bitcoin.',
+        'Is exclusively available at Oishiki restaurant on Tuesdays, Wednesdays, and Thursdays from 5:00 PM to 7:00 PM.',
+        'This promotion is for sake only; other drinks are not included.',
+        'Takeout and delivery orders are not eligible for this promotion.',
+        'Cannot be shared with other guests or taken away for later consumption.',
+        'Guests must be of legal drinking age to consume sake.',
+      ],
+      merchant: PromoMerchant(
+        id: "1",
+        logo: Image.asset(
+          'assets/images/dummy_logo.png',
+          fit: BoxFit.cover,
+        ),
+        name: 'Oishiki Japanese Food',
+        verified: true,
+        rating: 4.5,
+        address: '1234 Main Street, New York, NY 10001',
+        distance: 'Nearby - 2km',
+      ),
+    ),
+  ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -78,7 +116,7 @@ class PromosRow extends ConsumerWidget {
             height: 250,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: 5, // Todo: change this to items.length
+              itemCount: promos.length, // Todo: change this to items.length
               itemBuilder: (context, index) {
                 return Padding(
                   padding: EdgeInsets.only(
@@ -87,7 +125,7 @@ class PromosRow extends ConsumerWidget {
                         ? 16
                         : 8, // Todo: change 5 to items.length
                   ),
-                  child: const PromoCard(),
+                  child: PromoCard(promos[index]),
                 );
               },
             ),
@@ -98,7 +136,7 @@ class PromosRow extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 PrimaryTextButton(
-                  text: 'More deals',
+                  text: copy.moreDeals,
                   textStyle: textTheme.body3(
                       Palette.neutral[70], FontWeight.w600,
                       wordSpacing: 1),
@@ -124,139 +162,168 @@ class PromosRow extends ConsumerWidget {
 }
 
 class PromoCard extends StatelessWidget {
-  const PromoCard({super.key});
+  const PromoCard(this.promo, {super.key});
+
+  final Promo promo;
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final router = GoRouter.of(context);
 
-    return Container(
-      width: 184,
-      padding: const EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(
-          width: 1,
-          color: Palette.neutral[30]!,
+    return InkWell(
+      onTap: () {
+        router.pushNamed('promo', extra: promo);
+      },
+      borderRadius: const BorderRadius.all(
+          Radius.circular(14)), // This matches the Container's border radius
+      child: Container(
+        width: 184,
+        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(
+            width: 1,
+            color: Palette.neutral[30]!,
+          ),
+          borderRadius: const BorderRadius.all(
+            Radius.circular(14),
+          ),
         ),
-        borderRadius: const BorderRadius.all(
-          Radius.circular(14),
-        ),
-      ),
-      child: Column(
-        children: [
-          Stack(
-            children: [
-              // Main image container
-              Container(
-                height: 136,
-                decoration: BoxDecoration(
-                  color: Palette.neutral[70],
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(8),
-                    topRight: Radius.circular(8),
-                  ),
-                ),
-              ),
-              Positioned(
-                top: 0,
-                left: 0,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8.0,
-                    vertical: 4.0,
-                  ), // Adjust padding as necessary
-                  decoration: BoxDecoration(
-                    color: Palette
-                        .neutral[100], // Color for your promotion background
-                    borderRadius: const BorderRadius.only(
+        child: Column(
+          children: [
+            Stack(
+              children: [
+                // Main image container
+                Container(
+                  height: 136,
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(8.0),
+                      topRight: Radius.circular(8.0),
                     ),
                   ),
-                  child: Text('-50%', // Your promotion text here
-                      style: textTheme.caption1(
-                        Colors.white,
-                        FontWeight.w500,
-                      )),
+                  clipBehavior: Clip.hardEdge,
+                  child: promo.images[0],
                 ),
-              ),
-              // Merchant logo at the top right
-              Positioned(
-                top: 4,
-                right: 4,
-                child: CircleAvatar(
-                  backgroundColor:
-                      Palette.neutral[100], // Placeholder for the logo
-                  radius: 8,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: kExtraSmallSpacing,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Text('€32',
-                      style: textTheme
-                          .display1(
-                            Palette.neutral[70],
-                            FontWeight.w400,
-                          )
-                          .copyWith(
-                            decoration: TextDecoration.lineThrough,
-                          )),
-                  Text(
-                    '16',
-                    style: textTheme.display6(
-                      Palette.neutral[120],
-                      FontWeight.w400,
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.topCenter,
-                    heightFactor: 1.5,
-                    child: Text(
-                      '€',
-                      style: textTheme.caption1(
-                        Palette.neutral[120],
-                        FontWeight.w500,
+                // Promotion tag at the top left
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0,
+                      vertical: 4.0,
+                    ), // Adjust padding as necessary
+                    decoration: BoxDecoration(
+                      color: Palette
+                          .neutral[100], // Color for your promotion background
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(8.0),
                       ),
                     ),
+                    child: Text(promo.tag, // Your promotion text here
+                        style: textTheme.caption1(
+                          Colors.white,
+                          FontWeight.w500,
+                        )),
                   ),
-                ],
-              ),
-              Text('1km',
-                  style: textTheme.caption1(
-                    Palette.neutral[60],
-                    FontWeight.w500,
-                  )),
-            ],
-          ),
-          const SizedBox(
-            height: kExtraSmallSpacing,
-          ),
-          Expanded(
-            child: Text(
-              'Ut enim ad minim veniam, nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo con ion ul...',
-              overflow: TextOverflow.ellipsis,
-              maxLines: 3,
-              textAlign: TextAlign.justify,
-              style: textTheme.body1(
-                Palette.neutral[80],
-                FontWeight.w400,
-                wordSpacing: 0,
-                letterSpacing: 0,
+                ),
+                // Merchant logo at the top right
+                Positioned(
+                  top: 4,
+                  right: 4,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape:
+                          BoxShape.circle, // this makes the container circular
+                      border: Border.all(
+                        color:
+                            Colors.white, // choose the border color you desire
+                        width: 1, // adjust the border width as you like
+                      ),
+                    ),
+                    child: CircleAvatar(
+                      backgroundColor:
+                          Palette.neutral[100], // Placeholder for the logo
+                      radius: 8,
+                      foregroundImage: promo.merchant.logo.image,
+                    ),
+                  ),
+                )
+              ],
+            ),
+            const SizedBox(
+              height: kExtraSmallSpacing,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    promo.discountedPrice == promo.originalPrice
+                        ? Container()
+                        : Text(promo.originalPrice.toString(),
+                            style: textTheme
+                                .display1(
+                                  Palette.neutral[70],
+                                  FontWeight.w400,
+                                )
+                                .copyWith(
+                                  decoration: TextDecoration.lineThrough,
+                                )),
+                    Text(
+                      promo.discountedPrice.floor() == promo.discountedPrice
+                          ? promo.discountedPrice.toStringAsFixed(0)
+                          : promo.discountedPrice.toStringAsFixed(2),
+                      style: textTheme.display6(
+                        Palette.neutral[120],
+                        FontWeight.w400,
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.topCenter,
+                      heightFactor: 1.5,
+                      child: Text(
+                        '€',
+                        style: textTheme.caption1(
+                          Palette.neutral[120],
+                          FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Text('1km',
+                    style: textTheme.caption1(
+                      Palette.neutral[60],
+                      FontWeight.w500,
+                    )),
+              ],
+            ),
+            const SizedBox(
+              height: kExtraSmallSpacing,
+            ),
+            Expanded(
+              child: Text(
+                promo.headline,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 3,
+                textAlign: TextAlign.justify,
+                style: textTheme.body1(
+                  Palette.neutral[80],
+                  FontWeight.w400,
+                  wordSpacing: 0,
+                  letterSpacing: 0,
+                ),
               ),
             ),
-          ),
-          const SizedBox(
-            height: kExtraSmallSpacing,
-          ),
-        ],
+            const SizedBox(
+              height: kExtraSmallSpacing,
+            ),
+          ],
+        ),
       ),
     );
   }
