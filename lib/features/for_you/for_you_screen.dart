@@ -138,15 +138,19 @@ class PromosRow extends ConsumerWidget {
                 PrimaryTextButton(
                   text: copy.moreDeals,
                   textStyle: textTheme.body3(
-                      Palette.neutral[70], FontWeight.w600,
-                      wordSpacing: 1),
+                    Palette.neutral[70],
+                    FontWeight.w600,
+                    wordSpacing: 1,
+                  ),
                   color: Palette.neutral[70],
                   trailingIcon: Icon(
                     Icons.arrow_forward_ios_outlined,
                     size: 12,
                     color: Palette.neutral[70],
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    router.goNamed('promos');
+                  },
                 ),
               ],
             ),
@@ -173,7 +177,7 @@ class PromoCard extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        router.pushNamed('promo', extra: promo);
+        router.goNamed('promo-details', extra: promo);
       },
       borderRadius: const BorderRadius.all(
           Radius.circular(14)), // This matches the Container's border radius
@@ -223,11 +227,14 @@ class PromoCard extends StatelessWidget {
                         topLeft: Radius.circular(8.0),
                       ),
                     ),
-                    child: Text(promo.tag, // Your promotion text here
-                        style: textTheme.caption1(
-                          Colors.white,
-                          FontWeight.w500,
-                        )),
+                    child: Text(
+                      promo.tag, // Your promotion text here
+                      style: textTheme.caption1(
+                        Colors.white,
+                        FontWeight.w500,
+                        wordSpacing: 0,
+                      ),
+                    ),
                   ),
                 ),
                 // Merchant logo at the top right
