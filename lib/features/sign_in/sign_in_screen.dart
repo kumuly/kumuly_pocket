@@ -128,25 +128,33 @@ class SignInScreen extends ConsumerWidget {
           ),
           const Divider(),
           const SizedBox(height: kMediumSpacing),
-          PrimaryBorderButton(
-            leadingIcon: Icon(Icons.account_circle_outlined,
-                color: Palette.neutral[100]),
-            text: copy.importAccount,
-            onPressed: () {
-              context.pushNamed('import-account');
-            },
-            color: Palette.neutral[100],
-            width: 300.0,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              PrimaryBorderButton(
+                leadingIcon: Icon(Icons.account_circle_outlined,
+                    color: Palette.neutral[100]),
+                text: copy.importAccount,
+                onPressed: () {
+                  context.pushNamed('import-account');
+                },
+                color: Palette.neutral[100],
+              ),
+            ],
           ),
           const SizedBox(height: kMediumSpacing),
-          PrimaryTextButton(
-            leadingIcon: Icon(Icons.add, color: Palette.neutral[100]),
-            text: copy.createAccount,
-            onPressed: () {
-              context.pushNamed('sign-up');
-            },
-            color: Palette.neutral[100],
-            width: 300,
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              PrimaryTextButton(
+                leadingIcon: Icon(Icons.add, color: Palette.neutral[100]),
+                text: copy.createAccount,
+                onPressed: () {
+                  context.pushNamed('sign-up');
+                },
+                color: Palette.neutral[100],
+              ),
+            ],
           ),
           const SizedBox(height: kMediumSpacing),
         ],

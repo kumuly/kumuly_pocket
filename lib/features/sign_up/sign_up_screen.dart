@@ -83,10 +83,14 @@ class SignUpScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: kLargeSpacing),
-          PrimaryFilledButton(
-            text: copy.continueLabel,
-            onPressed: () => context.pushNamed('assign-alias'),
-            width: 200,
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              PrimaryFilledButton(
+                text: copy.continueLabel,
+                onPressed: () => context.pushNamed('assign-alias'),
+              ),
+            ],
           ),
           const SizedBox(height: kMediumSpacing),
         ],

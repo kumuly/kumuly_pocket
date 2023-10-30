@@ -106,22 +106,28 @@ class InsertPinScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: kSmallSpacing),
-          PrimaryFilledButton(
-            text: copy.confirmPIN,
-            onPressed: pin.length != 4 || !isValidPin
-                ? null
-                : () async {
-                    try {
-                      final signInPromise = signInControllerNotifier.signIn();
-                      showTransitionDialog(context, copy.oneMomentPlease);
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              PrimaryFilledButton(
+                text: copy.confirmPIN,
+                onPressed: pin.length != 4 || !isValidPin
+                    ? null
+                    : () async {
+                        try {
+                          final signInPromise =
+                              signInControllerNotifier.signIn();
+                          showTransitionDialog(context, copy.oneMomentPlease);
 
-                      await signInPromise;
-                      router.goNamed('pocket');
-                    } catch (e) {
-                      print(e);
-                      router.pop();
-                    }
-                  },
+                          await signInPromise;
+                          router.goNamed('pocket');
+                        } catch (e) {
+                          print(e);
+                          router.pop();
+                        }
+                      },
+              ),
+            ],
           ),
           const SizedBox(height: kSmallSpacing),
         ],

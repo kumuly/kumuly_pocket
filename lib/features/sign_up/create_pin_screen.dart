@@ -84,10 +84,16 @@ class CreatePinScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: kSmallSpacing),
-          PrimaryFilledButton(
-            text: copy.continueLabel,
-            onPressed:
-                pin.length != 4 ? null : () => context.pushNamed('confirm-pin'),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              PrimaryFilledButton(
+                text: copy.continueLabel,
+                onPressed: pin.length != 4
+                    ? null
+                    : () => context.pushNamed('confirm-pin'),
+              ),
+            ],
           ),
           const SizedBox(height: kSmallSpacing),
         ],

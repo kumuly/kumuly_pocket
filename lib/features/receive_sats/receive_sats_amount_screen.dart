@@ -309,21 +309,25 @@ class ReceiveSatsBottomSheetModal extends ConsumerWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: kSmallSpacing),
-          PrimaryFilledButton(
-            width: 200,
-            text: copy.generate,
-            fillColor: Palette.neutral[120],
-            textColor: Colors.white,
-            onPressed: () async {
-              showTransitionDialog(context, copy.oneMomentPlease);
-              await receiveSatsControllerNotifier.createInvoice();
-              router.pop();
-              router.pushNamed('receive-sats-codes');
-            },
-            trailingIcon: const Icon(
-              Icons.qr_code,
-              color: Colors.white,
-            ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              PrimaryFilledButton(
+                text: copy.generate,
+                fillColor: Palette.neutral[120],
+                textColor: Colors.white,
+                onPressed: () async {
+                  showTransitionDialog(context, copy.oneMomentPlease);
+                  await receiveSatsControllerNotifier.createInvoice();
+                  router.pop();
+                  router.pushNamed('receive-sats-codes');
+                },
+                trailingIcon: const Icon(
+                  Icons.qr_code,
+                  color: Colors.white,
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: kMediumSpacing),
         ],

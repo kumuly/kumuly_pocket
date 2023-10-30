@@ -114,11 +114,16 @@ class AssignAliasScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: kLargeSpacing),
-          PrimaryFilledButton(
-            text: copy.confirmAlias,
-            onPressed:
-                alias.isEmpty ? null : () => context.pushNamed('create-pin'),
-            width: 200,
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              PrimaryFilledButton(
+                text: copy.confirmAlias,
+                onPressed: alias.isEmpty
+                    ? null
+                    : () => context.pushNamed('create-pin'),
+              ),
+            ],
           ),
           const SizedBox(height: kMediumSpacing),
         ],
