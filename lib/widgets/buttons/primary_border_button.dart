@@ -9,7 +9,6 @@ class PrimaryBorderButton extends StatelessWidget {
     required this.text,
     this.trailingIcon,
     required this.onPressed,
-    this.width = double.infinity,
     color,
     this.borderWidth = 2.0,
   })  : color = color ?? Palette.neutral[100],
@@ -19,39 +18,36 @@ class PrimaryBorderButton extends StatelessWidget {
   final String text;
   final Icon? trailingIcon;
   final VoidCallback? onPressed;
-  final double width;
   final Color color;
   final double borderWidth;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-      child: TextButton(
-        style: TextButton.styleFrom(
-          fixedSize: Size(width, 48),
-          side: BorderSide(
-            color: color,
-            width: borderWidth,
+    return TextButton(
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 12.0),
+        side: BorderSide(
+          color: color,
+          width: borderWidth,
+        ),
+      ),
+      onPressed: onPressed,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (leadingIcon != null) leadingIcon!,
+          if (leadingIcon != null) const SizedBox(width: 8),
+          Text(
+            text,
+            style: Theme.of(context).textTheme.display3(
+                  color,
+                  FontWeight.w600,
+                ),
           ),
-        ),
-        onPressed: onPressed,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (leadingIcon != null) leadingIcon!,
-            const SizedBox(width: 8),
-            Text(
-              text,
-              style: Theme.of(context).textTheme.display3(
-                    color,
-                    FontWeight.w600,
-                  ),
-            ),
-            const SizedBox(width: 8),
-            if (trailingIcon != null) trailingIcon!,
-          ],
-        ),
+          if (trailingIcon != null) const SizedBox(width: 8),
+          if (trailingIcon != null) trailingIcon!,
+        ],
       ),
     );
   }

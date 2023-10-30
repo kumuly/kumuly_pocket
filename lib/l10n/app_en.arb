@@ -85,5 +85,14 @@
   "unifiedQRExplanation": "A QR code that works for both the Bitcoin as the Lightning Network will be generated.",
   "generate": "Generate",
   "moveFundsToPocket": "Move funds to pocket",
-  "moreDeals": "More deals"
+  "moreDeals": "More deals",
+  "promoDescriptionTitle": "What's in this deal?",
+  "promoTermsAndConditionsTitle": "Terms and conditions",
+  "enjoyPromo": "Enjoy promo",
+  "confirmPayment": "Confirm payment",
+  "verifiedMerchant": "Verified merchant",
+  "paymentCompleted": "Payment completed",
+  "promoCodeReceived": "Promo code received",
+  "checkOutGuidelinesToRedeemPromo": "Check out the guidelines on\nhow to redeem the promo.",
+  "redemptionInstructions": "Redemption instructions"
 }

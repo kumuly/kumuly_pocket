@@ -15,6 +15,7 @@ class Promo extends Equatable {
     required this.description,
     required this.termsAndConditions,
     required this.merchant,
+    required this.lnurlPayLink,
   });
 
   final String? id;
@@ -27,6 +28,7 @@ class Promo extends Equatable {
   final String description;
   final List<String> termsAndConditions;
   final PromoMerchant merchant;
+  final String lnurlPayLink;
 
   double get discountedPrice {
     switch (type) {
@@ -55,6 +57,7 @@ class Promo extends Equatable {
         description,
         termsAndConditions,
         merchant,
+        lnurlPayLink,
       ];
 }
 

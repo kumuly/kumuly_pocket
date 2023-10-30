@@ -9,6 +9,7 @@ class PromosScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(copy.promos),
+        centerTitle: true,
       ),
       body: const Center(
         child: Text(

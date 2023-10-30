@@ -111,32 +111,37 @@ class ConfirmPinScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: kSmallSpacing),
-          PrimaryFilledButton(
-            text: copy.confirmPIN,
-            onPressed: pin != pinConfirmation
-                ? null
-                : () async {
-                    showTransitionDialog(context, copy.oneMomentPlease);
-                    try {
-                      if (mnemonicWords.isEmpty) {
-                        // Only generate a mnemonic if it hasn't been generated yet.
-                        signUpControllerNotifier.generateMnemonic();
-                      }
-                      await signUpControllerNotifier.setupLightningNode();
-                      await signUpControllerNotifier.saveNewAccount();
-                      await signUpControllerNotifier.logIn();
-                      router.goNamed('pocket');
-                    } catch (e) {
-                      print(e);
-                      try {
-                        // Disconnect node here
-                        await signUpControllerNotifier.disconnectNode();
-                      } catch (e) {
-                        print(e);
-                      }
-                      router.pop();
-                    }
-                  },
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              PrimaryFilledButton(
+                text: copy.confirmPIN,
+                onPressed: pin != pinConfirmation
+                    ? null
+                    : () async {
+                        showTransitionDialog(context, copy.oneMomentPlease);
+                        try {
+                          if (mnemonicWords.isEmpty) {
+                            // Only generate a mnemonic if it hasn't been generated yet.
+                            signUpControllerNotifier.generateMnemonic();
+                          }
+                          await signUpControllerNotifier.setupLightningNode();
+                          await signUpControllerNotifier.saveNewAccount();
+                          await signUpControllerNotifier.logIn();
+                          router.goNamed('pocket');
+                        } catch (e) {
+                          print(e);
+                          try {
+                            // Disconnect node here
+                            await signUpControllerNotifier.disconnectNode();
+                          } catch (e) {
+                            print(e);
+                          }
+                          router.pop();
+                        }
+                      },
+              ),
+            ],
           ),
           const SizedBox(height: kSmallSpacing),
         ],

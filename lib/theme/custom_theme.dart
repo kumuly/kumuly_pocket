@@ -84,7 +84,7 @@ extension KumulyAttributes on TextTheme {
   TextStyle caption1(
     Color? color,
     FontWeight fontWeight, {
-    double wordSpacing = 10.0,
+    double wordSpacing = 0,
     double? letterSpacing,
   }) =>
       bodyLarge!.copyWith(
@@ -99,7 +99,7 @@ extension KumulyAttributes on TextTheme {
   TextStyle display1(
     Color? color,
     FontWeight fontWeight, {
-    double wordSpacing = 10.0,
+    double wordSpacing = 0,
     double? letterSpacing,
   }) =>
       bodyLarge!.copyWith(
@@ -114,7 +114,7 @@ extension KumulyAttributes on TextTheme {
   TextStyle display2(
     Color? color,
     FontWeight fontWeight, {
-    double wordSpacing = 10.0,
+    double wordSpacing = 0,
     double? letterSpacing,
   }) =>
       bodyLarge!.copyWith(
@@ -129,7 +129,7 @@ extension KumulyAttributes on TextTheme {
   TextStyle display3(
     Color? color,
     FontWeight fontWeight, {
-    double wordSpacing = 10.0,
+    double wordSpacing = 0,
     double? letterSpacing,
   }) =>
       bodyLarge!.copyWith(
@@ -144,7 +144,7 @@ extension KumulyAttributes on TextTheme {
   TextStyle display4(
     Color? color,
     FontWeight fontWeight, {
-    double wordSpacing = 10.0,
+    double wordSpacing = 0,
     double? letterSpacing,
   }) =>
       bodyLarge!.copyWith(
@@ -159,7 +159,7 @@ extension KumulyAttributes on TextTheme {
   TextStyle display5(
     Color? color,
     FontWeight fontWeight, {
-    double wordSpacing = 10.0,
+    double wordSpacing = 0,
     double? letterSpacing,
   }) =>
       bodyLarge!.copyWith(
@@ -174,7 +174,7 @@ extension KumulyAttributes on TextTheme {
   TextStyle display6(
     Color? color,
     FontWeight fontWeight, {
-    double wordSpacing = 10.0,
+    double wordSpacing = 0,
     double? letterSpacing,
   }) =>
       bodyLarge!.copyWith(
@@ -189,7 +189,7 @@ extension KumulyAttributes on TextTheme {
   TextStyle display7(
     Color? color,
     FontWeight fontWeight, {
-    double wordSpacing = 10.0,
+    double wordSpacing = 0,
     double? letterSpacing,
   }) =>
       bodyLarge!.copyWith(
@@ -204,7 +204,7 @@ extension KumulyAttributes on TextTheme {
   TextStyle display8(
     Color? color,
     FontWeight fontWeight, {
-    double wordSpacing = 10.0,
+    double wordSpacing = 0,
     double? letterSpacing,
   }) =>
       bodyLarge!.copyWith(
@@ -219,7 +219,7 @@ extension KumulyAttributes on TextTheme {
   TextStyle display8_5(
     Color? color,
     FontWeight fontWeight, {
-    double wordSpacing = 10.0,
+    double wordSpacing = 0,
     double? letterSpacing,
   }) =>
       bodyLarge!.copyWith(
@@ -234,7 +234,7 @@ extension KumulyAttributes on TextTheme {
   TextStyle display9(
     Color? color,
     FontWeight fontWeight, {
-    double wordSpacing = 10.0,
+    double wordSpacing = 0,
     double? letterSpacing,
   }) =>
       bodyLarge!.copyWith(
@@ -249,7 +249,7 @@ extension KumulyAttributes on TextTheme {
   TextStyle display10(
     Color? color,
     FontWeight fontWeight, {
-    double wordSpacing = 10.0,
+    double wordSpacing = 0,
     double? letterSpacing,
   }) =>
       bodyLarge!.copyWith(
@@ -264,7 +264,7 @@ extension KumulyAttributes on TextTheme {
   TextStyle body1(
     Color? color,
     FontWeight fontWeight, {
-    double wordSpacing = 10.0,
+    double wordSpacing = 0,
     double? letterSpacing,
   }) =>
       bodyLarge!.copyWith(
@@ -279,7 +279,7 @@ extension KumulyAttributes on TextTheme {
   TextStyle body2(
     Color? color,
     FontWeight fontWeight, {
-    double wordSpacing = 10.0,
+    double wordSpacing = 0,
     double? letterSpacing,
   }) =>
       bodyLarge!.copyWith(
@@ -294,7 +294,7 @@ extension KumulyAttributes on TextTheme {
   TextStyle body3(
     Color? color,
     FontWeight fontWeight, {
-    double wordSpacing = 10.0,
+    double wordSpacing = 0,
     double? letterSpacing,
   }) =>
       bodyLarge!.copyWith(
@@ -309,7 +309,7 @@ extension KumulyAttributes on TextTheme {
   TextStyle body4(
     Color? color,
     FontWeight fontWeight, {
-    double wordSpacing = 10.0,
+    double wordSpacing = 0,
     double? letterSpacing,
   }) =>
       bodyLarge!.copyWith(
@@ -324,7 +324,7 @@ extension KumulyAttributes on TextTheme {
   TextStyle body5(
     Color? color,
     FontWeight fontWeight, {
-    double wordSpacing = 10.0,
+    double wordSpacing = 0,
     double? letterSpacing,
   }) =>
       bodyLarge!.copyWith(

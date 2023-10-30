@@ -73,13 +73,19 @@ class SecureStorageMnemonicRepository implements MnemonicRepository {
   @override
   Future<void> saveWords(String id, List<String> words) async {
     final key = '$_mnemonicKeyPrefix$id';
+    final mnemonicWordsString = jsonEncode(words);
     // Check if it already exists.
     final existingMnemonic = await _secureStorage.containsKey(key: key);
     if (existingMnemonic) {
-      throw Exception('Mnemonic already exists for id $id');
+      final existingMnemonicWordsString = await _secureStorage.read(key: key);
+      if (existingMnemonicWordsString == mnemonicWordsString) {
+        // The mnemonic already exists, so we don't need to save it again.
+        return;
+      }
+      throw Exception('Another mnemonic already exists for id $id');
     }
     // Store the mnemonic in the secure storage.
-    await _secureStorage.write(key: key, value: jsonEncode(words));
+    await _secureStorage.write(key: key, value: mnemonicWordsString);
   }
 
   @override

@@ -36,12 +36,16 @@ class LandingScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: kMediumSpacing),
-          PrimaryBorderButton(
-            text: copy.createAccount,
-            onPressed: () {
-              context.pushNamed('sign-up');
-            },
-            width: 183.0,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              PrimaryBorderButton(
+                text: copy.createAccount,
+                onPressed: () {
+                  context.pushNamed('sign-up');
+                },
+              ),
+            ],
           ),
           const SizedBox(height: kExtraLargeSpacing),
           Text(
@@ -51,11 +55,16 @@ class LandingScreen extends ConsumerWidget {
               FontWeight.w500,
             ),
           ),
-          PrimaryTextButton(
-            text: copy.importAccount,
-            onPressed: () {
-              context.pushNamed('import-account');
-            },
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              PrimaryTextButton(
+                text: copy.importAccount,
+                onPressed: () {
+                  context.pushNamed('import-account');
+                },
+              ),
+            ],
           ),
           const SizedBox(height: kMediumSpacing),
         ],

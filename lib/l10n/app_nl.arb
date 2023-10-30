@@ -85,5 +85,14 @@
   "unifiedQRExplanation": "Een QR code die zowel voor het Bitcoin als Lightning netwerk werkt zal gegenereerd worden.",
   "generate": "Genereer",
   "moveFundsToPocket": "Verplaats fondsen naar pocket",
-  "moreDeals": "Meer deals"
+  "moreDeals": "Meer deals",
+  "promoDescriptionTitle": "Wat zit er in deze deal?",
+  "promoTermsAndConditionsTitle": "Voorwaarden en condities",
+  "enjoyPromo": "Grijp deze promo",
+  "confirmPayment": "Bevestig betaling",
+  "verifiedMerchant": "Geverifieerde verkoper",
+  "paymentCompleted": "Betaling voltooid",
+  "promoCodeReceived": "Promo code ontvangen",
+  "checkOutGuidelinesToRedeemPromo": "Bekijk de richtlijnen om deze\npromo te verzilveren.",
+  "redemptionInstructions": "Instructies voor verzilvering"
 }

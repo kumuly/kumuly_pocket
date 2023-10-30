@@ -1,8 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kumuly_pocket/features/receive_sats/receive_sats_state.dart';
 import 'package:kumuly_pocket/services/lightning_node_service.dart';
-import 'package:kumuly_pocket/widgets/dialogs/transition_dialog.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'receive_sats_controller.g.dart';

@@ -30,11 +30,6 @@ class SecureStoragePinRepository implements PinRepository {
   @override
   Future<void> save(String id, String pin) async {
     final key = '$_pinDigestKeyPrefix$id';
-    // Check if it already exists. Use change to update.
-    final existingDigest = await _secureStorage.containsKey(key: key);
-    if (existingDigest) {
-      throw Exception('PIN already exists for id $id');
-    }
 
     if (pin.length != _pinLength) {
       throw Exception('PIN must be 4 digits');

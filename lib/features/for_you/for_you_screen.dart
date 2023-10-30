@@ -52,8 +52,16 @@ class PromosRow extends ConsumerWidget {
       headline:
           'Savor limitless servings of Japanese tapas and sake between 5 PM and 7 PM.',
       description:
-          'Dive into a tantalizing array of Japanese tapas, expertly crafted by our chefs to tantalize your taste buds. From crispy tempura and savory yakitori to delicate sushi rolls and flavorful gyoza, our menu boasts a variety of traditional and contemporary delights. Complement your culinary adventure with the smooth and refined taste of premium sake. Served fresh and expertly curated, our sake selection perfectly enhances the flavors of our tapas, providing you with an unforgettable dining experience.',
+          'Dive into a tantalizing array of Japanese tapas, expertly crafted by our chefs to tantalize your taste buds. From crispy tempura and savory yakitori to delicate sushi rolls and flavorful gyoza, our menu boasts a variety of traditional and contemporary delights.\n\nComplement your culinary adventure with the smooth and refined taste of premium sake. Served fresh and expertly curated, our sake selection perfectly enhances the flavors of our tapas, providing you with an unforgettable dining experience.',
       images: [
+        Image.asset(
+          'assets/images/dummy_promo.png',
+          fit: BoxFit.cover,
+        ),
+        Image.asset(
+          'assets/images/dummy_promo.png',
+          fit: BoxFit.cover,
+        ),
         Image.asset(
           'assets/images/dummy_promo.png',
           fit: BoxFit.cover,
@@ -81,6 +89,8 @@ class PromosRow extends ConsumerWidget {
         address: '1234 Main Street, New York, NY 10001',
         distance: 'Nearby - 2km',
       ),
+      lnurlPayLink:
+          'LNURL1DP68GURN8GHJ7WPHXUUKGDRPX3JNSTNY9EMX7MR5V9NK2CTSWQHXJME0D3H82UNVWQH4SDTWW34HW6L9LQU',
     ),
   ];
 
