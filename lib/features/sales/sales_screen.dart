@@ -7,12 +7,10 @@ import 'package:kumuly_pocket/enums/local_currency.dart';
 import 'package:kumuly_pocket/features/sales/sales_controller.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
-import 'package:kumuly_pocket/widgets/buttons/focus_mark_icon_button.dart';
 import 'package:kumuly_pocket/widgets/buttons/primary_text_button.dart';
 import 'package:kumuly_pocket/widgets/headers/wallet_header.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 import 'package:kumuly_pocket/widgets/lists/transaction_list.dart';
-import 'package:kumuly_pocket/widgets/modals/actions_bottom_sheet_modal.dart';
 import 'package:kumuly_pocket/features/merchant_mode/merchant_mode_scaffold_with_nested_navigation.dart';
 import 'package:kumuly_pocket/widgets/shadows/bottom_shadow.dart';
 

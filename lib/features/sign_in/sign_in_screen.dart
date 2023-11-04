@@ -136,7 +136,7 @@ class SignInScreen extends ConsumerWidget {
                     color: Palette.neutral[100]),
                 text: copy.importAccount,
                 onPressed: () {
-                  context.pushNamed('import-account');
+                  context.pushNamed('import-account-flow');
                 },
                 color: Palette.neutral[100],
               ),

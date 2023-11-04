@@ -61,7 +61,7 @@ class LandingScreen extends ConsumerWidget {
               PrimaryTextButton(
                 text: copy.importAccount,
                 onPressed: () {
-                  context.pushNamed('import-account');
+                  context.pushNamed('import-account-flow');
                 },
               ),
             ],

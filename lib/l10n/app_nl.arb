@@ -94,5 +94,6 @@
   "paymentCompleted": "Betaling voltooid",
   "promoCodeReceived": "Promo code ontvangen",
   "checkOutGuidelinesToRedeemPromo": "Bekijk de richtlijnen om deze\npromo te verzilveren.",
-  "redemptionInstructions": "Instructies voor verzilvering"
+  "redemptionInstructions": "Instructies voor verzilvering",
+  "promoCode": "Promo code"
 }

@@ -4,6 +4,7 @@ import 'package:kumuly_pocket/features/sign_up/confirm_pin_screen.dart';
 import 'package:kumuly_pocket/features/sign_up/create_pin_screen.dart';
 import 'package:kumuly_pocket/features/sign_up/sign_up_screen.dart';
 
+// Todo: change to PageView instead of separate routes
 final signUpRoute = GoRoute(
   path: '/sign-up',
   name: 'sign-up',

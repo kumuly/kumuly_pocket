@@ -94,5 +94,6 @@
   "paymentCompleted": "Pago completado",
   "promoCodeReceived": "Código de promo recibido",
   "checkOutGuidelinesToRedeemPromo": "Mira las instrucciones para\nreclamar la promo.",
-  "redemptionInstructions": "Instrucciones de redención"
+  "redemptionInstructions": "Instrucciones de redención",
+  "promoCode": "Codigo de promo"
 }

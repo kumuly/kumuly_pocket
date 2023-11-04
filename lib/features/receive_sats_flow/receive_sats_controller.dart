@@ -1,4 +1,4 @@
-import 'package:kumuly_pocket/features/receive_sats/receive_sats_state.dart';
+import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_state.dart';
 import 'package:kumuly_pocket/services/lightning_node_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -16,14 +16,15 @@ class ReceiveSatsController extends _$ReceiveSatsController {
   // Todo: Start listening for swapInProgress and update state accordingly.
   // Todo: Start listening for payment and update state accordingly.
 
-  Future<void> onAmountChanged(String? amount) async {
+  void amountChangeHandler(String? amount) {
     if (amount == null || amount.isEmpty) {
       state = state.copyWith(
-          amountSat: null,
-          onChainAddress: null,
-          onChainMaxAmount: null,
-          onChainMinAmount: null,
-          swapFeeEstimate: null);
+        amountSat: null,
+        onChainAddress: null,
+        onChainMaxAmount: null,
+        onChainMinAmount: null,
+        swapFeeEstimate: null,
+      );
     } else {
       final amountSat = int.parse(amount);
       state = state.copyWith(amountSat: amountSat);

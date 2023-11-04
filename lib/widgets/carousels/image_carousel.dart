@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kumuly_pocket/widgets/carousels/page_view_controller.dart';
-import 'package:kumuly_pocket/widgets/carousels/page_view_indicator.dart';
+import 'package:kumuly_pocket/widgets/page_views/page_view_controller.dart';
+import 'package:kumuly_pocket/widgets/page_views/page_view_indicator.dart';
 
 class ImageCarousel extends ConsumerWidget {
   const ImageCarousel({
@@ -17,7 +17,7 @@ class ImageCarousel extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final carrouselController = ref.watch(pageViewControllerProvider);
+    final carouselController = ref.watch(pageViewControllerProvider);
 
     return SizedBox(
       height: height,
@@ -26,7 +26,7 @@ class ImageCarousel extends ConsumerWidget {
         alignment: Alignment.bottomCenter,
         children: [
           PageView.builder(
-            controller: carrouselController.pageController,
+            controller: carouselController.pageController,
             itemCount: images.length,
             pageSnapping: true,
             itemBuilder: (context, index) {
