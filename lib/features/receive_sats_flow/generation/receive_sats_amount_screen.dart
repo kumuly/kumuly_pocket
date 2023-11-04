@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/enums/bitcoin_unit.dart';
-import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_controller.dart';
-import 'package:kumuly_pocket/services/lightning_node_service.dart';
+import 'package:kumuly_pocket/features/receive_sats_flow/generation/receive_sats_generation_controller.dart';
 import 'package:kumuly_pocket/widgets/buttons/primary_filled_button.dart';
 import 'package:kumuly_pocket/widgets/buttons/rectangular_border_button.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
@@ -12,27 +12,22 @@ import 'package:kumuly_pocket/widgets/dialogs/transition_dialog.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
+import 'package:kumuly_pocket/widgets/page_views/page_view_controller.dart';
 
 class ReceiveSatsAmountScreen extends ConsumerWidget {
   const ReceiveSatsAmountScreen({
     super.key,
-    required this.amount,
-    required this.unit,
-    required this.onAmountChanged,
-    required this.fetchSwapInfo,
-    required this.onNext,
   });
-
-  final int? amount;
-  final BitcoinUnit unit;
-  final void Function(String?) onAmountChanged;
-  final Future<void> Function() fetchSwapInfo;
-  final VoidCallback onNext;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final copy = AppLocalizations.of(context)!;
     final TextTheme textTheme = Theme.of(context).textTheme;
+
+    const unit = BitcoinUnit.sat;
+    final amount = unit == BitcoinUnit.sat
+        ? ref.watch(receiveSatsGenerationControllerProvider).amountSat
+        : ref.watch(receiveSatsGenerationControllerProvider).amountBtc;
 
     return Scaffold(
       appBar: AppBar(
@@ -86,7 +81,10 @@ class ReceiveSatsAmountScreen extends ConsumerWidget {
                             hintStyle: textTheme.display7(
                                 Palette.neutral[60], FontWeight.w600),
                           ),
-                          onChanged: onAmountChanged,
+                          onChanged: ref
+                              .read(receiveSatsGenerationControllerProvider
+                                  .notifier)
+                              .amountChangeHandler,
                         ),
                       ),
                       const SizedBox(
@@ -109,14 +107,14 @@ class ReceiveSatsAmountScreen extends ConsumerWidget {
             onPressed: amount == null || amount == 0
                 ? null
                 : () {
-                    fetchSwapInfo();
+                    ref
+                        .read(receiveSatsGenerationControllerProvider.notifier)
+                        .fetchSwapInfo();
                     showModalBottomSheet(
                       isScrollControlled: true,
                       backgroundColor: Colors.white,
                       context: context,
-                      builder: (context) => ReceiveSatsBottomSheetModal(
-                        onNext: onNext,
-                      ),
+                      builder: (context) => const ReceiveSatsBottomSheetModal(),
                     );
                     return;
                   },
@@ -130,24 +128,20 @@ class ReceiveSatsAmountScreen extends ConsumerWidget {
 class ReceiveSatsBottomSheetModal extends ConsumerWidget {
   const ReceiveSatsBottomSheetModal({
     super.key,
-    required this.onNext,
   });
-
-  final VoidCallback onNext;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final router = GoRouter.of(context);
     final copy = AppLocalizations.of(context)!;
     final TextTheme textTheme = Theme.of(context).textTheme;
-    final receiveSatsController = receiveSatsControllerProvider(
-      ref.watch(breezeSdkLightningNodeServiceProvider),
-    );
-    final receiveSatsControllerNotifier = ref.read(
-      receiveSatsController.notifier,
-    );
-    final amount = ref.watch(receiveSatsController).amountSat;
-    final onChainFeeEstimate = ref.watch(receiveSatsController).swapFeeEstimate;
+
     const unit = BitcoinUnit.sat;
+    final amount = unit == BitcoinUnit.sat
+        ? ref.watch(receiveSatsGenerationControllerProvider).amountSat
+        : ref.watch(receiveSatsGenerationControllerProvider).amountBtc;
+    final onChainFeeEstimate =
+        ref.watch(receiveSatsGenerationControllerProvider).swapFeeEstimate;
 
     return SizedBox(
       width: double.infinity,
@@ -302,17 +296,24 @@ class ReceiveSatsBottomSheetModal extends ConsumerWidget {
           ),
           const SizedBox(height: kSmallSpacing),
           Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
             children: [
               PrimaryFilledButton(
                 text: copy.generate,
                 fillColor: Palette.neutral[120],
                 textColor: Colors.white,
                 onPressed: () async {
+                  final invoiceCreation = ref
+                      .read(receiveSatsGenerationControllerProvider.notifier)
+                      .createInvoice();
                   showTransitionDialog(context, copy.oneMomentPlease);
-                  await receiveSatsControllerNotifier.createInvoice();
-                  //router.pop();
-                  onNext();
+                  await invoiceCreation;
+                  // Pop one time for the bottom sheet
+                  router.pop();
+                  // Pop another time for the transition modal
+                  router.pop();
+                  ref.read(pageViewControllerProvider.notifier).nextPage();
                 },
                 trailingIcon: const Icon(
                   Icons.qr_code,

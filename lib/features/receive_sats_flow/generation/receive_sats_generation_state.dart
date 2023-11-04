@@ -2,8 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 
 @immutable
-class ReceiveSatsState extends Equatable {
-  const ReceiveSatsState({
+class ReceiveSatsGenerationState extends Equatable {
+  const ReceiveSatsGenerationState({
     this.amountSat,
     this.description,
     this.invoice,
@@ -11,8 +11,8 @@ class ReceiveSatsState extends Equatable {
     this.onChainMaxAmount,
     this.onChainMinAmount,
     this.swapFeeEstimate,
-    this.isPaid = false,
-    this.isSwapInProgress = false,
+    this.isFetchingSwapInfo = false,
+    this.isSwapAvailable = false,
   });
 
   final int? amountSat;
@@ -22,13 +22,11 @@ class ReceiveSatsState extends Equatable {
   final int? onChainMaxAmount;
   final int? onChainMinAmount;
   final int? swapFeeEstimate;
-  final bool isFetchingSwapInfo = false; // Todo: use these state bools
-  final bool isSwapAvailable =
-      false; // Todo: use the state bools to improve the screens
-  final bool isPaid;
-  final bool isSwapInProgress;
+  final bool isFetchingSwapInfo; // Todo: use these state bools
+  final bool
+      isSwapAvailable; // Todo: use the state bools to improve the screens
 
-  ReceiveSatsState copyWith({
+  ReceiveSatsGenerationState copyWith({
     int? amountSat,
     String? description,
     String? invoice,
@@ -36,8 +34,10 @@ class ReceiveSatsState extends Equatable {
     int? onChainMaxAmount,
     int? onChainMinAmount,
     int? swapFeeEstimate,
+    bool? isFetchingSwapInfo,
+    bool? isSwapAvailable,
   }) {
-    return ReceiveSatsState(
+    return ReceiveSatsGenerationState(
       amountSat: amountSat ?? this.amountSat,
       description: description ?? this.description,
       invoice: invoice ?? this.invoice,
@@ -45,17 +45,29 @@ class ReceiveSatsState extends Equatable {
       onChainMaxAmount: onChainMaxAmount ?? this.onChainMaxAmount,
       onChainMinAmount: onChainMinAmount ?? this.onChainMinAmount,
       swapFeeEstimate: swapFeeEstimate ?? this.swapFeeEstimate,
+      isFetchingSwapInfo: isFetchingSwapInfo ?? this.isFetchingSwapInfo,
+      isSwapAvailable: isSwapAvailable ?? this.isSwapAvailable,
     );
   }
 
-  int get amountInBTC => (amountSat! + (swapFeeEstimate ?? 0)) ~/ 100000000;
+  int get amountBtc => amountSat! ~/ 100000000;
 
-  String get bip21Uri {
-    if (amountSat! > onChainMaxAmount! || amountSat! < onChainMinAmount!) {
+  int get amountToSendOnChain =>
+      (amountSat! + (swapFeeEstimate ?? 0)) ~/ 100000000;
+
+  String? get bip21Uri {
+    if (amountSat == null) {
+      return null;
+    }
+
+    if (onChainAddress == null ||
+        onChainAddress!.isEmpty ||
+        amountSat! > onChainMaxAmount! ||
+        amountSat! < onChainMinAmount!) {
       return '$invoice';
     }
 
-    return 'bitcoin:$onChainAddress?amount=$amountInBTC&lightning=$invoice';
+    return 'bitcoin:$onChainAddress?amount=$amountToSendOnChain&lightning=$invoice';
   }
 
   @override
@@ -67,5 +79,7 @@ class ReceiveSatsState extends Equatable {
         onChainMaxAmount,
         onChainMinAmount,
         swapFeeEstimate,
+        isFetchingSwapInfo,
+        isSwapAvailable,
       ];
 }

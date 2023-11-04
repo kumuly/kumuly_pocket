@@ -215,7 +215,8 @@ class ConfirmPaymentBottomSheetModal extends ConsumerWidget {
           ),
           const SizedBox(height: kLargeSpacing),
           Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
             children: [
               PrimaryFilledButton(
                 text: copy.confirmPayment,

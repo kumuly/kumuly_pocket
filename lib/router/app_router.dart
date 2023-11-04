@@ -52,6 +52,7 @@ GoRouter appRouter(AppRouterRef ref) {
       ),
       pocketModeRoute,
       GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
         path: '/receive-sats',
         name: 'receive-sats-flow',
         builder: (context, state) => const ReceiveSatsFlow(),

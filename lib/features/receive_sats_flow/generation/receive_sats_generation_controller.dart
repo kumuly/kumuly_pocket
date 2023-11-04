@@ -1,20 +1,16 @@
-import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_state.dart';
+import 'package:kumuly_pocket/features/receive_sats_flow/generation/receive_sats_generation_state.dart';
 import 'package:kumuly_pocket/services/lightning_node_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'receive_sats_controller.g.dart';
+part 'receive_sats_generation_controller.g.dart';
 
 @riverpod
-class ReceiveSatsController extends _$ReceiveSatsController {
+class ReceiveSatsGenerationController
+    extends _$ReceiveSatsGenerationController {
   @override
-  ReceiveSatsState build(
-    LightningNodeService lightningNodeService,
-  ) {
-    return const ReceiveSatsState();
+  ReceiveSatsGenerationState build() {
+    return const ReceiveSatsGenerationState();
   }
-
-  // Todo: Start listening for swapInProgress and update state accordingly.
-  // Todo: Start listening for payment and update state accordingly.
 
   void amountChangeHandler(String? amount) {
     if (amount == null || amount.isEmpty) {
@@ -33,8 +29,9 @@ class ReceiveSatsController extends _$ReceiveSatsController {
   }
 
   Future<void> fetchSwapInfo() async {
-    final swapInInfo =
-        await lightningNodeService.getSwapInInfo(state.amountSat!);
+    final swapInInfo = await ref
+        .read(breezeSdkLightningNodeServiceProvider)
+        .getSwapInInfo(state.amountSat!);
     state = state.copyWith(
       onChainAddress: swapInInfo.bitcoinAddress,
       onChainMaxAmount: swapInInfo.maxAmount,
@@ -49,15 +46,14 @@ class ReceiveSatsController extends _$ReceiveSatsController {
   }
 
   Future<void> createInvoice() async {
-    final invoice = await lightningNodeService.createInvoice(
-      state.amountSat!,
-      state.description,
-    );
+    final invoice =
+        await ref.read(breezeSdkLightningNodeServiceProvider).createInvoice(
+              state.amountSat!,
+              state.description,
+            );
 
     print(invoice);
 
-    state = state.copyWith(
-      invoice: invoice,
-    );
+    state = state.copyWith(invoice: invoice);
   }
 }

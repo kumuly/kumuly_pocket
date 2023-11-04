@@ -144,7 +144,8 @@ class SignInScreen extends ConsumerWidget {
           ),
           const SizedBox(height: kMediumSpacing),
           Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
             children: [
               PrimaryTextButton(
                 leadingIcon: Icon(Icons.add, color: Palette.neutral[100]),

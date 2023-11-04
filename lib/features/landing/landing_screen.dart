@@ -56,7 +56,8 @@ class LandingScreen extends ConsumerWidget {
             ),
           ),
           Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
             children: [
               PrimaryTextButton(
                 text: copy.importAccount,

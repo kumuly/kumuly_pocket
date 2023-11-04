@@ -107,7 +107,8 @@ class InsertPinScreen extends ConsumerWidget {
           ),
           const SizedBox(height: kSmallSpacing),
           Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
             children: [
               PrimaryFilledButton(
                 text: copy.confirmPIN,
