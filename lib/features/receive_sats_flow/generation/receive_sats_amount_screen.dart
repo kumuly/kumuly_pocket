@@ -3,8 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/enums/bitcoin_unit.dart';
-import 'package:kumuly_pocket/features/receive_sats/receive_sats_controller.dart';
-import 'package:kumuly_pocket/services/lightning_node_service.dart';
+import 'package:kumuly_pocket/features/receive_sats_flow/generation/receive_sats_generation_controller.dart';
 import 'package:kumuly_pocket/widgets/buttons/primary_filled_button.dart';
 import 'package:kumuly_pocket/widgets/buttons/rectangular_border_button.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
@@ -13,125 +12,114 @@ import 'package:kumuly_pocket/widgets/dialogs/transition_dialog.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
+import 'package:kumuly_pocket/widgets/page_views/page_view_controller.dart';
 
 class ReceiveSatsAmountScreen extends ConsumerWidget {
-  const ReceiveSatsAmountScreen({super.key});
+  const ReceiveSatsAmountScreen({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final copy = AppLocalizations.of(context)!;
     final TextTheme textTheme = Theme.of(context).textTheme;
-    final router = GoRouter.of(context);
 
-    final receiveSatsController = receiveSatsControllerProvider(
-      ref.watch(breezeSdkLightningNodeServiceProvider),
-    );
-    final receiveSatsControllerNotifier = ref.read(
-      receiveSatsController.notifier,
-    );
-    final amount = ref.watch(receiveSatsController).amountSat;
     const unit = BitcoinUnit.sat;
+    final amount = unit == BitcoinUnit.sat
+        ? ref.watch(receiveSatsGenerationControllerProvider).amountSat
+        : ref.watch(receiveSatsGenerationControllerProvider).amountBtc;
 
-    return WillPopScope(
-      onWillPop: () async {
-        router.goNamed('pocket');
-        return false; // Prevent the default behavior (closing the app or popping the route)
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            copy.receiveBitcoin,
-            style: Theme.of(context).textTheme.display4(
-                  Palette.neutral[100]!,
-                  FontWeight.w600,
-                ),
-          ),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              router.goNamed('pocket');
-            },
-          ),
-          centerTitle: true,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          surfaceTintColor: Palette.neutral[100]!,
-          iconTheme: IconThemeData(color: Palette.neutral[100]!),
-        ),
-        resizeToAvoidBottomInset: true,
-        extendBodyBehindAppBar: false,
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    copy.howMuchDoYouWantToReceive,
-                    style: textTheme.display3(
-                        Palette.neutral[70], FontWeight.w600),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: kSmallSpacing),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        IntrinsicWidth(
-                          child: TextField(
-                            autofocus: true,
-                            keyboardType: TextInputType.number,
-                            textAlign: TextAlign.center,
-                            style: textTheme.display7(
-                                Palette.neutral[100], FontWeight.w600),
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: '0',
-                              hintStyle: textTheme.display7(
-                                  Palette.neutral[60], FontWeight.w600),
-                            ),
-                            onChanged:
-                                receiveSatsControllerNotifier.onAmountChanged,
-                          ),
-                        ),
-                        const SizedBox(
-                            width:
-                                5), // Adjust the width value for the desired spacing
-                        Text(
-                          unit.name.toUpperCase(),
-                          textAlign: TextAlign.left,
-                          style: textTheme.display1(
-                              Palette.neutral[60], FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          copy.receiveBitcoin,
+          style: Theme.of(context).textTheme.display4(
+                Palette.neutral[100]!,
+                FontWeight.w600,
               ),
-            ),
-            RectangularBorderButton(
-              text: copy.confirmAmount,
-              onPressed: amount == null || amount == 0
-                  ? null
-                  : () {
-                      receiveSatsControllerNotifier.fetchSwapInfo();
-                      showModalBottomSheet(
-                        isScrollControlled: true,
-                        backgroundColor: Colors.white,
-                        context: context,
-                        builder: (context) =>
-                            const ReceiveSatsBottomSheetModal(),
-                      );
-                      return;
-                    },
-            ),
-          ],
         ),
+        centerTitle: true,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        surfaceTintColor: Palette.neutral[100]!,
+        iconTheme: IconThemeData(color: Palette.neutral[100]!),
+      ),
+      resizeToAvoidBottomInset: true,
+      extendBodyBehindAppBar: false,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  copy.howMuchDoYouWantToReceive,
+                  style:
+                      textTheme.display3(Palette.neutral[70], FontWeight.w600),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: kSmallSpacing),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      IntrinsicWidth(
+                        child: TextField(
+                          autofocus: true,
+                          keyboardType: TextInputType.number,
+                          textAlign: TextAlign.center,
+                          style: textTheme.display7(
+                              Palette.neutral[100], FontWeight.w600),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: '0',
+                            hintStyle: textTheme.display7(
+                                Palette.neutral[60], FontWeight.w600),
+                          ),
+                          onChanged: ref
+                              .read(receiveSatsGenerationControllerProvider
+                                  .notifier)
+                              .amountChangeHandler,
+                        ),
+                      ),
+                      const SizedBox(
+                          width:
+                              5), // Adjust the width value for the desired spacing
+                      Text(
+                        unit.name.toUpperCase(),
+                        textAlign: TextAlign.left,
+                        style: textTheme.display1(
+                            Palette.neutral[60], FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          RectangularBorderButton(
+            text: copy.confirmAmount,
+            onPressed: amount == null || amount == 0
+                ? null
+                : () {
+                    ref
+                        .read(receiveSatsGenerationControllerProvider.notifier)
+                        .fetchSwapInfo();
+                    showModalBottomSheet(
+                      isScrollControlled: true,
+                      backgroundColor: Colors.white,
+                      context: context,
+                      builder: (context) => const ReceiveSatsBottomSheetModal(),
+                    );
+                    return;
+                  },
+          ),
+        ],
       ),
     );
   }
@@ -144,18 +132,16 @@ class ReceiveSatsBottomSheetModal extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final router = GoRouter.of(context);
     final copy = AppLocalizations.of(context)!;
     final TextTheme textTheme = Theme.of(context).textTheme;
-    final router = GoRouter.of(context);
-    final receiveSatsController = receiveSatsControllerProvider(
-      ref.watch(breezeSdkLightningNodeServiceProvider),
-    );
-    final receiveSatsControllerNotifier = ref.read(
-      receiveSatsController.notifier,
-    );
-    final amount = ref.watch(receiveSatsController).amountSat;
-    final onChainFeeEstimate = ref.watch(receiveSatsController).swapFeeEstimate;
+
     const unit = BitcoinUnit.sat;
+    final amount = unit == BitcoinUnit.sat
+        ? ref.watch(receiveSatsGenerationControllerProvider).amountSat
+        : ref.watch(receiveSatsGenerationControllerProvider).amountBtc;
+    final onChainFeeEstimate =
+        ref.watch(receiveSatsGenerationControllerProvider).swapFeeEstimate;
 
     return SizedBox(
       width: double.infinity,
@@ -310,17 +296,24 @@ class ReceiveSatsBottomSheetModal extends ConsumerWidget {
           ),
           const SizedBox(height: kSmallSpacing),
           Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
             children: [
               PrimaryFilledButton(
                 text: copy.generate,
                 fillColor: Palette.neutral[120],
                 textColor: Colors.white,
                 onPressed: () async {
+                  final invoiceCreation = ref
+                      .read(receiveSatsGenerationControllerProvider.notifier)
+                      .createInvoice();
                   showTransitionDialog(context, copy.oneMomentPlease);
-                  await receiveSatsControllerNotifier.createInvoice();
+                  await invoiceCreation;
+                  // Pop one time for the bottom sheet
                   router.pop();
-                  router.pushNamed('receive-sats-codes');
+                  // Pop another time for the transition modal
+                  router.pop();
+                  ref.read(pageViewControllerProvider.notifier).nextPage();
                 },
                 trailingIcon: const Icon(
                   Icons.qr_code,

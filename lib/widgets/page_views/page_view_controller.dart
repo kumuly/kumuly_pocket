@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:kumuly_pocket/widgets/carousels/page_view_state.dart';
+import 'package:kumuly_pocket/widgets/page_views/page_view_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'page_view_controller.g.dart';

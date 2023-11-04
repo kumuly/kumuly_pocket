@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
-import 'package:kumuly_pocket/widgets/carousels/page_view_controller.dart';
+import 'package:kumuly_pocket/widgets/page_views/page_view_controller.dart';
 
 class PageViewIndicator extends ConsumerWidget {
   final int pageCount;

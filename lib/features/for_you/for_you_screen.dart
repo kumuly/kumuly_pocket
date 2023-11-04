@@ -55,15 +55,23 @@ class PromosRow extends ConsumerWidget {
           'Dive into a tantalizing array of Japanese tapas, expertly crafted by our chefs to tantalize your taste buds. From crispy tempura and savory yakitori to delicate sushi rolls and flavorful gyoza, our menu boasts a variety of traditional and contemporary delights.\n\nComplement your culinary adventure with the smooth and refined taste of premium sake. Served fresh and expertly curated, our sake selection perfectly enhances the flavors of our tapas, providing you with an unforgettable dining experience.',
       images: [
         Image.asset(
-          'assets/images/dummy_promo.png',
+          'assets/images/dummy_promo_carousel_1.png',
           fit: BoxFit.cover,
         ),
         Image.asset(
-          'assets/images/dummy_promo.png',
+          'assets/images/dummy_promo_carousel_2.png',
           fit: BoxFit.cover,
         ),
         Image.asset(
-          'assets/images/dummy_promo.png',
+          'assets/images/dummy_promo_carousel_3.png',
+          fit: BoxFit.cover,
+        ),
+        Image.asset(
+          'assets/images/dummy_promo_carousel_4.png',
+          fit: BoxFit.cover,
+        ),
+        Image.asset(
+          'assets/images/dummy_promo_carousel_5.png',
           fit: BoxFit.cover,
         ),
       ],
@@ -159,7 +167,7 @@ class PromosRow extends ConsumerWidget {
                     color: Palette.neutral[70],
                   ),
                   onPressed: () {
-                    router.goNamed('promos');
+                    router.pushNamed('promos');
                   },
                 ),
               ],
@@ -187,7 +195,7 @@ class PromoCard extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        router.goNamed('promo-details', extra: promo);
+        router.pushNamed('promo-flow', extra: promo);
       },
       borderRadius: const BorderRadius.all(
           Radius.circular(14)), // This matches the Container's border radius

@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/features/for_you/for_you_screen.dart';
 import 'package:kumuly_pocket/features/pocket/pocket_screen.dart';
 import 'package:kumuly_pocket/features/pocket_mode/pocket_mode_scaffold_with_nested_navigation.dart';
-import 'package:kumuly_pocket/router/promos_route.dart';
+import 'package:kumuly_pocket/router/app_router.dart';
 
 // Private navigators
 final _shellNavigatorPocketKey =

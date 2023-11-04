@@ -84,7 +84,8 @@ class SignUpScreen extends ConsumerWidget {
           ),
           const SizedBox(height: kLargeSpacing),
           Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               PrimaryFilledButton(
                 text: copy.continueLabel,

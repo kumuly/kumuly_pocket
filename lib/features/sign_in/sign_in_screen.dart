@@ -136,7 +136,7 @@ class SignInScreen extends ConsumerWidget {
                     color: Palette.neutral[100]),
                 text: copy.importAccount,
                 onPressed: () {
-                  context.pushNamed('import-account');
+                  context.pushNamed('import-account-flow');
                 },
                 color: Palette.neutral[100],
               ),
@@ -144,7 +144,8 @@ class SignInScreen extends ConsumerWidget {
           ),
           const SizedBox(height: kMediumSpacing),
           Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
             children: [
               PrimaryTextButton(
                 leadingIcon: Icon(Icons.add, color: Palette.neutral[100]),

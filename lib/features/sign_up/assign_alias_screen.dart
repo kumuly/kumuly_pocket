@@ -48,10 +48,12 @@ class AssignAliasScreen extends ConsumerWidget {
       resizeToAvoidBottomInset: false,
       extendBodyBehindAppBar: false,
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: kMediumSpacing),
                 Text(
@@ -115,7 +117,8 @@ class AssignAliasScreen extends ConsumerWidget {
           ),
           const SizedBox(height: kLargeSpacing),
           Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
             children: [
               PrimaryFilledButton(
                 text: copy.confirmAlias,

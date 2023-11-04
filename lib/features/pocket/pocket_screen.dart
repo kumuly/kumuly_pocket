@@ -120,8 +120,7 @@ class PocketScreen extends ConsumerWidget {
                                 () {},
                                 () {},
                                 () {
-                                  router.pop();
-                                  router.goNamed('receive-sats-amount');
+                                  router.pushNamed('receive-sats-flow');
                                 },
                                 () {},
                                 () {},

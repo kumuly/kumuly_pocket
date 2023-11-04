@@ -56,12 +56,13 @@ class LandingScreen extends ConsumerWidget {
             ),
           ),
           Row(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
             children: [
               PrimaryTextButton(
                 text: copy.importAccount,
                 onPressed: () {
-                  context.pushNamed('import-account');
+                  context.pushNamed('import-account-flow');
                 },
               ),
             ],
