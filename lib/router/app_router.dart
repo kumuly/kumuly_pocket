@@ -65,17 +65,21 @@ GoRouter appRouter(AppRouterRef ref) {
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
-        path: '/promo',
+        path: '/promo/:id',
         name: 'promo-flow',
-        builder: (context, state) => PromoFlow(
-          promo: state.extra as Promo,
-        ),
+        builder: (context, state) {
+          return PromoFlow(
+            id: state.pathParameters['id']!,
+            promo: state.extra as Promo,
+          );
+        },
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
-        path: '/promo-code',
+        path: '/promo-code/:id',
         name: 'promo-code',
         builder: (context, state) => PromoCodeScreen(
+          id: state.pathParameters['id']!,
           promo: state.extra as Promo,
         ),
       ),

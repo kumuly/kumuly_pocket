@@ -8,3 +8,6 @@ const productsSubcollection = 'products';
 const promosSubcollection = 'promos';
 const allProductsCollection = 'all-products';
 const allPromosCollection = 'all-promos';
+const kCarouselPageViewId = 'carousel';
+const kReceiveSatsFlowPageViewId = 'receive-sats-flow';
+const kPromoFlowPageViewId = 'promo-flow';

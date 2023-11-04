@@ -2,9 +2,11 @@ import 'package:breez_sdk/breez_sdk.dart';
 import 'package:breez_sdk/bridge_generated.dart';
 import 'package:flutter/foundation.dart';
 import 'package:kumuly_pocket/entities/invoice_entity.dart';
+import 'package:kumuly_pocket/entities/payment_request_entity.dart';
 import 'package:kumuly_pocket/entities/recommended_fees_entity.dart';
 import 'package:kumuly_pocket/entities/swap_info_entity.dart';
 import 'package:kumuly_pocket/enums/app_network.dart';
+import 'package:kumuly_pocket/enums/payment_type.dart';
 import 'package:kumuly_pocket/providers/breez_sdk_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -42,7 +44,13 @@ abstract class LightningNodeRepository {
     int? expiry,
     int? cltv,
   });
+  Future<PaymentRequestEntity> decodePaymentRequest(String paymentRequest);
   Future<void> payInvoice({required String bolt11, int? amountMsat});
+  Future<void> payLnUrlPay(
+    String paymentLink,
+    int amountMsat,
+    String? comment,
+  );
   Future<void> sendToKey(
     String nodeId,
     int amountSat,
@@ -174,6 +182,91 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
       openingFeeParams: receivePaymentResponse.openingFeeParams,
       openingFeeMsat: receivePaymentResponse.openingFeeMsat,
     );
+  }
+
+  @override
+  Future<PaymentRequestEntity> decodePaymentRequest(
+      String paymentRequest) async {
+    try {
+      InputType inputType = await _breezSdk.parseInput(input: paymentRequest);
+      int? amountSat;
+      int amountMsat = 0;
+      int? maxAmountSat;
+      String? description;
+      String? nodeId;
+      String? bitcoinAddress;
+
+      if (inputType is InputType_LnUrlPay) {
+        amountMsat = inputType.data.minSendable;
+        maxAmountSat = inputType.data.maxSendable ~/ 1000;
+        print('lnurlpay metadataStr: ${inputType.data.metadataStr}');
+      } else if (inputType is InputType_Bolt11) {
+        amountMsat = inputType.invoice.amountMsat ?? 0;
+        description = inputType.invoice.description;
+      } else if (inputType is InputType_NodeId) {
+        nodeId = inputType.nodeId;
+      } else if (inputType is InputType_BitcoinAddress) {
+        amountSat = inputType.address.amountSat;
+        bitcoinAddress = inputType.address.address;
+      } else {
+        throw Exception('Unsupported payment request type');
+      }
+
+      return PaymentRequestEntity(
+        type: PaymentRequestType.lnurlPay,
+        amountSat: amountSat ?? amountMsat ~/ 1000,
+        maxAmountSat: maxAmountSat,
+        description: description,
+        nodeId: nodeId,
+        bitcoinAddress: bitcoinAddress,
+      );
+    } catch (error) {
+      // Todo: make custom error
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> payLnUrlPay(
+    String paymentLink,
+    int amountMsat,
+    String? comment,
+  ) async {
+    try {
+      InputType inputType = await _breezSdk.parseInput(input: paymentLink);
+      if (inputType is! InputType_LnUrlPay) {
+        throw Exception('Invalid payment link.');
+      }
+
+      if (amountMsat < inputType.data.minSendable) {
+        throw Exception('Amount is less than minimum sendable amount.');
+      }
+
+      if (amountMsat > inputType.data.maxSendable) {
+        throw Exception('Amount exceeds maximum sendable amount.');
+      }
+
+      print("PAYING LNURLPAY");
+      LnUrlPayResult result = await _breezSdk.lnurlPay(
+        req: LnUrlPayRequest(
+          data: inputType.data,
+          amountMsat: amountMsat,
+          comment: comment,
+        ),
+      );
+      print('Payment result: $result');
+      // Check result for error
+      if (result is LnUrlPayResult_EndpointError) {
+        print('lNURLPAY Payment error reason: ${result.data.reason}');
+        throw Exception('Error: ${result.data.reason}');
+      }
+
+      print('LNURLPAY Payment successful');
+    } catch (error) {
+      // Todo: custom errors
+      print('PAY LNURLPAY ERROR catch: $error');
+      rethrow;
+    }
   }
 
   @override

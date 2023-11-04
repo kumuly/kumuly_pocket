@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/backgrounds/background_container.dart';
 import 'package:kumuly_pocket/widgets/buttons/primary_text_button.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
+import 'package:kumuly_pocket/widgets/page_views/page_view_controller.dart';
 
-class PromoPaidScreen extends StatelessWidget {
+class PromoPaidScreen extends ConsumerWidget {
   const PromoPaidScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final copy = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
 
@@ -77,7 +79,10 @@ class PromoPaidScreen extends StatelessWidget {
                       color: Color.fromRGBO(255, 255, 255, 1),
                       size: 12,
                     ),
-                    onPressed: () {},
+                    onPressed: ref
+                        .read(pageViewControllerProvider(kPromoFlowPageViewId)
+                            .notifier)
+                        .nextPage,
                   ),
                 ],
               ),

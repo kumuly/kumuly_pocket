@@ -1,6 +1,7 @@
 // All pages of the promo are shown here
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/generation/receive_sats_amount_screen.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/reception/receive_sats_reception_screen.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/completed/receive_sats_completed_screen.dart';
@@ -11,7 +12,9 @@ class ReceiveSatsFlow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pageController = ref.watch(pageViewControllerProvider);
+    final pageController = ref.watch(pageViewControllerProvider(
+      kReceiveSatsFlowPageViewId,
+    ));
 
     return PageView(
       controller: pageController.pageController,

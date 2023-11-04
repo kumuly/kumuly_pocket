@@ -50,10 +50,8 @@ class ReceiveSatsGenerationState extends Equatable {
     );
   }
 
-  int get amountBtc => amountSat! ~/ 100000000;
-
-  int get amountToSendOnChain =>
-      (amountSat! + (swapFeeEstimate ?? 0)) ~/ 100000000;
+  double get amountToSendOnChain =>
+      (amountSat! + (swapFeeEstimate ?? 0)) / 100000000;
 
   String? get bip21Uri {
     if (amountSat == null) {

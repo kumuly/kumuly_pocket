@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
-import 'package:kumuly_pocket/enums/bitcoin_unit.dart';
-import 'package:kumuly_pocket/features/promo_flow/details/promo_payment_controller.dart';
+import 'package:kumuly_pocket/features/promo_flow/details/promo_details_controller.dart';
+import 'package:kumuly_pocket/providers/bitcoin_providers.dart';
+import 'package:kumuly_pocket/services/lightning_node_service.dart';
+import 'package:kumuly_pocket/widgets/page_views/page_view_controller.dart';
 import 'package:kumuly_pocket/widgets/promos/promo_description_section.dart';
 import 'package:kumuly_pocket/widgets/promos/promo_merchant_info_section.dart';
 import 'package:kumuly_pocket/widgets/promos/promo_price_and_headline_section.dart';
 import 'package:kumuly_pocket/widgets/promos/promo_terms_and_conditions_section.dart';
-import 'package:kumuly_pocket/services/lightning_node_service.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/view_models/promo.dart';
@@ -21,27 +22,29 @@ import 'package:kumuly_pocket/widgets/dividers/dashed_divider.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 
 class PromoDetailsScreen extends ConsumerWidget {
-  const PromoDetailsScreen({Key? key, required this.promo}) : super(key: key);
+  const PromoDetailsScreen({
+    Key? key,
+    required this.id,
+    this.promo,
+  }) : super(key: key);
 
-  final Promo promo;
+  final String id;
+  final Promo? promo;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final copy = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
 
+    final promoDetailsController = ref.watch(promoDetailsControllerProvider(
+      id,
+      promo,
+    ));
+
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: true,
-        /*leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            // Todo: check rout and send to promos or for-you
-            router.goNamed('for-you');
-          },
-        ),*/
         title: Text(
-          promo.tag,
+          promoDetailsController.promo.tag,
           style: textTheme.display4(
             Palette.neutral[100],
             FontWeight.w600,
@@ -62,9 +65,9 @@ class PromoDetailsScreen extends ConsumerWidget {
           children: [
             ImageCarousel(
               width: MediaQuery.of(context).size.width,
-              images: promo.images,
+              images: promoDetailsController.promo.images,
             ),
-            PromoMerchantInfoSection(promo.merchant),
+            PromoMerchantInfoSection(promoDetailsController.promo.merchant),
             DashedDivider(),
             Padding(
               padding:
@@ -73,19 +76,21 @@ class PromoDetailsScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   PromoPriceAndHeadlineSection(
-                    promo.originalPrice,
-                    promo.discountedPrice,
-                    promo.headline,
+                    promoDetailsController.promo.originalPrice,
+                    promoDetailsController.promo.discountedPrice,
+                    promoDetailsController.promo.headline,
                   ),
                   const SizedBox(height: 40.0),
-                  PromoDescriptionSection(promo.description),
+                  PromoDescriptionSection(
+                      promoDetailsController.promo.description),
                   const SizedBox(height: 40.0),
-                  PromoTermsAndConditionsSection(promo.termsAndConditions),
+                  PromoTermsAndConditionsSection(
+                      promoDetailsController.promo.termsAndConditions),
                   const SizedBox(height: 40.0),
                   PromoPriceAndHeadlineSection(
-                    promo.originalPrice,
-                    promo.discountedPrice,
-                    promo.headline,
+                    promoDetailsController.promo.originalPrice,
+                    promoDetailsController.promo.discountedPrice,
+                    promoDetailsController.promo.headline,
                   ),
                   const SizedBox(height: 32.0),
                   Row(
@@ -95,15 +100,20 @@ class PromoDetailsScreen extends ConsumerWidget {
                         text: copy.enjoyPromo,
                         color: Palette.russianViolet[100],
                         onPressed: () {
+                          // Fetch amount to pay in satoshis
+                          ref
+                              .read(promoDetailsControllerProvider(id, promo)
+                                  .notifier)
+                              .fetchAmountToPayInSat();
+
                           showModalBottomSheet(
                             isScrollControlled: true,
                             backgroundColor: Colors.white,
                             context: context,
                             builder: (context) =>
                                 ConfirmPaymentBottomSheetModal(
-                              paymentLink: promo.lnurlPayLink,
-                              isVerifiedMerchant: promo.merchant.verified,
-                              merchantName: promo.merchant.name,
+                              id: id,
+                              promo: promo,
                             ),
                           );
                         },
@@ -122,28 +132,35 @@ class PromoDetailsScreen extends ConsumerWidget {
 
 class ConfirmPaymentBottomSheetModal extends ConsumerWidget {
   const ConfirmPaymentBottomSheetModal({
-    required this.paymentLink,
-    required this.isVerifiedMerchant,
-    required this.merchantName,
+    required this.id,
+    this.promo,
     super.key,
   });
 
-  final String paymentLink;
-  final bool isVerifiedMerchant;
-  final String merchantName;
+  final String id;
+  final Promo? promo;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final copy = AppLocalizations.of(context)!;
     final TextTheme textTheme = Theme.of(context).textTheme;
     final router = GoRouter.of(context);
-    final promoPaymentController = promoPaymentControllerProvider(
-      ref.watch(breezeSdkLightningNodeServiceProvider),
+
+    final promoDetailsController =
+        ref.watch(promoDetailsControllerProvider(id, promo));
+
+    final unit = ref.watch(bitcoinUnitProvider);
+    final amount = ref.watch(
+      displayBitcoinAmountProvider(
+        promoDetailsController.amountSat,
+      ),
     );
-    final promoPaymentControllerNotifier = ref.read(
-      promoPaymentController.notifier,
-    );
-    const unit = BitcoinUnit.sat;
+    final sufficientBalance =
+        ref.watch(spendableBalanceSatProvider).asData?.value != null &&
+                promoDetailsController.amountSat != null
+            ? ref.watch(spendableBalanceSatProvider).asData!.value >=
+                promoDetailsController.amountSat!
+            : false;
 
     return SizedBox(
       width: double.infinity,
@@ -161,7 +178,7 @@ class ConfirmPaymentBottomSheetModal extends ConsumerWidget {
               ),
             ],
           ),
-          isVerifiedMerchant
+          promoDetailsController.promo.merchant.verified
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -183,23 +200,25 @@ class ConfirmPaymentBottomSheetModal extends ConsumerWidget {
               : Container(),
           const SizedBox(height: kExtraSmallSpacing),
           Text(
-            merchantName,
+            promoDetailsController.promo.merchant.name,
             style: textTheme.display2(
               Palette.neutral[100],
               FontWeight.w400,
             ),
           ),
           const SizedBox(height: kLargeSpacing),
-          Text(
-            '99.946 ${unit.name.toUpperCase()}',
-            style: textTheme.display6(
-              Palette.russianViolet[100],
-              FontWeight.w500,
-            ),
-          ),
+          amount == null
+              ? const CircularProgressIndicator()
+              : Text(
+                  '$amount ${unit.name.toUpperCase()}',
+                  style: textTheme.display6(
+                    Palette.russianViolet[100],
+                    FontWeight.w500,
+                  ),
+                ),
           const SizedBox(height: 2),
           Text(
-            '= 32 EUR',
+            '= ${promoDetailsController.promo.discountedPrice} EUR',
             style: textTheme.display2(
               Palette.neutral[60],
               FontWeight.w500,
@@ -222,13 +241,28 @@ class ConfirmPaymentBottomSheetModal extends ConsumerWidget {
                 text: copy.confirmPayment,
                 fillColor: Palette.neutral[120],
                 textColor: Colors.white,
-                onPressed: () async {
-                  showTransitionDialog(context, copy.oneMomentPlease);
-                  //await promoPaymentControllerNotifier.pay(paymentLink);
-                  router.pop();
-                  // Todo: check rout and send to promos-paid or promo-paid
-                  router.goNamed('promo-paid');
-                },
+                onPressed: !sufficientBalance
+                    ? null
+                    : () async {
+                        try {
+                          showTransitionDialog(context, copy.oneMomentPlease);
+                          await ref
+                              .read(promoDetailsControllerProvider(id, promo)
+                                  .notifier)
+                              .payForPromo();
+                          router.pop();
+                          router.pop();
+                          ref
+                              .read(pageViewControllerProvider(
+                                kPromoFlowPageViewId,
+                              ).notifier)
+                              .nextPage();
+                        } catch (e) {
+                          // Todo: add an error message to the state to show
+                          router.pop();
+                          print(e);
+                        }
+                      },
               ),
             ],
           ),

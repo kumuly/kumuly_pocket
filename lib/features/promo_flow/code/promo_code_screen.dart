@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kumuly_pocket/features/promo_flow/details/promo_details_controller.dart';
 import 'package:kumuly_pocket/widgets/promos/promo_description_section.dart';
 import 'package:kumuly_pocket/widgets/promos/promo_merchant_info_section.dart';
 import 'package:kumuly_pocket/widgets/promos/promo_terms_and_conditions_section.dart';
@@ -11,25 +12,26 @@ import 'package:kumuly_pocket/view_models/promo.dart';
 import 'package:kumuly_pocket/widgets/dividers/dashed_divider.dart';
 
 class PromoCodeScreen extends ConsumerWidget {
-  const PromoCodeScreen({Key? key, required this.promo}) : super(key: key);
+  const PromoCodeScreen({Key? key, required this.id, this.promo})
+      : super(key: key);
 
-  final Promo promo;
+  final String id;
+  final Promo? promo;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final copy = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
-    final router = GoRouter.of(context);
+
+    final promoDetailsController = ref.watch(
+      promoDetailsControllerProvider(
+        id,
+        promo,
+      ),
+    );
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            // Todo: check rout and send to pocket or for you (or just send to pocket always?)
-            router.goNamed('pocket');
-          },
-        ),
         title: Text(
           copy.promoCode,
           style: textTheme.display4(
@@ -44,7 +46,7 @@ class PromoCodeScreen extends ConsumerWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            PromoMerchantInfoSection(promo.merchant),
+            PromoMerchantInfoSection(promoDetailsController.promo.merchant),
             DashedDivider(),
             Padding(
               padding:
@@ -53,9 +55,13 @@ class PromoCodeScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 40.0),
-                  PromoDescriptionSection(promo.description),
+                  PromoDescriptionSection(
+                    promoDetailsController.promo.description,
+                  ),
                   const SizedBox(height: 40.0),
-                  PromoTermsAndConditionsSection(promo.termsAndConditions),
+                  PromoTermsAndConditionsSection(
+                    promoDetailsController.promo.termsAndConditions,
+                  ),
                 ],
               ),
             ),

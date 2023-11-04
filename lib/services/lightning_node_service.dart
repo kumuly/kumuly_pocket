@@ -6,6 +6,7 @@ import 'package:kumuly_pocket/entities/recommended_fees_entity.dart';
 import 'package:kumuly_pocket/entities/swap_in_info_entity.dart';
 import 'package:kumuly_pocket/enums/app_network.dart';
 import 'package:kumuly_pocket/enums/mnemonic_language.dart';
+import 'package:kumuly_pocket/enums/payment_type.dart';
 import 'package:kumuly_pocket/environment_variables.dart';
 import 'package:kumuly_pocket/repositories/lightning_node_repository.dart';
 import 'package:kumuly_pocket/repositories/mnemonic_repository.dart';
@@ -59,7 +60,15 @@ abstract class LightningNodeService {
     AppNetwork network,
   );
   Future<String> createInvoice(int amountSat, String? description);
+  Future<(int minAmountSat, int maxAmountSat)> getLnurlPayAmounts(
+    String paymentLink,
+  );
   Future<void> payInvoice({required String bolt11, int? amountSat});
+  Future<void> payLnUrlPay(
+    String paymentLink,
+    int amountSat,
+    String? comment,
+  );
   Future<void> swapOut(String bitcoinAddress, int amountSat, int satPerVbyte);
   Future<int> getChannelOpeningFeeEstimate(int amountSat);
   Future<SwapInInfoEntity> getSwapInInfo(int amountSat);
@@ -248,5 +257,32 @@ class BreezSdkLightningNodeService implements LightningNodeService {
   @override
   Future<void> disconnect() async {
     await _lightningNodeRepository.disconnect();
+  }
+
+  @override
+  Future<(int minAmountSat, int maxAmountSat)> getLnurlPayAmounts(
+      String paymentLink) async {
+    final decodedRequest =
+        await _lightningNodeRepository.decodePaymentRequest(paymentLink);
+
+    if (decodedRequest.type != PaymentRequestType.lnurlPay) {
+      // Todo: throw a custom error type exception.
+      throw Exception('Invalid payment link');
+    }
+
+    return (decodedRequest.amountSat, decodedRequest.maxAmountSat!);
+  }
+
+  @override
+  Future<void> payLnUrlPay(
+    String paymentLink,
+    int amountSat,
+    String? comment,
+  ) async {
+    return _lightningNodeRepository.payLnUrlPay(
+      paymentLink,
+      amountSat * 1000,
+      comment,
+    );
   }
 }

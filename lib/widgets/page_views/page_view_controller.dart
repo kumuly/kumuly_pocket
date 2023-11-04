@@ -7,7 +7,7 @@ part 'page_view_controller.g.dart';
 @Riverpod(keepAlive: false)
 class PageViewController extends _$PageViewController {
   @override
-  PageViewState build() {
+  PageViewState build(String? id) {
     final pageController = PageController();
     pageController.addListener(_onPageChanged);
     ref.onDispose(() => pageController.dispose());
