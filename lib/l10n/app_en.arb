@@ -91,9 +91,18 @@
   "enjoyPromo": "Enjoy promo",
   "confirmPayment": "Confirm payment",
   "verifiedMerchant": "Verified merchant",
+  "plusNetworkFee": "+ Network fee",
   "paymentCompleted": "Payment completed",
   "promoCodeReceived": "Promo code received",
   "checkOutGuidelinesToRedeemPromo": "Check out the guidelines on\nhow to redeem the promo.",
   "redemptionInstructions": "Redemption instructions",
-  "promoCode": "Promo code"
+  "promoCode": "Promo code",
+  "priceUpdatedError": "Price in bitcoin changed. Please review and confirm the new price.",
+  "validUntil": "Valid until",
+  "pointingUpEmoji": "☝️",
+  "showThisQrCodeAt": "Show this QR code at",
+  "seeOnMap": "See on map",
+  "redemptionExplanation": "The merchant must scan this QR code to validate the promotion. In case you don't claim the offer, the funds will return to your pocket after the promotion ends.",
+  "promo": "Promo",
+  "promoRedeemed": "Promo redeemed"
 }

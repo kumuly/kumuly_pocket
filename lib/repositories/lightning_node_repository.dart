@@ -2,9 +2,11 @@ import 'package:breez_sdk/breez_sdk.dart';
 import 'package:breez_sdk/bridge_generated.dart';
 import 'package:flutter/foundation.dart';
 import 'package:kumuly_pocket/entities/invoice_entity.dart';
+import 'package:kumuly_pocket/entities/payment_request_entity.dart';
 import 'package:kumuly_pocket/entities/recommended_fees_entity.dart';
 import 'package:kumuly_pocket/entities/swap_info_entity.dart';
 import 'package:kumuly_pocket/enums/app_network.dart';
+import 'package:kumuly_pocket/enums/payment_type.dart';
 import 'package:kumuly_pocket/providers/breez_sdk_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -42,7 +44,13 @@ abstract class LightningNodeRepository {
     int? expiry,
     int? cltv,
   });
+  Future<PaymentRequestEntity> decodePaymentRequest(String paymentRequest);
   Future<void> payInvoice({required String bolt11, int? amountMsat});
+  Future<void> payLnUrlPay(
+    String paymentLink,
+    int amountMsat,
+    String? comment,
+  );
   Future<void> sendToKey(
     String nodeId,
     int amountSat,
@@ -177,6 +185,90 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
   }
 
   @override
+  Future<PaymentRequestEntity> decodePaymentRequest(
+      String paymentRequest) async {
+    try {
+      InputType inputType = await _breezSdk.parseInput(input: paymentRequest);
+      int? amountSat;
+      int amountMsat = 0;
+      int? maxAmountSat;
+      String? description;
+      String? nodeId;
+      String? bitcoinAddress;
+
+      if (inputType is InputType_LnUrlPay) {
+        amountMsat = inputType.data.minSendable;
+        maxAmountSat = inputType.data.maxSendable ~/ 1000;
+        print('lnurlpay metadataStr: ${inputType.data.metadataStr}');
+      } else if (inputType is InputType_Bolt11) {
+        amountMsat = inputType.invoice.amountMsat ?? 0;
+        description = inputType.invoice.description;
+      } else if (inputType is InputType_NodeId) {
+        nodeId = inputType.nodeId;
+      } else if (inputType is InputType_BitcoinAddress) {
+        amountSat = inputType.address.amountSat;
+        bitcoinAddress = inputType.address.address;
+      } else {
+        throw Exception('Unsupported payment request type');
+      }
+
+      return PaymentRequestEntity(
+        type: PaymentRequestType.lnurlPay,
+        amountSat: amountSat ?? amountMsat ~/ 1000,
+        maxAmountSat: maxAmountSat,
+        description: description,
+        nodeId: nodeId,
+        bitcoinAddress: bitcoinAddress,
+      );
+    } catch (error) {
+      // Todo: make custom error
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> payLnUrlPay(
+    String paymentLink,
+    int amountMsat,
+    String? comment,
+  ) async {
+    InputType inputType = await _breezSdk.parseInput(input: paymentLink);
+    if (inputType is! InputType_LnUrlPay) {
+      throw LnUrlPayInvalidLink();
+    }
+
+    if (amountMsat < inputType.data.minSendable) {
+      //
+      throw LnUrlPayMinAmount(inputType.data.minSendable.toString());
+    }
+
+    if (amountMsat > inputType.data.maxSendable) {
+      throw LnUrlPayMaxAmount(inputType.data.maxSendable.toString());
+    }
+
+    print("PAYING LNURLPAY");
+    LnUrlPayResult result = await _breezSdk.lnurlPay(
+      req: LnUrlPayRequest(
+        data: inputType.data,
+        amountMsat: amountMsat,
+        comment: comment,
+      ),
+    );
+    print('Payment result: $result');
+    if (result is LnUrlPayResult_EndpointError) {
+      throw LnUrlPayFailure(result.data.reason);
+    }
+
+    if (result is LnUrlPayResult_EndpointSuccess) {
+      print('Endpoint success SuccessActionProcessesed data: ${result.data}');
+      print(
+          'Endpoint success SuccessActionProcessesed data data: ${result.data?.data}');
+    }
+
+    print('LNURLPAY Payment successful');
+  }
+
+  @override
   Future<void> payInvoice({required String bolt11, int? amountMsat}) async {
     final request = SendPaymentRequest(
       bolt11: bolt11,
@@ -249,4 +341,31 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
         (nodeState) => nodeState?.inboundLiquidityMsats ?? 0,
       )
       .first;
+}
+
+/// Thrown when an input is an invalid LnUrlPay link.
+class LnUrlPayInvalidLink implements Exception {}
+
+/// Thrown when the amount is less than the minimum sendable amount when paying a LNURLPay.
+/// The error message is the minimum amount.
+class LnUrlPayMinAmount implements Exception {
+  LnUrlPayMinAmount(this.message);
+
+  final String message;
+}
+
+/// Thrown when the amount is greater than the maximum sendable amount when paying a LNURLPay.
+/// The error message is the maximum amount.
+class LnUrlPayMaxAmount implements Exception {
+  LnUrlPayMaxAmount(this.message);
+
+  final String message;
+}
+
+/// Thrown when paying an LnUrlPay fails.
+/// The error message is the reason for the failure.
+class LnUrlPayFailure implements Exception {
+  LnUrlPayFailure(this.message);
+
+  final String message;
 }

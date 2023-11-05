@@ -3,6 +3,7 @@ import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/view_models/promo.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
+import 'package:kumuly_pocket/widgets/promos/rating_stars.dart';
 
 class PromoMerchantInfoSection extends StatelessWidget {
   const PromoMerchantInfoSection(this.merchant, {super.key});
@@ -55,17 +56,8 @@ class PromoMerchantInfoSection extends StatelessWidget {
                   const SizedBox(height: 4.0),
                   Row(
                     children: [
-                      Row(
-                        children: List.generate(
-                          5,
-                          (index) => Icon(
-                            Icons.star,
-                            color: index + 1 > merchant.rating
-                                ? Palette.neutral[40]
-                                : Palette.warning[40],
-                            size: 16.0,
-                          ),
-                        ),
+                      RatingStars(
+                        rating: merchant.rating,
                       ),
                       const SizedBox(width: 4.0),
                       Text(

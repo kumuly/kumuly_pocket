@@ -4,14 +4,9 @@ import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/page_views/page_view_controller.dart';
 
 class PageViewIndicator extends ConsumerWidget {
-  final int pageCount;
-  final Color currentPageColor;
-  final Color hiddenPageColor;
-  final double currentPageSize;
-  final double hiddenPageSize;
-
   PageViewIndicator({
     super.key,
+    this.pageViewId,
     required this.pageCount,
     currentPageColor,
     hiddenPageColor,
@@ -20,9 +15,20 @@ class PageViewIndicator extends ConsumerWidget {
   })  : currentPageColor = currentPageColor ?? Palette.neutral[70],
         hiddenPageColor = hiddenPageColor ?? Palette.neutral[50];
 
+  final String? pageViewId;
+  final int pageCount;
+  final Color currentPageColor;
+  final Color hiddenPageColor;
+  final double currentPageSize;
+  final double hiddenPageSize;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentPage = ref.watch(pageViewControllerProvider).currentPage;
+    final currentPage = ref
+        .watch(pageViewControllerProvider(
+          pageViewId,
+        ))
+        .currentPage;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,

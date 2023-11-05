@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/enums/bitcoin_unit.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/generation/receive_sats_generation_controller.dart';
+import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
+import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:kumuly_pocket/widgets/buttons/primary_filled_button.dart';
 import 'package:kumuly_pocket/widgets/buttons/rectangular_border_button.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
@@ -24,10 +26,12 @@ class ReceiveSatsAmountScreen extends ConsumerWidget {
     final copy = AppLocalizations.of(context)!;
     final TextTheme textTheme = Theme.of(context).textTheme;
 
-    const unit = BitcoinUnit.sat;
-    final amount = unit == BitcoinUnit.sat
-        ? ref.watch(receiveSatsGenerationControllerProvider).amountSat
-        : ref.watch(receiveSatsGenerationControllerProvider).amountBtc;
+    final unit = ref.watch(bitcoinUnitProvider);
+    final amount = ref.watch(
+      displayBitcoinAmountProvider(
+        ref.watch(receiveSatsGenerationControllerProvider).amountSat,
+      ),
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -136,10 +140,12 @@ class ReceiveSatsBottomSheetModal extends ConsumerWidget {
     final copy = AppLocalizations.of(context)!;
     final TextTheme textTheme = Theme.of(context).textTheme;
 
-    const unit = BitcoinUnit.sat;
-    final amount = unit == BitcoinUnit.sat
-        ? ref.watch(receiveSatsGenerationControllerProvider).amountSat
-        : ref.watch(receiveSatsGenerationControllerProvider).amountBtc;
+    final unit = ref.watch(bitcoinUnitProvider);
+    final amount = ref.watch(
+      displayBitcoinAmountProvider(
+        ref.watch(receiveSatsGenerationControllerProvider).amountSat,
+      ),
+    );
     final onChainFeeEstimate =
         ref.watch(receiveSatsGenerationControllerProvider).swapFeeEstimate;
 
@@ -313,7 +319,11 @@ class ReceiveSatsBottomSheetModal extends ConsumerWidget {
                   router.pop();
                   // Pop another time for the transition modal
                   router.pop();
-                  ref.read(pageViewControllerProvider.notifier).nextPage();
+                  ref
+                      .read(pageViewControllerProvider(
+                        kReceiveSatsFlowPageViewId,
+                      ).notifier)
+                      .nextPage();
                 },
                 trailingIcon: const Icon(
                   Icons.qr_code,

@@ -91,9 +91,18 @@
   "enjoyPromo": "Grijp deze promo",
   "confirmPayment": "Bevestig betaling",
   "verifiedMerchant": "Geverifieerde verkoper",
+  "plusNetworkFee": "+ Netwerk kosten",
   "paymentCompleted": "Betaling voltooid",
   "promoCodeReceived": "Promo code ontvangen",
   "checkOutGuidelinesToRedeemPromo": "Bekijk de richtlijnen om deze\npromo te verzilveren.",
   "redemptionInstructions": "Instructies voor verzilvering",
-  "promoCode": "Promo code"
+  "promoCode": "Promo code",
+  "priceUpdatedError": "Prijs in bitcoin is veranderd. Controleer de nieuwe prijs en bevestig opnieuw.",
+  "validUntil": "Geldig tot",
+  "pointingUpEmoji": "☝️",
+  "showThisQrCodeAt": "Laat deze QR code zien bij",
+  "seeOnMap": "Zie op kaart",
+  "redemptionExplanation": "De verkoper moet deze QR code scannen om de promotie te valideren. Als je de aanbieding niet claimt, komen de fondsen na afloop van de promotie terug in je pocket.",
+  "promo": "Promo",
+  "promoRedeemed": "Promo verzilverd"
 }

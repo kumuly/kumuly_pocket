@@ -47,6 +47,7 @@ class PromosRow extends ConsumerWidget {
 
   final List<Promo> promos = [
     Promo(
+      id: '1',
       type: PromoType.custom,
       tag: 'Happy Hour',
       headline:
@@ -195,7 +196,11 @@ class PromoCard extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        router.pushNamed('promo-flow', extra: promo);
+        router.pushNamed(
+          'promo-flow',
+          pathParameters: {'id': promo.id!},
+          extra: promo,
+        );
       },
       borderRadius: const BorderRadius.all(
           Radius.circular(14)), // This matches the Container's border radius

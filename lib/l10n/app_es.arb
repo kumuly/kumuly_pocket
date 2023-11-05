@@ -91,9 +91,18 @@
   "enjoyPromo": "Aprovecha la promo",
   "confirmPayment": "Confirma el pago",
   "verifiedMerchant": "Comercio verificado",
+  "plusNetworkFee": "+ Comisión de red",
   "paymentCompleted": "Pago completado",
   "promoCodeReceived": "Código de promo recibido",
   "checkOutGuidelinesToRedeemPromo": "Mira las instrucciones para\nreclamar la promo.",
   "redemptionInstructions": "Instrucciones de redención",
-  "promoCode": "Codigo de promo"
+  "promoCode": "Código de promo",
+  "priceUpdatedError": "El valor en bitcoin se cambió. Por favor, revisa el nuevo precio y vuelve a confirmar.",
+  "validUntil": "Válido hasta",
+  "pointingUpEmoji": "☝️",
+  "showThisQrCodeAt": "Muestra este código QR en",
+  "seeOnMap": "Ver en mapa",
+  "redemptionExplanation": "El comercio debe escanear este código QR para validar la promo. En caso de no reclamar la oferta, los fondos volverán a tu bolsillo una vez que la promo termine.",
+  "promo": "Promo",
+  "promoRedeemed": "Promo reclamada"
 }
