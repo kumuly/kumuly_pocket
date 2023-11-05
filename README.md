@@ -60,6 +60,7 @@ The easiest way is to start with the local state of the screen and only create a
 3. Manage the state of the screen with the local state of the screen
 4. Create second screen of the flow and add it to the PageView
 5. If second screen needs to access the state of the first screen, create a state controller for the state of the first screen and use the state controller in the second screen.
+6. ... and so on for the following screens of the flow
 
 # Problems and solutions encountered during development
 

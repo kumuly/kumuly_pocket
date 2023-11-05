@@ -7,18 +7,22 @@ class PromoDetailsState extends Equatable {
   const PromoDetailsState({
     required this.promo,
     this.amountSat,
+    this.priceUpdatedError = false,
   });
 
   final Promo promo;
   final int? amountSat;
+  final bool priceUpdatedError;
 
   PromoDetailsState copyWith({
     Promo? promo,
     int? amountSat,
+    bool? priceUpdatedError,
   }) {
     return PromoDetailsState(
       promo: promo ?? this.promo,
       amountSat: amountSat ?? this.amountSat,
+      priceUpdatedError: priceUpdatedError ?? this.priceUpdatedError,
     );
   }
 
@@ -26,5 +30,6 @@ class PromoDetailsState extends Equatable {
   List<Object?> get props => [
         promo,
         amountSat,
+        priceUpdatedError,
       ];
 }

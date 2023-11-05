@@ -232,41 +232,40 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
     int amountMsat,
     String? comment,
   ) async {
-    try {
-      InputType inputType = await _breezSdk.parseInput(input: paymentLink);
-      if (inputType is! InputType_LnUrlPay) {
-        throw Exception('Invalid payment link.');
-      }
-
-      if (amountMsat < inputType.data.minSendable) {
-        throw Exception('Amount is less than minimum sendable amount.');
-      }
-
-      if (amountMsat > inputType.data.maxSendable) {
-        throw Exception('Amount exceeds maximum sendable amount.');
-      }
-
-      print("PAYING LNURLPAY");
-      LnUrlPayResult result = await _breezSdk.lnurlPay(
-        req: LnUrlPayRequest(
-          data: inputType.data,
-          amountMsat: amountMsat,
-          comment: comment,
-        ),
-      );
-      print('Payment result: $result');
-      // Check result for error
-      if (result is LnUrlPayResult_EndpointError) {
-        print('lNURLPAY Payment error reason: ${result.data.reason}');
-        throw Exception('Error: ${result.data.reason}');
-      }
-
-      print('LNURLPAY Payment successful');
-    } catch (error) {
-      // Todo: custom errors
-      print('PAY LNURLPAY ERROR catch: $error');
-      rethrow;
+    InputType inputType = await _breezSdk.parseInput(input: paymentLink);
+    if (inputType is! InputType_LnUrlPay) {
+      throw LnUrlPayInvalidLink();
     }
+
+    if (amountMsat < inputType.data.minSendable) {
+      //
+      throw LnUrlPayMinAmount(inputType.data.minSendable.toString());
+    }
+
+    if (amountMsat > inputType.data.maxSendable) {
+      throw LnUrlPayMaxAmount(inputType.data.maxSendable.toString());
+    }
+
+    print("PAYING LNURLPAY");
+    LnUrlPayResult result = await _breezSdk.lnurlPay(
+      req: LnUrlPayRequest(
+        data: inputType.data,
+        amountMsat: amountMsat,
+        comment: comment,
+      ),
+    );
+    print('Payment result: $result');
+    if (result is LnUrlPayResult_EndpointError) {
+      throw LnUrlPayFailure(result.data.reason);
+    }
+
+    if (result is LnUrlPayResult_EndpointSuccess) {
+      print('Endpoint success SuccessActionProcessesed data: ${result.data}');
+      print(
+          'Endpoint success SuccessActionProcessesed data data: ${result.data?.data}');
+    }
+
+    print('LNURLPAY Payment successful');
   }
 
   @override
@@ -342,4 +341,31 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
         (nodeState) => nodeState?.inboundLiquidityMsats ?? 0,
       )
       .first;
+}
+
+/// Thrown when an input is an invalid LnUrlPay link.
+class LnUrlPayInvalidLink implements Exception {}
+
+/// Thrown when the amount is less than the minimum sendable amount when paying a LNURLPay.
+/// The error message is the minimum amount.
+class LnUrlPayMinAmount implements Exception {
+  LnUrlPayMinAmount(this.message);
+
+  final String message;
+}
+
+/// Thrown when the amount is greater than the maximum sendable amount when paying a LNURLPay.
+/// The error message is the maximum amount.
+class LnUrlPayMaxAmount implements Exception {
+  LnUrlPayMaxAmount(this.message);
+
+  final String message;
+}
+
+/// Thrown when paying an LnUrlPay fails.
+/// The error message is the reason for the failure.
+class LnUrlPayFailure implements Exception {
+  LnUrlPayFailure(this.message);
+
+  final String message;
 }

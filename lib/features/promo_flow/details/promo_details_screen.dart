@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
+import 'package:kumuly_pocket/enums/local_currency.dart';
 import 'package:kumuly_pocket/features/promo_flow/details/promo_details_controller.dart';
-import 'package:kumuly_pocket/providers/bitcoin_providers.dart';
+import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
+import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:kumuly_pocket/services/lightning_node_service.dart';
 import 'package:kumuly_pocket/widgets/page_views/page_view_controller.dart';
 import 'package:kumuly_pocket/widgets/promos/promo_description_section.dart';
@@ -155,12 +157,14 @@ class ConfirmPaymentBottomSheetModal extends ConsumerWidget {
         promoDetailsController.amountSat,
       ),
     );
+    final localCurrency = ref.watch(localCurrencyProvider);
     final sufficientBalance =
         ref.watch(spendableBalanceSatProvider).asData?.value != null &&
                 promoDetailsController.amountSat != null
             ? ref.watch(spendableBalanceSatProvider).asData!.value >=
                 promoDetailsController.amountSat!
             : false;
+    final isUpdatedPriceError = promoDetailsController.priceUpdatedError;
 
     return SizedBox(
       width: double.infinity,
@@ -218,7 +222,7 @@ class ConfirmPaymentBottomSheetModal extends ConsumerWidget {
                 ),
           const SizedBox(height: 2),
           Text(
-            '= ${promoDetailsController.promo.discountedPrice} EUR',
+            '= ${promoDetailsController.promo.discountedPrice} ${localCurrency.code.toUpperCase()}',
             style: textTheme.display2(
               Palette.neutral[60],
               FontWeight.w500,
@@ -226,13 +230,35 @@ class ConfirmPaymentBottomSheetModal extends ConsumerWidget {
           ),
           const SizedBox(height: kSmallSpacing),
           Text(
-            '+ Network fee',
+            copy.plusNetworkFee,
             style: textTheme.caption1(
               Palette.blueViolet[100],
               FontWeight.w400,
             ),
           ),
-          const SizedBox(height: kLargeSpacing),
+          SizedBox(
+            height: kLargeSpacing,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 64.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  isUpdatedPriceError
+                      ? Text(
+                          copy.priceUpdatedError,
+                          style: textTheme.caption1(
+                            Palette.error[100],
+                            FontWeight.w400,
+                          ),
+                          textAlign: TextAlign.center,
+                        )
+                      : Container(),
+                  const SizedBox(height: kExtraSmallSpacing),
+                ],
+              ),
+            ),
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.max,

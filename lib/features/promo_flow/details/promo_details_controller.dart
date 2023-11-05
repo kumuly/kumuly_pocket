@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kumuly_pocket/enums/promo_type.dart';
 import 'package:kumuly_pocket/features/promo_flow/details/promo_details_state.dart';
+import 'package:kumuly_pocket/repositories/lightning_node_repository.dart';
 import 'package:kumuly_pocket/services/lightning_node_service.dart';
 import 'package:kumuly_pocket/view_models/promo.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -92,10 +93,36 @@ class PromoDetailsController extends _$PromoDetailsController {
   }
 
   Future<void> payForPromo() async {
-    await ref.read(breezeSdkLightningNodeServiceProvider).payLnUrlPay(
-          promo!.lnurlPayLink,
-          state.amountSat!,
-          null,
+    try {
+      await ref.read(breezeSdkLightningNodeServiceProvider).payLnUrlPay(
+            promo!.lnurlPayLink,
+            state.amountSat!,
+            null,
+          );
+    } catch (e) {
+      // Update the price in sats to pay again since this changes constantly
+      fetchAmountToPayInSat();
+      if (e is LnUrlPayMinAmount || e is LnUrlPayMaxAmount) {
+        state = state.copyWith(
+          priceUpdatedError: true,
         );
+      } else {
+        state = state.copyWith(
+          priceUpdatedError: false,
+        );
+      }
+      rethrow;
+    }
+  }
+
+  // ToDo: Implement the following methods
+  Future<void> storePromoPaymentIntent() async {
+    // Store the promo id and timestamp into activity
+  }
+
+  Future<void> waitForPromoPayment() async {
+    // Wait for the payment to be fulfilled
+    // if successful, store the payment hash and secret together with the promo id
+    // if failed, remove the payment intent from the activity
   }
 }
