@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:kumuly_pocket/enums/payment_type.dart';
+import 'package:kumuly_pocket/enums/payment_request_type.dart';
 
 @immutable
 class PaymentRequestEntity extends Equatable {

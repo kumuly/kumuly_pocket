@@ -5,6 +5,8 @@ import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/enums/bitcoin_unit.dart';
 import 'package:kumuly_pocket/enums/local_currency.dart';
 import 'package:kumuly_pocket/features/sales/sales_controller.dart';
+import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
+import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/buttons/primary_text_button.dart';
@@ -24,12 +26,15 @@ class SalesScreen extends ConsumerWidget {
     double screenWidth = MediaQuery.of(context).size.width;
 
     final salesController = ref.watch(salesControllerProvider);
-    const unit = BitcoinUnit.sat;
-    const fiatCurrency = LocalCurrency.usd;
-    final balance = unit == BitcoinUnit.btc
-        ? salesController.balanceInBtc
-        : salesController.balanceInSat;
-    const balanceInFiat = 0;
+
+    final unit = ref.watch(bitcoinUnitProvider);
+    final balance = ref.watch(
+      displayBitcoinAmountProvider(
+        salesController.balanceSat,
+      ),
+    );
+    final localCurrency = ref.watch(localCurrencyProvider);
+    const localCurrencyBalance = 0;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -60,8 +65,8 @@ class SalesScreen extends ConsumerWidget {
                 title: copy.totalSales.toUpperCase(),
                 balance: balance,
                 unit: unit,
-                balanceInFiat: balanceInFiat,
-                fiatCurrency: fiatCurrency,
+                localCurrencyBalance: localCurrencyBalance,
+                localCurrency: localCurrency,
                 actions: [
                   PrimaryTextButton(
                     text: copy.moveFundsToPocket,

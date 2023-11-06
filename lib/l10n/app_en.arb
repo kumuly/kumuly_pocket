@@ -104,5 +104,7 @@
   "seeOnMap": "See on map",
   "redemptionExplanation": "The merchant must scan this QR code to validate the promotion. In case you don't claim the offer, the funds will return to your pocket after the promotion ends.",
   "promo": "Promo",
-  "promoRedeemed": "Promo redeemed"
+  "promoRedeemed": "Promo redeemed",
+  "sent": "Sent",
+  "received": "Received"
 }

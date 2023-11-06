@@ -15,7 +15,7 @@ class ActionsBottomSheetModal extends StatelessWidget {
 
   final List<DynamicIcon> actionIcons;
   final List<String> actionTitles;
-  final List<VoidCallback> actionOnPresseds;
+  final List<VoidCallback?> actionOnPresseds;
 
   @override
   Widget build(BuildContext context) {

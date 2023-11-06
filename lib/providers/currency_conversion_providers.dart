@@ -13,7 +13,7 @@ double? satToBtc(SatToBtcRef ref, int? amountSat) {
 }
 
 @riverpod
-double? displayBitcoinAmount(DisplayBitcoinAmountRef ref, int? amountSat) {
+String? displayBitcoinAmount(DisplayBitcoinAmountRef ref, int? amountSat) {
   final bitcoinUnit = ref.watch(bitcoinUnitProvider);
 
   if (amountSat == null) {
@@ -21,6 +21,6 @@ double? displayBitcoinAmount(DisplayBitcoinAmountRef ref, int? amountSat) {
   }
 
   return bitcoinUnit == BitcoinUnit.btc
-      ? ref.watch(satToBtcProvider(amountSat))
-      : amountSat.toDouble();
+      ? ref.watch(satToBtcProvider(amountSat))?.toStringAsFixed(8)
+      : amountSat.toDouble().toStringAsFixed(0);
 }
