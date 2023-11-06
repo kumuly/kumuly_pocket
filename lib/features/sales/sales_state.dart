@@ -5,11 +5,11 @@ import 'package:kumuly_pocket/view_models/payment.dart';
 @immutable
 class SalesState extends Equatable {
   const SalesState({
-    this.balanceInSat,
+    this.balanceSat,
     this.payments,
   });
 
-  final int? balanceInSat;
+  final int? balanceSat;
   final List<Payment>? payments;
 
   SalesState copyWith({
@@ -17,14 +17,11 @@ class SalesState extends Equatable {
     List<Payment>? payments,
   }) {
     return SalesState(
-      balanceInSat: balanceInSat ?? this.balanceInSat,
+      balanceSat: balanceSat ?? balanceSat,
       payments: payments ?? this.payments,
     );
   }
 
-  int? get balanceInBtc =>
-      balanceInSat != null ? balanceInSat! ~/ 100000000 : null;
-
   @override
-  List<Object?> get props => [balanceInSat, payments];
+  List<Object?> get props => [balanceSat, payments];
 }

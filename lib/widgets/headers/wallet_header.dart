@@ -12,15 +12,15 @@ class WalletHeader extends StatelessWidget {
     required this.title,
     required this.balance,
     required this.unit,
-    required this.balanceInFiat,
-    required this.fiatCurrency,
+    required this.localCurrencyBalance,
+    required this.localCurrency,
   });
 
   final String title;
-  final int? balance;
+  final double? balance;
   final BitcoinUnit unit;
-  final int? balanceInFiat;
-  final LocalCurrency fiatCurrency;
+  final int? localCurrencyBalance;
+  final LocalCurrency localCurrency;
   final List<Widget>? actions;
 
   @override
@@ -57,7 +57,7 @@ class WalletHeader extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '≈ $balanceInFiat ${fiatCurrency.name.toUpperCase()}',
+                      '≈ $localCurrencyBalance ${localCurrency.code.toUpperCase()}',
                       style: textTheme.display2(
                         Palette.neutral[70],
                         FontWeight.normal,

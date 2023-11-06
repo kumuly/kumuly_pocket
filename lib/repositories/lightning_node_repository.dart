@@ -2,10 +2,12 @@ import 'package:breez_sdk/breez_sdk.dart';
 import 'package:breez_sdk/bridge_generated.dart';
 import 'package:flutter/foundation.dart';
 import 'package:kumuly_pocket/entities/invoice_entity.dart';
+import 'package:kumuly_pocket/entities/payment_entity.dart';
 import 'package:kumuly_pocket/entities/payment_request_entity.dart';
 import 'package:kumuly_pocket/entities/recommended_fees_entity.dart';
 import 'package:kumuly_pocket/entities/swap_info_entity.dart';
 import 'package:kumuly_pocket/enums/app_network.dart';
+import 'package:kumuly_pocket/enums/payment_direction.dart';
 import 'package:kumuly_pocket/enums/payment_type.dart';
 import 'package:kumuly_pocket/providers/breez_sdk_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -62,6 +64,14 @@ abstract class LightningNodeRepository {
     int amountSat,
     int satPerVbyte,
   );
+  Future<List<PaymentEntity>> getPayments({
+    PaymentDirection? direction,
+    int? fromTimestamp,
+    int? toTimestamp,
+    bool? includeFailures,
+    int? offset,
+    int? limit,
+  });
   Future<void> disconnect();
 }
 
@@ -341,6 +351,36 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
         (nodeState) => nodeState?.inboundLiquidityMsats ?? 0,
       )
       .first;
+
+  @override
+  Future<List<PaymentEntity>> getPayments({
+    PaymentDirection? direction,
+    int? fromTimestamp,
+    int? toTimestamp,
+    bool? includeFailures,
+    int? offset,
+    int? limit,
+  }) async {
+    PaymentTypeFilter? filter = direction == null
+        ? PaymentTypeFilter.All
+        : direction == PaymentDirection.incoming
+            ? PaymentTypeFilter.Received
+            : PaymentTypeFilter.Sent;
+    ListPaymentsRequest req = ListPaymentsRequest(
+      filter: filter,
+      fromTimestamp: fromTimestamp,
+      toTimestamp: toTimestamp,
+      includeFailures: includeFailures,
+      offset: offset,
+      limit: limit,
+    );
+    List<Payment> payments = await _breezSdk.listPayments(req: req);
+    return payments
+        .map((payment) => PaymentEntity(
+              paymentHash: payment.id,
+            ))
+        .toList();
+  }
 }
 
 /// Thrown when an input is an invalid LnUrlPay link.

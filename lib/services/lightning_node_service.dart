@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
+import 'package:kumuly_pocket/entities/payment_entity.dart';
 import 'package:kumuly_pocket/entities/recommended_fees_entity.dart';
 import 'package:kumuly_pocket/entities/swap_in_info_entity.dart';
 import 'package:kumuly_pocket/enums/app_network.dart';
@@ -76,6 +77,10 @@ abstract class LightningNodeService {
   Future<int> get onChainBalanceSat;
   //Future<ReceptionAmountLimitsEntity> get receptionAmountLimits;
   Future<RecommendedFeesEntity> get recommendedFees;
+  Future<List<PaymentEntity>> getPaymentHistory({
+    int? offset,
+    int? limit,
+  });
   Future<void> disconnect();
 }
 
@@ -285,4 +290,11 @@ class BreezSdkLightningNodeService implements LightningNodeService {
       comment,
     );
   }
+
+  @override
+  Future<List<PaymentEntity>> getPaymentHistory({
+    int? offset,
+    int? limit,
+  }) =>
+      _lightningNodeRepository.getPayments(offset: offset, limit: limit);
 }
