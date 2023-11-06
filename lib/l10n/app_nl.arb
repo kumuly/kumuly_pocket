@@ -104,5 +104,7 @@
   "seeOnMap": "Zie op kaart",
   "redemptionExplanation": "De verkoper moet deze QR code scannen om de promotie te valideren. Als je de aanbieding niet claimt, komen de fondsen na afloop van de promotie terug in je pocket.",
   "promo": "Promo",
-  "promoRedeemed": "Promo verzilverd"
+  "promoRedeemed": "Promo verzilverd",
+  "sent": "Verstuurd",
+  "received": "Ontvangen"
 }

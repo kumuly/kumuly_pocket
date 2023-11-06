@@ -26,7 +26,7 @@ class PocketScreen extends ConsumerWidget {
     final router = GoRouter.of(context);
 
     final pocketBalanceController = ref.watch(pocketBalanceControllerProvider);
-    const paymentsLimit = 25;
+    const paymentsLimit = 20;
     final pocketPaymentsHistoryController = ref.watch(
       pocketPaymentsHistoryControllerProvider(
         paymentsLimit,
@@ -174,6 +174,9 @@ class PocketScreen extends ConsumerWidget {
                       : true,
                   isLoading: pocketPaymentsHistoryController.isLoading,
                   isLoadingError: pocketPaymentsHistoryController.hasError,
+                ),
+                const SizedBox(
+                  height: kMediumSpacing,
                 ),
               ],
             ),

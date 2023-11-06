@@ -7,8 +7,10 @@ import 'package:kumuly_pocket/entities/payment_request_entity.dart';
 import 'package:kumuly_pocket/entities/recommended_fees_entity.dart';
 import 'package:kumuly_pocket/entities/swap_info_entity.dart';
 import 'package:kumuly_pocket/enums/app_network.dart';
+import 'package:kumuly_pocket/enums/lightning_channel_state.dart';
 import 'package:kumuly_pocket/enums/payment_direction.dart';
-import 'package:kumuly_pocket/enums/payment_type.dart';
+import 'package:kumuly_pocket/enums/payment_status.dart' as enums;
+import 'package:kumuly_pocket/enums/payment_request_type.dart';
 import 'package:kumuly_pocket/providers/breez_sdk_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -375,11 +377,103 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
       limit: limit,
     );
     List<Payment> payments = await _breezSdk.listPayments(req: req);
-    return payments
-        .map((payment) => PaymentEntity(
-              paymentHash: payment.id,
-            ))
-        .toList();
+    return payments.map((payment) {
+      if (payment.details is PaymentDetails_Ln) {
+        PaymentDetails_Ln details = payment.details as PaymentDetails_Ln;
+
+        return PaymentEntity(
+          id: payment.id,
+          direction: payment.paymentType == PaymentType.Received
+              ? PaymentDirection.incoming
+              : PaymentDirection.outgoing,
+          paymentTime: payment.paymentTime,
+          amountMsat: payment.amountMsat,
+          feeMsat: payment.feeMsat,
+          status: payment.status == PaymentStatus.Complete
+              ? enums.PaymentStatus.complete
+              : payment.status == PaymentStatus.Failed
+                  ? enums.PaymentStatus.failed
+                  : enums.PaymentStatus.pending,
+          description: payment.description,
+          lightningPaymentDetails: LightningPaymentDetailsEntity(
+            paymentHash: details.data.paymentHash,
+            label: details.data.label,
+            destinationPubkey: details.data.destinationPubkey,
+            paymentPreimage: details.data.paymentPreimage,
+            keysend: details.data.keysend,
+            bolt11: details.data.bolt11,
+            lnurlSuccessAction: LnurlSuccessAction(
+              description:
+                  details.data.lnurlSuccessAction is SuccessActionProcessed_Aes
+                      ? (details.data.lnurlSuccessAction!.data
+                              as SuccessActionProcessed_Aes)
+                          .data
+                          .description
+                      : details.data.lnurlSuccessAction
+                              is SuccessActionProcessed_Url
+                          ? (details.data.lnurlSuccessAction!.data
+                                  as SuccessActionProcessed_Url)
+                              .data
+                              .description
+                          : null,
+              plaintext:
+                  details.data.lnurlSuccessAction is SuccessActionProcessed_Aes
+                      ? (details.data.lnurlSuccessAction!.data
+                              as SuccessActionProcessed_Aes)
+                          .data
+                          .plaintext
+                      : null,
+              message: details.data.lnurlSuccessAction
+                      is SuccessActionProcessed_Message
+                  ? (details.data.lnurlSuccessAction!.data
+                          as SuccessActionProcessed_Message)
+                      .data
+                      .message
+                  : null,
+              url: details.data.lnurlSuccessAction is SuccessActionProcessed_Url
+                  ? (details.data.lnurlSuccessAction!.data
+                          as SuccessActionProcessed_Url)
+                      .data
+                      .url
+                  : null,
+            ),
+            lnAddress: details.data.lnAddress,
+            lnurlMetadata: details.data.lnurlMetadata,
+            lnurlWithdrawEndpoint: details.data.lnurlWithdrawEndpoint,
+          ),
+        );
+      }
+
+      PaymentDetails_ClosedChannel details =
+          payment.details as PaymentDetails_ClosedChannel;
+
+      return PaymentEntity(
+        id: payment.id,
+        direction: payment.paymentType == PaymentType.Received
+            ? PaymentDirection.incoming
+            : PaymentDirection.outgoing,
+        paymentTime: payment.paymentTime,
+        amountMsat: payment.amountMsat,
+        feeMsat: payment.feeMsat,
+        status: payment.status == PaymentStatus.Complete
+            ? enums.PaymentStatus.complete
+            : payment.status == PaymentStatus.Failed
+                ? enums.PaymentStatus.failed
+                : enums.PaymentStatus.pending,
+        description: payment.description,
+        closedChannelPaymentDetails: ClosedChannelPaymentDetailsEntity(
+          shortChannelId: details.data.shortChannelId,
+          state: details.data.state == ChannelState.Closed
+              ? LightningChannelState.closed
+              : details.data.state == ChannelState.Opened
+                  ? LightningChannelState.opened
+                  : details.data.state == ChannelState.PendingClose
+                      ? LightningChannelState.pendingClose
+                      : LightningChannelState.pendingOpen,
+          fundingTxid: details.data.fundingTxid,
+        ),
+      );
+    }).toList();
   }
 }
 

@@ -17,7 +17,7 @@ class WalletHeader extends StatelessWidget {
   });
 
   final String title;
-  final double? balance;
+  final String? balance;
   final BitcoinUnit unit;
   final int? localCurrencyBalance;
   final LocalCurrency localCurrency;
