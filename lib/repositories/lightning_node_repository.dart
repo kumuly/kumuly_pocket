@@ -52,9 +52,10 @@ abstract class LightningNodeRepository {
   Future<void> payInvoice({required String bolt11, int? amountMsat});
   Future<void> payLnUrlPay(
     String paymentLink,
-    int amountMsat,
+    int amountMsat, {
     String? comment,
-  );
+    bool useMinimumAmount,
+  });
   Future<void> sendToKey(
     String nodeId,
     int amountSat,
@@ -241,20 +242,21 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
   @override
   Future<void> payLnUrlPay(
     String paymentLink,
-    int amountMsat,
+    int amountMsat, {
     String? comment,
-  ) async {
+    bool useMinimumAmount =
+        false, // For fixed amount links, specify a bit more in amountMsat and set this to true, to avoid the error of amount being too low when price changes rapidly
+  }) async {
     InputType inputType = await _breezSdk.parseInput(input: paymentLink);
     if (inputType is! InputType_LnUrlPay) {
       throw LnUrlPayInvalidLink();
     }
 
     if (amountMsat < inputType.data.minSendable) {
-      //
       throw LnUrlPayMinAmount(inputType.data.minSendable.toString());
     }
 
-    if (amountMsat > inputType.data.maxSendable) {
+    if (!useMinimumAmount && amountMsat > inputType.data.maxSendable) {
       throw LnUrlPayMaxAmount(inputType.data.maxSendable.toString());
     }
 
@@ -262,7 +264,7 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
     LnUrlPayResult result = await _breezSdk.lnurlPay(
       req: LnUrlPayRequest(
         data: inputType.data,
-        amountMsat: amountMsat,
+        amountMsat: useMinimumAmount ? inputType.data.minSendable : amountMsat,
         comment: comment,
       ),
     );

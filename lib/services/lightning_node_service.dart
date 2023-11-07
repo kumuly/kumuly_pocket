@@ -67,9 +67,10 @@ abstract class LightningNodeService {
   Future<void> payInvoice({required String bolt11, int? amountSat});
   Future<void> payLnUrlPay(
     String paymentLink,
-    int amountSat,
+    int amountSat, {
     String? comment,
-  );
+    bool useMinimumAmount,
+  });
   Future<void> swapOut(String bitcoinAddress, int amountSat, int satPerVbyte);
   Future<int> getChannelOpeningFeeEstimate(int amountSat);
   Future<SwapInInfoEntity> getSwapInInfo(int amountSat);
@@ -281,13 +282,15 @@ class BreezSdkLightningNodeService implements LightningNodeService {
   @override
   Future<void> payLnUrlPay(
     String paymentLink,
-    int amountSat,
+    int amountSat, {
     String? comment,
-  ) async {
+    bool useMinimumAmount = false,
+  }) async {
     return _lightningNodeRepository.payLnUrlPay(
       paymentLink,
       amountSat * 1000,
-      comment,
+      comment: comment,
+      useMinimumAmount: useMinimumAmount,
     );
   }
 
