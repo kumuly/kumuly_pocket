@@ -87,7 +87,7 @@ GoRouter appRouter(AppRouterRef ref) {
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
         path: '/cashier-mode',
-        name: 'cashier-flow',
+        name: 'cashier-mode',
         builder: (context, state) => const CashierFlow(),
       ),
     ],
