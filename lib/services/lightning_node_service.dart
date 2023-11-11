@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -46,6 +47,8 @@ Future<int> spendableBalanceSat(SpendableBalanceSatRef ref) {
 }
 
 abstract class LightningNodeService {
+  Stream<bool> streamInvoicePayment({String? bolt11, String? paymentHash});
+  Stream<String> inProgressSwapPolling(Duration interval);
   Future<(String nodeId, String workingDirPath)> newNodeConnect(
     String alias,
     List<String> mnemonicWords,
@@ -300,4 +303,39 @@ class BreezSdkLightningNodeService implements LightningNodeService {
     int? limit,
   }) =>
       _lightningNodeRepository.getPayments(offset: offset, limit: limit);
+
+  @override
+  Stream<bool> streamInvoicePayment({String? bolt11, String? paymentHash}) {
+    return _lightningNodeRepository.paidInvoiceStream.map((event) {
+      print('paidInvoiceStream: $event');
+      final paidInvoice = event.$1;
+      final paidHash = event.$2;
+      if ((bolt11 != null && bolt11 == paidInvoice) ||
+          (paymentHash != null && paymentHash == paidHash)) {
+        return true;
+      }
+      return false;
+    });
+  }
+
+  @override
+  Stream<String> inProgressSwapPolling(Duration interval) {
+    // Use a StreamController to control the stream
+    var controller = StreamController<String>();
+
+    var timer = Timer.periodic(interval, (Timer t) async {
+      var swapAddress = await _lightningNodeRepository.inProgressSwap;
+      if (swapAddress != null) {
+        controller.add(swapAddress);
+      }
+    });
+
+    // Handle stream cancellation
+    controller.onCancel = () {
+      timer.cancel();
+    };
+
+    // Return the stream
+    return controller.stream;
+  }
 }

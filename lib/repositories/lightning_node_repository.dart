@@ -30,6 +30,8 @@ abstract class LightningNodeRepository {
   Future<int> get onChainBalanceMsat;
   Future<int> get inboundLiquidityMsat;
   Future<RecommendedFeesEntity> get recommendedFees;
+  Stream<(String invoice, String paymentHash)> get paidInvoiceStream;
+  Future<String?> get inProgressSwap;
   Future<String> connect(
     Uint8List seed,
     AppNetwork network,
@@ -105,6 +107,18 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
       slow: response.economyFee,
       cheapest: response.minimumFee,
     );
+  }
+
+  @override
+  Stream<(String bolt11, String paymentHash)> get paidInvoiceStream =>
+      _breezSdk.invoicePaidStream
+          .map((event) => (event.bolt11, event.paymentHash));
+
+  @override
+  Future<String?> get inProgressSwap async {
+    SwapInfo? swap = await _breezSdk.inProgressSwap();
+
+    return swap?.bitcoinAddress;
   }
 
   @override

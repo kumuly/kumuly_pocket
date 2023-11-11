@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/enums/local_currency.dart';
 import 'package:kumuly_pocket/features/cashier_flow/generation/cashier_generation_controller.dart';
+import 'package:kumuly_pocket/features/cashier_flow/reception/cashier_reception_controller.dart';
 import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
 import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
@@ -22,8 +23,9 @@ class CashierReceptionScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
-    // To remove the keyboard from inputting the amount
-    FocusScope.of(context).unfocus();
+
+    // Start listening for the payment through the controller
+    ref.watch(cashierReceptionControllerProvider);
 
     final localCurrency = ref.watch(localCurrencyProvider);
     final invoice = ref.watch(cashierGenerationControllerProvider).invoice;

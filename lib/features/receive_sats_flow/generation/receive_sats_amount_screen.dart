@@ -326,7 +326,11 @@ class ReceiveSatsBottomSheetModal extends ConsumerWidget {
                     final invoiceCreation = ref
                         .read(receiveSatsGenerationControllerProvider.notifier)
                         .createInvoice();
+                    // Show loading dialog
                     showTransitionDialog(context, copy.oneMomentPlease);
+                    // Remove the keyboard from inputting the amount
+                    FocusScope.of(context).unfocus();
+                    // Wait for the invoice to be created
                     await invoiceCreation;
                     // Pop one time for the bottom sheet
                     router.pop();

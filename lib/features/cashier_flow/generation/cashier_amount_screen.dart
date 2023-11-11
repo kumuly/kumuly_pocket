@@ -95,7 +95,10 @@ class CashierAmountScreen extends ConsumerWidget {
                           IntrinsicWidth(
                             child: TextField(
                               autofocus: true,
-                              keyboardType: TextInputType.number,
+                              keyboardType:
+                                  const TextInputType.numberWithOptions(
+                                decimal: true,
+                              ),
                               textAlign: TextAlign.center,
                               style: textTheme.display7(
                                   Palette.neutral[100], FontWeight.w600),
@@ -147,8 +150,16 @@ class CashierAmountScreen extends ConsumerWidget {
                       final fetchingInvoice = ref
                           .read(cashierGenerationControllerProvider.notifier)
                           .createInvoice();
+
+                      // Show loading screen
                       showTransitionDialog(context, copy.oneMomentPlease);
+
+                      // Unfocus to hide the keyboard from inputting the amount
+                      FocusScope.of(context).unfocus();
+
+                      // Wait for the invoice to be fetched
                       await fetchingInvoice;
+
                       // Pop  the transition dialog
                       router.pop();
                       ref

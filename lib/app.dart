@@ -14,7 +14,8 @@ class KumulyPocketApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final appRouter = ref.watch(appRouterProvider);
 
-    // Todo: ref.read(breezSdkInitializeProvider);
+    // Initialize the Breez SDK
+    ref.read(breezSdkInitializeProvider);
 
     return MaterialApp.router(
       title: 'Kumuly Pocket',

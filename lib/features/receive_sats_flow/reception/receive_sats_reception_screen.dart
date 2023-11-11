@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/generation/receive_sats_generation_controller.dart';
+import 'package:kumuly_pocket/features/receive_sats_flow/reception/receive_sats_reception_controller.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -13,8 +14,8 @@ class ReceiveSatsReceptionScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // To remove the keyboard from inputting the amount
-    FocusScope.of(context).unfocus();
+    // Watch the controller to start listening for the payment
+    ref.watch(receiveSatsReceptionControllerProvider);
 
     final bip21Uri =
         ref.watch(receiveSatsGenerationControllerProvider).bip21Uri;
