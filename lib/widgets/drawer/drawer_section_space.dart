@@ -6,6 +6,6 @@ class DrawerSectionSpace extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SizedBox(height: kMediumSpacing);
+    return const SizedBox(height: kSpacing3);
   }
 }

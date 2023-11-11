@@ -169,7 +169,7 @@ class PromoCodeAndInstructionsSection extends StatelessWidget {
                           style: textTheme.display7(
                               Palette.neutral[100], FontWeight.w700),
                         ),
-                        const SizedBox(height: kMediumSpacing),
+                        const SizedBox(height: kSpacing3),
                         Text(
                           copy.showThisQrCodeAt,
                           style: textTheme.display5(
@@ -201,7 +201,7 @@ class PromoCodeAndInstructionsSection extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const SizedBox(height: kLargeSpacing),
+                        const SizedBox(height: kSpacing8),
                         Text(
                           copy.redemptionExplanation,
                           textAlign: TextAlign.center,
@@ -329,7 +329,7 @@ class PromoCodeContainer extends StatelessWidget {
                           ),
                           padding: const EdgeInsets.all(32.0),
                         ),
-                        const SizedBox(height: kSmallSpacing),
+                        const SizedBox(height: kSpacing2),
                         Text(
                           '${copy.validUntil} 17/12/2023',
                           style: textTheme.display2(
@@ -352,7 +352,7 @@ class PromoCodeContainer extends StatelessWidget {
                                 height: 32,
                                 width: 32,
                               ),
-                              const SizedBox(height: kSmallSpacing),
+                              const SizedBox(height: kSpacing2),
                               Text(
                                 promo.merchant.name,
                                 style: textTheme.display1(

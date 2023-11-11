@@ -72,9 +72,9 @@ class InsertPinScreen extends ConsumerWidget {
                         FontWeight.w400),
                   ),
                 ),
-                const SizedBox(height: kLargeSpacing),
+                const SizedBox(height: kSpacing8),
                 PinCodeDisplay(pinCode: pin),
-                const SizedBox(height: kSmallSpacing),
+                const SizedBox(height: kSpacing2),
                 SizedBox(
                   height: 20, // Adjust this to a suitable height
                   child: pin.length == 4 && !isValidPin
@@ -95,7 +95,7 @@ class InsertPinScreen extends ConsumerWidget {
               ],
             ),
           ),
-          const SizedBox(height: kExtraSmallSpacing),
+          const SizedBox(height: kSpacing1),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -105,7 +105,7 @@ class InsertPinScreen extends ConsumerWidget {
               ),
             ),
           ),
-          const SizedBox(height: kSmallSpacing),
+          const SizedBox(height: kSpacing2),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.max,
@@ -130,7 +130,7 @@ class InsertPinScreen extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: kSmallSpacing),
+          const SizedBox(height: kSpacing2),
         ],
       ),
     );

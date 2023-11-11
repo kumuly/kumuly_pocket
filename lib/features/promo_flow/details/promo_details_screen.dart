@@ -172,7 +172,7 @@ class ConfirmPaymentBottomSheetModal extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(height: kMediumSpacing),
+          const SizedBox(height: kSpacing3),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -202,7 +202,7 @@ class ConfirmPaymentBottomSheetModal extends ConsumerWidget {
                   ],
                 )
               : Container(),
-          const SizedBox(height: kExtraSmallSpacing),
+          const SizedBox(height: kSpacing1),
           Text(
             promoDetailsController.promo.merchant.name,
             style: textTheme.display2(
@@ -210,7 +210,7 @@ class ConfirmPaymentBottomSheetModal extends ConsumerWidget {
               FontWeight.w400,
             ),
           ),
-          const SizedBox(height: kLargeSpacing),
+          const SizedBox(height: kSpacing8),
           amount == null
               ? const CircularProgressIndicator()
               : Text(
@@ -228,7 +228,7 @@ class ConfirmPaymentBottomSheetModal extends ConsumerWidget {
               FontWeight.w500,
             ),
           ),
-          const SizedBox(height: kSmallSpacing),
+          const SizedBox(height: kSpacing2),
           Text(
             copy.plusNetworkFee,
             style: textTheme.caption1(
@@ -237,7 +237,7 @@ class ConfirmPaymentBottomSheetModal extends ConsumerWidget {
             ),
           ),
           SizedBox(
-            height: kLargeSpacing,
+            height: kSpacing8,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 64.0),
               child: Column(
@@ -254,7 +254,7 @@ class ConfirmPaymentBottomSheetModal extends ConsumerWidget {
                           textAlign: TextAlign.center,
                         )
                       : Container(),
-                  const SizedBox(height: kExtraSmallSpacing),
+                  const SizedBox(height: kSpacing1),
                 ],
               ),
             ),
@@ -292,7 +292,7 @@ class ConfirmPaymentBottomSheetModal extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: kMediumSpacing),
+          const SizedBox(height: kSpacing3),
         ],
       ),
     );

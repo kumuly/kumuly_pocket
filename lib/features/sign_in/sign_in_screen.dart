@@ -127,7 +127,7 @@ class SignInScreen extends ConsumerWidget {
             ),
           ),
           const Divider(),
-          const SizedBox(height: kMediumSpacing),
+          const SizedBox(height: kSpacing3),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -142,7 +142,7 @@ class SignInScreen extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: kMediumSpacing),
+          const SizedBox(height: kSpacing3),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.max,
@@ -157,7 +157,7 @@ class SignInScreen extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: kMediumSpacing),
+          const SizedBox(height: kSpacing3),
         ],
       ),
     );

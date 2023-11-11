@@ -106,5 +106,10 @@
   "promo": "Promo",
   "promoRedeemed": "Promo reclamada",
   "sent": "Enviado",
-  "received": "Recibido"
+  "received": "Recibido",
+  "enterAnAmount": "Ingresa el monto",
+  "cashierPaymentInstructions": "El cliente debe escanear el código QR con su billetera de gastos de Bitcoin para realizar el pago.",
+  "fundsReceived": "Fondos recibidos",
+  "availableInSalesBalance": "Dispobible en tu saldo de ventas.",
+  "unavailable": "No disponible"
 }

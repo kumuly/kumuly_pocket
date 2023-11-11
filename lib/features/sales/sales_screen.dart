@@ -60,7 +60,7 @@ class SalesScreen extends ConsumerWidget {
         SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(height: kExtraLargeSpacing),
+              const SizedBox(height: kSpacing12),
               WalletHeader(
                 title: copy.totalSales.toUpperCase(),
                 balance: balance,
@@ -85,11 +85,11 @@ class SalesScreen extends ConsumerWidget {
                 ],
               ),
               const SizedBox(
-                height: kLargeSpacing,
+                height: kSpacing8,
               ),
               const SalesGraph(),
               const SizedBox(
-                height: kMediumSpacing,
+                height: kSpacing3,
               ),
               TransactionList(
                 title: copy.recentTransactions.toUpperCase(),

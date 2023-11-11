@@ -39,7 +39,7 @@ class MenuDrawer extends ConsumerWidget {
           ListView(
             padding: EdgeInsets.zero,
             children: [
-              const SizedBox(height: kMediumSpacing),
+              const SizedBox(height: kSpacing3),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -70,7 +70,7 @@ class MenuDrawer extends ConsumerWidget {
                         backgroundImage: AssetImage(avatarAssetName),
                         radius: 24.0,
                       ),
-                      const SizedBox(width: kSmallSpacing),
+                      const SizedBox(width: kSpacing2),
                       Text(
                         alias,
                         style: Theme.of(context)
@@ -83,7 +83,7 @@ class MenuDrawer extends ConsumerWidget {
                               letterSpacing: 0.0,
                             ),
                       ),
-                      const SizedBox(width: kSmallSpacing),
+                      const SizedBox(width: kSpacing2),
                       const Spacer(),
                       VerticalDivider(
                         indent: 8.0,
@@ -92,7 +92,7 @@ class MenuDrawer extends ConsumerWidget {
                         thickness: 1.0,
                         color: Palette.neutral[30]!,
                       ),
-                      const SizedBox(width: kSmallSpacing),
+                      const SizedBox(width: kSpacing2),
                       Image.asset(
                         'assets/images/dummy_id_qr.png',
                         width: 32.0,

@@ -36,7 +36,7 @@ class PromoPaidScreen extends ConsumerWidget {
                       size: 31,
                     ),
                   ),
-                  const SizedBox(height: kSmallSpacing),
+                  const SizedBox(height: kSpacing2),
                   Text(
                     copy.paymentCompleted,
                     style: textTheme.display4(
@@ -60,7 +60,7 @@ class PromoPaidScreen extends ConsumerWidget {
                           FontWeight.w400,
                         ),
                       ),
-                      const SizedBox(height: kExtraSmallSpacing),
+                      const SizedBox(height: kSpacing1),
                       Text(
                         copy.checkOutGuidelinesToRedeemPromo,
                         textAlign: TextAlign.center,
