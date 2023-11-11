@@ -27,7 +27,7 @@ class LandingScreen extends ConsumerWidget {
               color: Palette.lilac[100]!,
             ),
           ),
-          const SizedBox(height: kMediumSpacing),
+          const SizedBox(height: kSpacing3),
           Text(
             copy.createAccountPrompt,
             style: textTheme.display4(
@@ -35,7 +35,7 @@ class LandingScreen extends ConsumerWidget {
               FontWeight.w400,
             ),
           ),
-          const SizedBox(height: kMediumSpacing),
+          const SizedBox(height: kSpacing3),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -47,7 +47,7 @@ class LandingScreen extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: kExtraLargeSpacing),
+          const SizedBox(height: kSpacing12),
           Text(
             copy.alreadyHaveAnAccount,
             style: textTheme.display3(
@@ -67,7 +67,7 @@ class LandingScreen extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: kMediumSpacing),
+          const SizedBox(height: kSpacing3),
         ],
       ),
     );

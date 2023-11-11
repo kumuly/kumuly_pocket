@@ -39,7 +39,7 @@ class SignUpScreen extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
               children: [
-                const SizedBox(height: kMediumSpacing),
+                const SizedBox(height: kSpacing3),
                 RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(
@@ -70,7 +70,7 @@ class SignUpScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: kSmallSpacing),
+                const SizedBox(height: kSpacing2),
                 Text(
                   copy.noDataCollectedOrSharedForCommercialPurposes,
                   style: textTheme.body2(
@@ -82,7 +82,7 @@ class SignUpScreen extends ConsumerWidget {
               ],
             ),
           ),
-          const SizedBox(height: kLargeSpacing),
+          const SizedBox(height: kSpacing8),
           Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -93,7 +93,7 @@ class SignUpScreen extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: kMediumSpacing),
+          const SizedBox(height: kSpacing3),
         ],
       ),
     );

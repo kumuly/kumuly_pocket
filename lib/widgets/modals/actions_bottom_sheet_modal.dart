@@ -38,7 +38,7 @@ class ActionsBottomSheetModal extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: kExtraSmallSpacing),
+          const SizedBox(height: kSpacing1),
           Column(
             children: [
               ListView.separated(
@@ -77,7 +77,7 @@ class ActionsBottomSheetModal extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: kExtraLargeSpacing),
+          const SizedBox(height: kSpacing12),
         ],
       ),
     );

@@ -26,7 +26,7 @@ class ForYouScreen extends ConsumerWidget {
               child: Column(
                 children: [
                   const SizedBox(
-                    height: kMediumSpacing,
+                    height: kSpacing3,
                   ),
                   PromosRow(),
                 ],
@@ -115,7 +115,7 @@ class PromosRow extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(
-            height: kMediumSpacing,
+            height: kSpacing3,
           ),
           Padding(
             padding: const EdgeInsets.symmetric(
@@ -285,7 +285,7 @@ class PromoCard extends StatelessWidget {
               ],
             ),
             const SizedBox(
-              height: kExtraSmallSpacing,
+              height: kSpacing1,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -333,7 +333,7 @@ class PromoCard extends StatelessWidget {
               ],
             ),
             const SizedBox(
-              height: kExtraSmallSpacing,
+              height: kSpacing1,
             ),
             Expanded(
               child: Text(
@@ -350,7 +350,7 @@ class PromoCard extends StatelessWidget {
               ),
             ),
             const SizedBox(
-              height: kExtraSmallSpacing,
+              height: kSpacing1,
             ),
           ],
         ),

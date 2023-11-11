@@ -44,9 +44,9 @@ final merchantModeRoute = StatefulShellRoute.indexedStack(
           path: '/cashier',
           name: 'cashier',
           pageBuilder: (context, state) => NoTransitionPage(
-            child: Container(color: Colors.white), // CashierScreen(),
+            child: Container(color: Colors.white),
           ),
-          routes: const [],
+          redirect: (context, state) => '/cashier-mode',
         ),
       ],
     ),

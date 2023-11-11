@@ -8,7 +8,6 @@ part 'pocket_balance_controller.g.dart';
 class PocketBalanceController extends _$PocketBalanceController {
   @override
   PocketBalanceState build() {
-    // Todo: test with refresh instead of watch
     return PocketBalanceState(
       balanceSat: ref.watch(spendableBalanceSatProvider).asData?.value,
     );

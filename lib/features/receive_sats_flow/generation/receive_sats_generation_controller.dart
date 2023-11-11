@@ -29,20 +29,28 @@ class ReceiveSatsGenerationController
   }
 
   Future<void> fetchSwapInfo() async {
-    final swapInInfo = await ref
-        .read(breezeSdkLightningNodeServiceProvider)
-        .getSwapInInfo(state.amountSat!);
-    state = state.copyWith(
-      onChainAddress: swapInInfo.bitcoinAddress,
-      onChainMaxAmount: swapInInfo.maxAmount,
-      onChainMinAmount: swapInInfo.minAmount,
-      swapFeeEstimate: swapInInfo.feeEstimate,
-    );
+    try {
+      final swapInInfo = await ref
+          .read(breezeSdkLightningNodeServiceProvider)
+          .getSwapInInfo(state.amountSat!);
+      state = state.copyWith(
+        onChainAddress: swapInInfo.bitcoinAddress,
+        onChainMaxAmount: swapInInfo.maxAmount,
+        onChainMinAmount: swapInInfo.minAmount,
+        swapFeeEstimate: swapInInfo.feeEstimate,
+        isSwapAvailable: true,
+      );
 
-    print('bitcoin address: ${swapInInfo.bitcoinAddress}');
-    print('max amount: ${swapInInfo.maxAmount}');
-    print('min amount: ${swapInInfo.minAmount}');
-    print('fee estimate: ${swapInInfo.feeEstimate}');
+      print('bitcoin address: ${swapInInfo.bitcoinAddress}');
+      print('max amount: ${swapInInfo.maxAmount}');
+      print('min amount: ${swapInInfo.minAmount}');
+      print('fee estimate: ${swapInInfo.feeEstimate}');
+    } catch (e) {
+      print(e);
+      state = state.copyWith(
+        isSwapAvailable: false,
+      );
+    }
   }
 
   Future<void> createInvoice() async {

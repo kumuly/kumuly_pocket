@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kumuly_pocket/features/cashier_flow/cashier_flow.dart';
 import 'package:kumuly_pocket/features/landing/landing_screen.dart';
 import 'package:kumuly_pocket/features/promo_flow/code/promo_code_screen.dart';
 import 'package:kumuly_pocket/features/promo_flow/promo_flow.dart';
@@ -16,7 +17,6 @@ import 'package:go_router/go_router.dart';
 // Necessary for code-generation to work
 part 'app_router.g.dart';
 
-// private navigators
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
 @riverpod
@@ -84,6 +84,12 @@ GoRouter appRouter(AppRouterRef ref) {
         ),
       ),
       merchantModeRoute,
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: '/cashier-mode',
+        name: 'cashier-mode',
+        builder: (context, state) => const CashierFlow(),
+      ),
     ],
   );
 }

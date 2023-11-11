@@ -55,7 +55,7 @@ class AssignAliasScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: kMediumSpacing),
+                const SizedBox(height: kSpacing3),
                 Text(
                   copy.assignAliasDescriptionPart1,
                   textAlign: TextAlign.center,
@@ -64,7 +64,7 @@ class AssignAliasScreen extends ConsumerWidget {
                     FontWeight.w400,
                   ),
                 ),
-                const SizedBox(height: kSmallSpacing),
+                const SizedBox(height: kSpacing2),
                 Text(
                   copy.assignAliasDescriptionPart2,
                   textAlign: TextAlign.center,
@@ -73,7 +73,7 @@ class AssignAliasScreen extends ConsumerWidget {
                     FontWeight.w400,
                   ),
                 ),
-                const SizedBox(height: kExtraLargeSpacing),
+                const SizedBox(height: kSpacing12),
                 TextField(
                   keyboardType: TextInputType.name,
                   textAlign: TextAlign.center,
@@ -115,7 +115,7 @@ class AssignAliasScreen extends ConsumerWidget {
               ],
             ),
           ),
-          const SizedBox(height: kLargeSpacing),
+          const SizedBox(height: kSpacing8),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.max,
@@ -128,7 +128,7 @@ class AssignAliasScreen extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: kMediumSpacing),
+          const SizedBox(height: kSpacing3),
         ],
       ),
     );

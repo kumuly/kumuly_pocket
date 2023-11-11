@@ -11,8 +11,7 @@ class ReceiveSatsGenerationState extends Equatable {
     this.onChainMaxAmount,
     this.onChainMinAmount,
     this.swapFeeEstimate,
-    this.isFetchingSwapInfo = false,
-    this.isSwapAvailable = false,
+    this.isSwapAvailable = true,
   });
 
   final int? amountSat;
@@ -22,7 +21,6 @@ class ReceiveSatsGenerationState extends Equatable {
   final int? onChainMaxAmount;
   final int? onChainMinAmount;
   final int? swapFeeEstimate;
-  final bool isFetchingSwapInfo; // Todo: use these state bools
   final bool
       isSwapAvailable; // Todo: use the state bools to improve the screens
 
@@ -34,7 +32,6 @@ class ReceiveSatsGenerationState extends Equatable {
     int? onChainMaxAmount,
     int? onChainMinAmount,
     int? swapFeeEstimate,
-    bool? isFetchingSwapInfo,
     bool? isSwapAvailable,
   }) {
     return ReceiveSatsGenerationState(
@@ -45,7 +42,6 @@ class ReceiveSatsGenerationState extends Equatable {
       onChainMaxAmount: onChainMaxAmount ?? this.onChainMaxAmount,
       onChainMinAmount: onChainMinAmount ?? this.onChainMinAmount,
       swapFeeEstimate: swapFeeEstimate ?? this.swapFeeEstimate,
-      isFetchingSwapInfo: isFetchingSwapInfo ?? this.isFetchingSwapInfo,
       isSwapAvailable: isSwapAvailable ?? this.isSwapAvailable,
     );
   }
@@ -77,7 +73,6 @@ class ReceiveSatsGenerationState extends Equatable {
         onChainMaxAmount,
         onChainMinAmount,
         swapFeeEstimate,
-        isFetchingSwapInfo,
         isSwapAvailable,
       ];
 }

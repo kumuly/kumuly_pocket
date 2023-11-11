@@ -13,6 +13,14 @@ double? satToBtc(SatToBtcRef ref, int? amountSat) {
 }
 
 @riverpod
+int? btcToSat(BtcToSatRef ref, double? amountBtc) {
+  if (amountBtc == null) {
+    return null;
+  }
+  return (amountBtc * 100000000).toInt();
+}
+
+@riverpod
 String? displayBitcoinAmount(DisplayBitcoinAmountRef ref, int? amountSat) {
   final bitcoinUnit = ref.watch(bitcoinUnitProvider);
 
@@ -23,4 +31,28 @@ String? displayBitcoinAmount(DisplayBitcoinAmountRef ref, int? amountSat) {
   return bitcoinUnit == BitcoinUnit.btc
       ? ref.watch(satToBtcProvider(amountSat))?.toStringAsFixed(8)
       : amountSat.toDouble().toStringAsFixed(0);
+}
+
+@riverpod
+double? satToLocal(SatToLocalRef ref, int? amountSat) {
+  final localCurrency = ref.watch(localCurrencyProvider);
+  final amountBtc = ref.read(satToBtcProvider(amountSat));
+
+  if (amountBtc == null) {
+    return null;
+  }
+  // Todo: Implement currency conversion based on localCurrency
+  return amountBtc * 37000;
+}
+
+@riverpod
+int? localToSat(LocalToSatRef ref, double? amountLocal) {
+  final localCurrency = ref.watch(localCurrencyProvider);
+
+  if (amountLocal == null) {
+    return null;
+  }
+
+  // Todo: Implement currency conversion based on localCurrency
+  return ref.read(btcToSatProvider(amountLocal / 37000));
 }

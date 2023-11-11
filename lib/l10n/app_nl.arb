@@ -106,5 +106,12 @@
   "promo": "Promo",
   "promoRedeemed": "Promo verzilverd",
   "sent": "Verstuurd",
-  "received": "Ontvangen"
+  "received": "Ontvangen",
+  "enterAnAmount": "Voer een bedrag in",
+  "cashierPaymentInstructions": "De klant moet de QR code scannen met zijn Bitcoin uitgaven wallet om de betaling te doen.",
+  "fundsReceived": "Fondsen ontvangen",
+  "availableInSalesBalance": "Beschikbaar in sales saldo",
+  "unavailable": "Niet beschikbaar",
+  "copy": "Kopieer",
+  "invoiceCopied": "Factuur gekopieerd"
 }

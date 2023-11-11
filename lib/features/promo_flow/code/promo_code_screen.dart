@@ -4,6 +4,7 @@ import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/features/promo_flow/code/promo_code_controller.dart';
 import 'package:kumuly_pocket/widgets/carousels/image_carousel.dart';
 import 'package:kumuly_pocket/widgets/clippers/ripped_paper_clipper.dart';
+import 'package:kumuly_pocket/widgets/containers/ripped_paper_container.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 import 'package:kumuly_pocket/widgets/promos/promo_description_section.dart';
 import 'package:kumuly_pocket/widgets/promos/promo_merchant_info_section.dart';
@@ -169,7 +170,7 @@ class PromoCodeAndInstructionsSection extends StatelessWidget {
                           style: textTheme.display7(
                               Palette.neutral[100], FontWeight.w700),
                         ),
-                        const SizedBox(height: kMediumSpacing),
+                        const SizedBox(height: kSpacing3),
                         Text(
                           copy.showThisQrCodeAt,
                           style: textTheme.display5(
@@ -201,7 +202,7 @@ class PromoCodeAndInstructionsSection extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const SizedBox(height: kLargeSpacing),
+                        const SizedBox(height: kSpacing8),
                         Text(
                           copy.redemptionExplanation,
                           textAlign: TextAlign.center,
@@ -292,101 +293,79 @@ class PromoCodeContainer extends StatelessWidget {
     final copy = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
 
-    return Container(
+    return RippedPaperContainer(
       height: height,
       width: width,
-      decoration: const BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            offset: Offset(0, 24),
-            spreadRadius: -12,
-            blurRadius: 48,
-            color: Color.fromRGBO(154, 170, 207, 0.55),
-          ),
-        ],
-      ),
-      child: ClipPath(
-        clipper: RippedPaperClipper(),
-        child: Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(24),
-              topRight: Radius.circular(24),
-            ),
-          ),
-          child: paymentHash == null
-              ? const Text('Something went wrong.')
-              : !isRedeemed
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        QrImageView(
-                          data: paymentHash!,
-                          embeddedImage: promo.merchant.logo.image,
-                          embeddedImageStyle: const QrEmbeddedImageStyle(
-                            size: Size(32, 32),
-                          ),
-                          padding: const EdgeInsets.all(32.0),
-                        ),
-                        const SizedBox(height: kSmallSpacing),
-                        Text(
-                          '${copy.validUntil} 17/12/2023',
-                          style: textTheme.display2(
-                            Palette.neutral[70],
-                            FontWeight.w400,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    )
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            children: [
-                              const Spacer(),
-                              Image(
-                                image: promo.merchant.logo.image,
-                                height: 32,
-                                width: 32,
-                              ),
-                              const SizedBox(height: kSmallSpacing),
-                              Text(
-                                promo.merchant.name,
-                                style: textTheme.display1(
-                                  Palette.neutral[70],
-                                  FontWeight.w400,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                              const Spacer(),
-                            ],
-                          ),
-                        ),
-                        Text(
-                          'Promo redeemed'.toUpperCase(),
-                          style: textTheme.caption1(
-                            Palette.success[100],
-                            FontWeight.w600,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '17/12/2023',
-                          style: textTheme.display2(
-                            Palette.neutral[50],
-                            FontWeight.w400,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 38),
-                      ],
+      child: paymentHash == null
+          ? const Text('Something went wrong.')
+          : !isRedeemed
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    QrImageView(
+                      data: paymentHash!,
+                      embeddedImage: promo.merchant.logo.image,
+                      embeddedImageStyle: const QrEmbeddedImageStyle(
+                        size: Size(32, 32),
+                      ),
+                      padding: const EdgeInsets.all(32.0),
                     ),
-        ),
-      ),
+                    const SizedBox(height: kSpacing2),
+                    Text(
+                      '${copy.validUntil} 17/12/2023',
+                      style: textTheme.display2(
+                        Palette.neutral[70],
+                        FontWeight.w400,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        children: [
+                          const Spacer(),
+                          Image(
+                            image: promo.merchant.logo.image,
+                            height: 32,
+                            width: 32,
+                          ),
+                          const SizedBox(height: kSpacing2),
+                          Text(
+                            promo.merchant.name,
+                            style: textTheme.display1(
+                              Palette.neutral[70],
+                              FontWeight.w400,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const Spacer(),
+                        ],
+                      ),
+                    ),
+                    Text(
+                      'Promo redeemed'.toUpperCase(),
+                      style: textTheme.caption1(
+                        Palette.success[100],
+                        FontWeight.w600,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '17/12/2023',
+                      style: textTheme.display2(
+                        Palette.neutral[50],
+                        FontWeight.w400,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 38),
+                  ],
+                ),
     );
   }
 }

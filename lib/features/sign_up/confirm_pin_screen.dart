@@ -75,9 +75,9 @@ class ConfirmPinScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: kLargeSpacing),
+                const SizedBox(height: kSpacing8),
                 PinCodeDisplay(pinCode: pinConfirmation),
-                const SizedBox(height: kExtraSmallSpacing),
+                const SizedBox(height: kSpacing1),
                 SizedBox(
                   height: 20, // Adjust this to a suitable height
                   child: pinConfirmation.length == 4 && pin != pinConfirmation
@@ -98,7 +98,7 @@ class ConfirmPinScreen extends ConsumerWidget {
               ],
             ),
           ),
-          const SizedBox(height: kExtraSmallSpacing),
+          const SizedBox(height: kSpacing1),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -110,7 +110,7 @@ class ConfirmPinScreen extends ConsumerWidget {
               ),
             ),
           ),
-          const SizedBox(height: kSmallSpacing),
+          const SizedBox(height: kSpacing2),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.max,
@@ -144,7 +144,7 @@ class ConfirmPinScreen extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: kSmallSpacing),
+          const SizedBox(height: kSpacing2),
         ],
       ),
     );

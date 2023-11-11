@@ -79,7 +79,7 @@ class PocketScreen extends ConsumerWidget {
             child: ListView(
               padding: EdgeInsets.zero,
               children: [
-                const SizedBox(height: kExtraLargeSpacing),
+                const SizedBox(height: kSpacing12),
                 WalletHeader(
                   title: copy.pocketBalance.toUpperCase(),
                   balance: balance,
@@ -151,7 +151,7 @@ class PocketScreen extends ConsumerWidget {
                   ],
                 ),
                 const SizedBox(
-                  height: kExtraLargeSpacing,
+                  height: kSpacing12,
                 ),
                 PaymentHistory(
                   title: copy.recentTransactions.toUpperCase(),
@@ -176,7 +176,7 @@ class PocketScreen extends ConsumerWidget {
                   isLoadingError: pocketPaymentsHistoryController.hasError,
                 ),
                 const SizedBox(
-                  height: kMediumSpacing,
+                  height: kSpacing3,
                 ),
               ],
             ),

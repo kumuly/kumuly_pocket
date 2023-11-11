@@ -94,10 +94,16 @@ class PromoDetailsController extends _$PromoDetailsController {
 
   Future<void> payForPromo() async {
     try {
+      // Pay the promo
+      // Since promos have a fixed price in fiat, the amount in sats changes all the time.
+      //  Therefore we add 3% to the amount to make sure we have enough,
+      //  but also will not pay it when it became 3% more expensive from the confirmed amount.
+      //  By setting useMinimumAmount to true, we make sure that we will always pay the minimum.
+      //  So it can never exceed 3% of the confirmed amount in sats and could be even less than the confirmed amount.
       await ref.read(breezeSdkLightningNodeServiceProvider).payLnUrlPay(
             promo!.lnurlPayLink,
-            state.amountSat!,
-            null,
+            state.amountSat! + (state.amountSat! * 0.03).toInt(),
+            useMinimumAmount: true,
           );
     } catch (e) {
       // Update the price in sats to pay again since this changes constantly

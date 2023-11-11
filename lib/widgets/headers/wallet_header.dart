@@ -39,7 +39,7 @@ class WalletHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(
-            height: kSmallSpacing,
+            height: kSpacing2,
           ),
           balance == null
               ? const SizedBox(
@@ -66,7 +66,7 @@ class WalletHeader extends StatelessWidget {
                   ],
                 ),
           const SizedBox(
-            height: kLargeSpacing,
+            height: kSpacing8,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,

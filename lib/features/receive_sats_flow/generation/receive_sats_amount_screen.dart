@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -65,7 +67,7 @@ class ReceiveSatsAmountScreen extends ConsumerWidget {
                       textTheme.display3(Palette.neutral[70], FontWeight.w600),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: kSmallSpacing),
+                const SizedBox(height: kSpacing2),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
@@ -154,7 +156,7 @@ class ReceiveSatsBottomSheetModal extends ConsumerWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(height: kMediumSpacing),
+          const SizedBox(height: kSpacing3),
           Text(
             copy.amountToReceive,
             style: textTheme.display5(
@@ -169,7 +171,7 @@ class ReceiveSatsBottomSheetModal extends ConsumerWidget {
               FontWeight.w500,
             ),
           ),
-          const SizedBox(height: kSmallSpacing),
+          const SizedBox(height: kSpacing2),
           Text(
             '+',
             style: textTheme.display5(
@@ -178,7 +180,7 @@ class ReceiveSatsBottomSheetModal extends ConsumerWidget {
             ),
           ),
           const SizedBox(
-            height: kLargeSpacing,
+            height: kSpacing8,
           ),
           IntrinsicHeight(
             child: Row(
@@ -186,15 +188,25 @@ class ReceiveSatsBottomSheetModal extends ConsumerWidget {
                 Expanded(
                   child: Column(
                     children: [
-                      onChainFeeEstimate == null
-                          ? const CircularProgressIndicator()
-                          : Text(
-                              '$onChainFeeEstimate ${BitcoinUnit.sat.name.toUpperCase()}',
+                      !ref
+                              .watch(receiveSatsGenerationControllerProvider)
+                              .isSwapAvailable
+                          ? Text(
+                              copy.unavailable,
                               style: textTheme.display2(
                                 Palette.neutral[80],
                                 FontWeight.w500,
                               ),
-                            ),
+                            )
+                          : onChainFeeEstimate == null
+                              ? const CircularProgressIndicator()
+                              : Text(
+                                  '$onChainFeeEstimate ${BitcoinUnit.sat.name.toUpperCase()}',
+                                  style: textTheme.display2(
+                                    Palette.neutral[80],
+                                    FontWeight.w500,
+                                  ),
+                                ),
                       Text(
                         copy.estimatedFee.toUpperCase(),
                         style: textTheme.caption1(
@@ -202,12 +214,12 @@ class ReceiveSatsBottomSheetModal extends ConsumerWidget {
                           FontWeight.w500,
                         ),
                       ),
-                      const SizedBox(height: kMediumSpacing),
+                      const SizedBox(height: kSpacing3),
                       const DynamicIcon(
                         icon: AssetImage('assets/icons/btc_avatar.png'),
                         size: 32,
                       ),
-                      const SizedBox(height: kMediumSpacing),
+                      const SizedBox(height: kSpacing3),
                       Text(
                         copy.ifYouReceiveFrom,
                         style: textTheme.display2(
@@ -256,12 +268,12 @@ class ReceiveSatsBottomSheetModal extends ConsumerWidget {
                           FontWeight.w500,
                         ),
                       ),
-                      const SizedBox(height: kMediumSpacing),
+                      const SizedBox(height: kSpacing3),
                       const DynamicIcon(
                         icon: AssetImage('assets/icons/lightning_avatar.png'),
                         size: 32.0,
                       ),
-                      const SizedBox(height: kMediumSpacing),
+                      const SizedBox(height: kSpacing3),
                       Text(
                         copy.ifYouReceiveFrom,
                         style: textTheme.display2(
@@ -291,7 +303,7 @@ class ReceiveSatsBottomSheetModal extends ConsumerWidget {
               ],
             ),
           ),
-          const SizedBox(height: kLargeSpacing),
+          const SizedBox(height: kSpacing8),
           Text(
             copy.unifiedQRExplanation,
             style: textTheme.body3(
@@ -300,7 +312,7 @@ class ReceiveSatsBottomSheetModal extends ConsumerWidget {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: kSmallSpacing),
+          const SizedBox(height: kSpacing2),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.max,
@@ -310,20 +322,31 @@ class ReceiveSatsBottomSheetModal extends ConsumerWidget {
                 fillColor: Palette.neutral[120],
                 textColor: Colors.white,
                 onPressed: () async {
-                  final invoiceCreation = ref
-                      .read(receiveSatsGenerationControllerProvider.notifier)
-                      .createInvoice();
-                  showTransitionDialog(context, copy.oneMomentPlease);
-                  await invoiceCreation;
-                  // Pop one time for the bottom sheet
-                  router.pop();
-                  // Pop another time for the transition modal
-                  router.pop();
-                  ref
-                      .read(pageViewControllerProvider(
-                        kReceiveSatsFlowPageViewId,
-                      ).notifier)
-                      .nextPage();
+                  try {
+                    final invoiceCreation = ref
+                        .read(receiveSatsGenerationControllerProvider.notifier)
+                        .createInvoice();
+                    // Show loading dialog
+                    showTransitionDialog(context, copy.oneMomentPlease);
+                    // Remove the keyboard from inputting the amount
+                    FocusScope.of(context).unfocus();
+                    // Wait for the invoice to be created
+                    await invoiceCreation;
+                    // Pop one time for the bottom sheet
+                    router.pop();
+                    // Pop another time for the transition modal
+                    router.pop();
+                    ref
+                        .read(pageViewControllerProvider(
+                          kReceiveSatsFlowPageViewId,
+                        ).notifier)
+                        .nextPage();
+                  } catch (e) {
+                    print(e);
+                    // Set an error message to the state and show it
+                    // Pop  the transition dialog
+                    router.pop();
+                  }
                 },
                 trailingIcon: const Icon(
                   Icons.qr_code,
@@ -332,7 +355,7 @@ class ReceiveSatsBottomSheetModal extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: kMediumSpacing),
+          const SizedBox(height: kSpacing3),
         ],
       ),
     );
