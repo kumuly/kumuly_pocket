@@ -9,14 +9,14 @@ part 'cashier_generation_controller.g.dart';
 class CashierGenerationController extends _$CashierGenerationController {
   @override
   CashierGenerationState build() {
-    return const CashierGenerationState();
+    return const CashierGenerationState(amountSat: 0);
   }
 
   void amountChangeHandler(String? amount) {
     if (amount == null || amount.isEmpty) {
       state = state.copyWith(
         localCurrencyAmount: null,
-        amountSat: null,
+        amountSat: 0,
       );
     } else {
       final localCurrencyAmount = double.parse(amount);

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
+import 'package:kumuly_pocket/enums/local_currency.dart';
 import 'package:kumuly_pocket/features/cashier_flow/generation/cashier_generation_controller.dart';
-import 'package:kumuly_pocket/features/receive_sats_flow/generation/receive_sats_generation_controller.dart';
 import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
 import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:kumuly_pocket/widgets/buttons/rectangular_border_button.dart';
@@ -31,8 +31,18 @@ class CashierAmountScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: Palette.neutral[100]!,
+            size: 24.0,
+          ),
+          onPressed: () {
+            router.goNamed('sales');
+          },
+        ),
         title: Text(
-          copy.cashier.toUpperCase(),
+          copy.cashier,
           style: Theme.of(context).textTheme.display4(
                 Palette.neutral[100]!,
                 FontWeight.w600,
@@ -96,23 +106,24 @@ class CashierAmountScreen extends ConsumerWidget {
                                     Palette.neutral[60], FontWeight.w600),
                               ),
                               onChanged: ref
-                                  .read(receiveSatsGenerationControllerProvider
+                                  .read(cashierGenerationControllerProvider
                                       .notifier)
                                   .amountChangeHandler,
                             ),
                           ),
                           const SizedBox(
-                              width:
-                                  5), // Adjust the width value for the desired spacing
+                            width: kSpacingHalf,
+                          ), // Adjust the width value for the desired spacing
                           Text(
-                            localCurrency.name.toUpperCase(),
+                            localCurrency.code.toUpperCase(),
                             textAlign: TextAlign.left,
-                            style: textTheme.display1(
-                                Palette.neutral[60], FontWeight.bold),
+                            style: textTheme.display3(
+                              Palette.neutral[80],
+                              FontWeight.w400,
+                            ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: kSpacingHalf),
                       Text(
                         '≈ ${ref.watch(displayBitcoinAmountProvider(amountSat))} ${unit.name.toUpperCase()}',
                         textAlign: TextAlign.center,

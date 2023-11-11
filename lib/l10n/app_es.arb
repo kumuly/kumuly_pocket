@@ -111,5 +111,7 @@
   "cashierPaymentInstructions": "El cliente debe escanear el código QR con su billetera de gastos de Bitcoin para realizar el pago.",
   "fundsReceived": "Fondos recibidos",
   "availableInSalesBalance": "Dispobible en tu saldo de ventas.",
-  "unavailable": "No disponible"
+  "unavailable": "No disponible",
+  "copy": "Copiar",
+  "invoiceCopied": "Factura copiada"
 }

@@ -108,8 +108,10 @@
   "sent": "Sent",
   "received": "Received",
   "enterAnAmount": "Enter an amount",
-  "cashierPaymentInstructions": "Client must scan the QR code with his Bitcoin spending wallet to make the payment.",
+  "cashierPaymentInstructions": "Customer must scan the QR code with his Bitcoin spending wallet to make the payment.",
   "fundsReceived": "Funds received",
   "availableInSalesBalance": "Available in your sales balance.",
-  "unavailable": "Unavailable"
+  "unavailable": "Unavailable",
+  "copy": "Copy",
+  "invoiceCopied": "Invoice copied"
 }
