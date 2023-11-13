@@ -1,4 +1,3 @@
-// All pages of the promo are shown here
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kumuly_pocket/constants.dart';
