@@ -21,30 +21,44 @@ Future<void> main() async {
   final sharedPreferences = await SharedPreferences.getInstance();
 
   // The same for initializing the Breez SDK.
-  final breezSdk = BreezSDK();
-  if (!(await breezSdk.isInitialized())) {
-    print('BreezSDK is not initialized. Initializing now...');
-    breezSdk.initialize();
+  BreezSDK breezSdk;
+  try {
+    breezSdk = BreezSDK();
+    if (!(await breezSdk.isInitialized())) {
+      print('BreezSDK is not initialized. Initializing now...');
+      breezSdk.initialize();
+    }
+
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+
+    await FirebaseAppCheck.instance.activate(
+      androidProvider:
+          kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
+      appleProvider: kDebugMode ? AppleProvider.debug : AppleProvider.appAttest,
+    );
+
+    runApp(
+      ProviderScope(
+        overrides: [
+          // override the previous value with the new object
+          sharedPreferencesProvider.overrideWithValue(sharedPreferences),
+          breezSdkProvider.overrideWithValue(breezSdk),
+        ],
+        child: const KumulyPocketApp(),
+      ),
+    );
+  } catch (e) {
+    runApp(
+      ProviderScope(
+          child: MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Text('Failed to initialize BreezSDK $e'),
+          ),
+        ),
+      )),
+    );
   }
-
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
-  await FirebaseAppCheck.instance.activate(
-    androidProvider:
-        kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
-    appleProvider: kDebugMode ? AppleProvider.debug : AppleProvider.appAttest,
-  );
-
-  runApp(
-    ProviderScope(
-      overrides: [
-        // override the previous value with the new object
-        sharedPreferencesProvider.overrideWithValue(sharedPreferences),
-        breezSdkProvider.overrideWithValue(breezSdk),
-      ],
-      child: const KumulyPocketApp(),
-    ),
-  );
 }
