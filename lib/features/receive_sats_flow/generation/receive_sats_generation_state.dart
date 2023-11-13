@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:kumuly_pocket/view_models/invoice.dart';
 
 @immutable
 class ReceiveSatsGenerationState extends Equatable {
@@ -16,7 +17,7 @@ class ReceiveSatsGenerationState extends Equatable {
 
   final int? amountSat;
   final String? description;
-  final String? invoice;
+  final Invoice? invoice;
   final String? onChainAddress;
   final int? onChainMaxAmount;
   final int? onChainMinAmount;
@@ -27,7 +28,7 @@ class ReceiveSatsGenerationState extends Equatable {
   ReceiveSatsGenerationState copyWith({
     int? amountSat,
     String? description,
-    String? invoice,
+    Invoice? invoice,
     String? onChainAddress,
     int? onChainMaxAmount,
     int? onChainMinAmount,

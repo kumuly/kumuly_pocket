@@ -120,5 +120,7 @@
   "cancelPromo": "Annuleer promo",
   "validateIfProductOrServiceIsStillAvailable": "Als het product of de dienst nog beschikbaar is, druk dan op valideren. Anders, druk op annuleren.",
   "promoValidated": "Promo gevalideerd",
-  "pleaseProvideProductOrService": "Geef het product of de dienst aan de klant."
+  "pleaseProvideProductOrService": "Geef het product of de dienst aan je klant.",
+  "promoCancelled": "Promo geannuleerd",
+  "theCustomerCanClaimARefund": "De klant kan een terugbetaling claimen via de app."
 }

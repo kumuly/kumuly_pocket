@@ -120,5 +120,7 @@
   "cancelPromo": "Cancelar promo",
   "validateIfProductOrServiceIsStillAvailable": "Si el producto o servicio aún está disponible, presiona validar. De lo contrario, presiona cancelar.",
   "promoValidated": "Promo validada",
-  "pleaseProvideProductOrService": "Por favor, proporciona el producto o servicio al cliente."
+  "pleaseProvideProductOrService": "Por favor, proporciona el producto o servicio a tu cliente.",
+  "promoCancelled": "Promo cancelada",
+  "theCustomerCanClaimARefund": "El cliente puede reclamar un reembolso a través de la aplicación."
 }

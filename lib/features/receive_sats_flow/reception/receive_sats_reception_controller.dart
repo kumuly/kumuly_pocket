@@ -11,29 +11,40 @@ part 'receive_sats_reception_controller.g.dart';
 class ReceiveSatsReceptionController extends _$ReceiveSatsReceptionController {
   @override
   ReceiveSatsReceptionState build() {
-    // Start listening for Lightning payment
-    ref
-        .read(breezeSdkLightningNodeServiceProvider)
-        .streamInvoicePayment(
-          bolt11: ref.watch(receiveSatsGenerationControllerProvider).invoice,
-        )
-        .firstWhere(
-          (paid) => paid,
-        )
-        .then((value) => onPaymentReceived());
+    final invoice = ref.watch(receiveSatsGenerationControllerProvider).invoice;
+    final swapAvailable =
+        ref.watch(receiveSatsGenerationControllerProvider).isSwapAvailable;
+    final bitcoinAddress =
+        ref.watch(receiveSatsGenerationControllerProvider).onChainAddress;
 
-    // Start listening for a swap from an on-chain transaction
-    ref
-        .read(breezeSdkLightningNodeServiceProvider)
-        .inProgressSwapPolling(const Duration(seconds: 5))
-        .firstWhere(
-          (bitcoinAddress) =>
-              ref
-                  .watch(receiveSatsGenerationControllerProvider)
-                  .onChainAddress ==
-              bitcoinAddress,
-        )
-        .then((value) => onSwapInProgress());
+    if (invoice != null) {
+      // Start listening for Lightning payment
+      ref
+          .read(breezeSdkLightningNodeServiceProvider)
+          .streamInvoicePayment(
+            bolt11: invoice.bolt11,
+            paymentHash: invoice.paymentHash,
+          )
+          .firstWhere(
+            (paid) => paid,
+          )
+          .then((value) => onPaymentReceived());
+
+      if (swapAvailable && bitcoinAddress != null) {
+        // Start listening for a swap from an on-chain transaction
+        ref
+            .read(breezeSdkLightningNodeServiceProvider)
+            .inProgressSwapPolling(const Duration(seconds: 5))
+            .firstWhere(
+              (bitcoinAddress) =>
+                  ref
+                      .watch(receiveSatsGenerationControllerProvider)
+                      .onChainAddress ==
+                  bitcoinAddress,
+            )
+            .then((value) => onSwapInProgress());
+      }
+    }
 
     return const ReceiveSatsReceptionState();
   }

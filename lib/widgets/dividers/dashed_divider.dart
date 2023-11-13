@@ -60,8 +60,6 @@ class DrawDottedhorizontalline extends CustomPainter {
         ? canvas.getLocalClipBounds().center.dx.abs()
         : startX + length!;
 
-    print('startX width: ${startX}');
-    print('endX width: ${endX}');
     for (double i = startX; i < endX; i = i + dashSpace) {
       // 15 is space between dots
       if (i % 3 == 0) {

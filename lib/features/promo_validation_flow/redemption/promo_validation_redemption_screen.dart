@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
+import 'package:kumuly_pocket/features/promo_validation_flow/redemption/promo_validation_redemption_controller.dart';
 import 'package:kumuly_pocket/features/promo_validation_flow/scanner/promo_validation_scanner_controller.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/buttons/primary_filled_button.dart';
 import 'package:kumuly_pocket/widgets/buttons/primary_text_button.dart';
+import 'package:kumuly_pocket/widgets/dialogs/transition_dialog.dart';
+import 'package:kumuly_pocket/widgets/dividers/dashed_divider.dart';
 import 'package:kumuly_pocket/widgets/lists/numbered_list.dart';
 import 'package:kumuly_pocket/widgets/page_views/page_view_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -18,6 +22,7 @@ class PromoValidationRedemptionScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
     final copy = AppLocalizations.of(context)!;
+    final router = GoRouter.of(context);
     final promo = ref.watch(promoValidationScannerControllerProvider).promo;
 
     return Scaffold(
@@ -33,23 +38,16 @@ class PromoValidationRedemptionScreen extends ConsumerWidget {
               size: 24.0,
             ),
             onPressed: () {
-              // Reset the state
-              ref.invalidate(promoValidationScannerControllerProvider);
-              ref
-                  .read(pageViewControllerProvider(
-                    kPromoValidationFlowPageViewId,
-                  ).notifier)
-                  .previousPage();
+              router.pop();
             },
           ),
         ],
       ),
-      extendBodyBehindAppBar: true,
+      extendBodyBehindAppBar: false,
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: kSpacing2),
         child: Column(
           children: [
-            const SizedBox(height: kToolbarHeight),
             CircleAvatar(
               backgroundImage: promo?.merchant.logo.image,
               radius: 10,
@@ -78,30 +76,86 @@ class PromoValidationRedemptionScreen extends ConsumerWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: kSpacing13),
-            SizedBox(
-              height: 208,
-              child: Stack(children: [
-                ClipRect(
-                  child: NumberedList(
-                    listItems: promo.termsAndConditions,
-                  ),
+            Stack(fit: StackFit.loose, children: [
+              ClipRect(
+                child: NumberedList(
+                  listItems: promo.termsAndConditions,
+                  maxItems: 4,
                 ),
-                BottomShadow(width: MediaQuery.of(context).size.width),
-              ]),
-            ),
+              ),
+              BottomShadow(
+                  width: MediaQuery.of(context).size.width, spreadRadius: 40),
+            ]),
+            DashedDivider(),
             const SizedBox(height: kSpacing5),
-            PrimaryFilledButton(
-              text: copy.validatePromo,
-              onPressed: () {},
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                PrimaryFilledButton(
+                  text: copy.validatePromo,
+                  onPressed: () async {
+                    try {
+                      final validatingPromo = ref
+                          .read(
+                            promoValidationRedemptionControllerProvider
+                                .notifier,
+                          )
+                          .validate();
+                      showTransitionDialog(context, copy.oneMomentPlease);
+                      await validatingPromo;
+                      router.pop();
+                      ref
+                          .read(pageViewControllerProvider(
+                            kPromoValidationFlowPageViewId,
+                          ).notifier)
+                          .nextPage();
+                    } catch (e) {
+                      print(e);
+                      router.pop();
+                    }
+                  },
+                ),
+              ],
             ),
             const SizedBox(height: kSpacing2),
-            PrimaryTextButton(text: copy.cancelPromo, onPressed: () {}),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                PrimaryTextButton(
+                  text: copy.cancelPromo,
+                  onPressed: () async {
+                    try {
+                      final cancellingPromo = ref
+                          .read(
+                            promoValidationRedemptionControllerProvider
+                                .notifier,
+                          )
+                          .cancel();
+                      showTransitionDialog(context, copy.oneMomentPlease);
+                      await cancellingPromo;
+                      router.pop();
+                      ref
+                          .read(pageViewControllerProvider(
+                            kPromoValidationFlowPageViewId,
+                          ).notifier)
+                          .nextPage();
+                    } catch (e) {
+                      print(e);
+                      router.pop();
+                    }
+                  },
+                ),
+              ],
+            ),
             const SizedBox(height: kSpacing3),
             Text(
               copy.validateIfProductOrServiceIsStillAvailable,
               style: textTheme.display1(Palette.neutral[60], FontWeight.w500),
               textAlign: TextAlign.center,
             ),
+            const SizedBox(height: kSpacing8),
           ],
         ),
       ),

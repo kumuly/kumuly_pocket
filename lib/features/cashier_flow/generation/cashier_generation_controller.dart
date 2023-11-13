@@ -1,6 +1,7 @@
 import 'package:kumuly_pocket/features/cashier_flow/generation/cashier_generation_state.dart';
 import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
 import 'package:kumuly_pocket/services/lightning_node_service.dart';
+import 'package:kumuly_pocket/view_models/invoice.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'cashier_generation_controller.g.dart';
@@ -39,6 +40,6 @@ class CashierGenerationController extends _$CashierGenerationController {
 
     print(invoice);
 
-    state = state.copyWith(invoice: invoice);
+    state = state.copyWith(invoice: Invoice.fromInvoiceEntity(invoice));
   }
 }

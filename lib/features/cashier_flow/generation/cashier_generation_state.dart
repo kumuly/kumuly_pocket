@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:kumuly_pocket/view_models/invoice.dart';
 
 @immutable
 class CashierGenerationState extends Equatable {
@@ -13,13 +14,13 @@ class CashierGenerationState extends Equatable {
   final double? localCurrencyAmount;
   final int? amountSat;
   final String? description;
-  final String? invoice;
+  final Invoice? invoice;
 
   CashierGenerationState copyWith({
     double? localCurrencyAmount,
     int? amountSat,
     String? description,
-    String? invoice,
+    Invoice? invoice,
   }) {
     return CashierGenerationState(
       localCurrencyAmount: localCurrencyAmount ?? this.localCurrencyAmount,
@@ -32,10 +33,11 @@ class CashierGenerationState extends Equatable {
   /// Get the 8 first and 8 last characters of the invoice with ellipsis in the
   ///   middle for display purposes.
   String get partialInvoice {
-    if (invoice == null || invoice!.isEmpty) {
+    if (invoice == null) {
       return '';
     } else {
-      return '${invoice!.substring(0, 8)}...${invoice!.substring(invoice!.length - 8)}';
+      final bolt11 = invoice!.bolt11;
+      return '${bolt11.substring(0, 8)}...${bolt11.substring(bolt11.length - 8)}';
     }
   }
 

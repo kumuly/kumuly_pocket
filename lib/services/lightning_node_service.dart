@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
+import 'package:kumuly_pocket/entities/invoice_entity.dart';
 import 'package:kumuly_pocket/entities/payment_entity.dart';
 import 'package:kumuly_pocket/entities/recommended_fees_entity.dart';
 import 'package:kumuly_pocket/entities/swap_in_info_entity.dart';
@@ -63,7 +64,7 @@ abstract class LightningNodeService {
     String workingDirPath,
     AppNetwork network,
   );
-  Future<String> createInvoice(int amountSat, String? description);
+  Future<InvoiceEntity> createInvoice(int amountSat, String? description);
   Future<(int minAmountSat, int maxAmountSat)> getLnurlPayAmounts(
     String paymentLink,
   );
@@ -147,14 +148,13 @@ class BreezSdkLightningNodeService implements LightningNodeService {
   }
 
   @override
-  Future<String> createInvoice(int amountSat, String? description) async {
+  Future<InvoiceEntity> createInvoice(
+      int amountSat, String? description) async {
     final amountMsat = amountSat * 1000;
-    final invoice = await _lightningNodeRepository.createInvoice(
+    return _lightningNodeRepository.createInvoice(
       amountMsat: amountMsat,
       description: description,
     );
-
-    return invoice.bolt11;
   }
 
   @override

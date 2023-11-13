@@ -312,7 +312,6 @@ class PromoCodeContainer extends StatelessWidget {
                       embeddedImageStyle: const QrEmbeddedImageStyle(
                         size: Size(32, 32),
                       ),
-                      padding: const EdgeInsets.all(32.0),
                     ),
                     const SizedBox(height: kSpacing2),
                     Text(
