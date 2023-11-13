@@ -17,6 +17,7 @@ class CashierFlow extends ConsumerWidget {
     final pageController = ref.watch(pageViewControllerProvider(
       kCashierFlowPageViewId,
     ));
+    ref.watch(cashierGenerationControllerProvider);
 
     return WillPopScope(
       onWillPop: () async {

@@ -61,7 +61,7 @@ class CashierAmountScreen extends ConsumerWidget {
               size: 24.0,
             ),
             onPressed: () {
-              // Todo: Go to validate promo flow
+              router.pushNamed('promo-validation-flow');
             },
           ),
         ],
@@ -115,7 +115,7 @@ class CashierAmountScreen extends ConsumerWidget {
                             ),
                           ),
                           const SizedBox(
-                            width: kSpacingHalf,
+                            width: kSpacing1 / 2,
                           ), // Adjust the width value for the desired spacing
                           Text(
                             localCurrency.code.toUpperCase(),

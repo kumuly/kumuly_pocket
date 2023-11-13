@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -13,7 +11,6 @@ import 'package:kumuly_pocket/widgets/buttons/rectangular_border_button.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/dialogs/transition_dialog.dart';
-
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 import 'package:kumuly_pocket/widgets/page_views/page_view_controller.dart';

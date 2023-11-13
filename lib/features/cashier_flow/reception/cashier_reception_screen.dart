@@ -134,7 +134,7 @@ class CashierReceptionScreen extends ConsumerWidget {
                     )
                   ],
                 ),
-                const SizedBox(height: kSpacingHalf),
+                const SizedBox(height: kSpacing1 / 2),
                 Text(
                   '≈ ${ref.watch(displayBitcoinAmountProvider(amountSat))} ${ref.watch(bitcoinUnitProvider).name.toUpperCase()}',
                   style: textTheme.display1(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/features/promo_flow/code/promo_code_controller.dart';
+import 'package:kumuly_pocket/features/promo_flow/details/promo_details_controller.dart';
 import 'package:kumuly_pocket/widgets/carousels/image_carousel.dart';
 import 'package:kumuly_pocket/widgets/clippers/ripped_paper_clipper.dart';
 import 'package:kumuly_pocket/widgets/containers/ripped_paper_container.dart';
@@ -29,6 +30,9 @@ class PromoCodeScreen extends ConsumerWidget {
     final copy = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
 
+    final promoDetailsController =
+        ref.watch(promoDetailsControllerProvider(id, promo));
+
     final promoCodeController = ref.watch(
       promoCodeControllerProvider(
         id,
@@ -54,7 +58,7 @@ class PromoCodeScreen extends ConsumerWidget {
         child: Column(
           children: [
             PromoCodeAndInstructionsSection(
-              promo: promoCodeController.promo,
+              promo: promoDetailsController.promo,
               paymentHash: promoCodeController.paymentHash,
               isRedeemed: isRedeemed,
             ),
@@ -64,7 +68,7 @@ class PromoCodeScreen extends ConsumerWidget {
                     children: [
                       DashedDivider(),
                       PromoMerchantInfoSection(
-                          promoCodeController.promo.merchant),
+                          promoDetailsController.promo.merchant),
                       DashedDivider(),
                       Padding(
                         padding: const EdgeInsets.symmetric(
@@ -73,7 +77,7 @@ class PromoCodeScreen extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              promoCodeController.promo.tag,
+                              promoDetailsController.promo.tag,
                               style: textTheme.display6(
                                 Palette.neutral[120],
                                 FontWeight.w400,
@@ -81,7 +85,7 @@ class PromoCodeScreen extends ConsumerWidget {
                             ),
                             const SizedBox(height: 4.0),
                             Text(
-                              promoCodeController.promo.headline,
+                              promoDetailsController.promo.headline,
                               style: textTheme.body4(
                                 Palette.neutral[80],
                                 FontWeight.w400,
@@ -93,10 +97,10 @@ class PromoCodeScreen extends ConsumerWidget {
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
                                 itemCount:
-                                    promoCodeController.promo.images.length,
+                                    promoDetailsController.promo.images.length,
                                 itemBuilder: (context, index) {
-                                  final itemCount =
-                                      promoCodeController.promo.images.length;
+                                  final itemCount = promoDetailsController
+                                      .promo.images.length;
                                   return Padding(
                                     padding: itemCount > 1 && index == 0
                                         ? const EdgeInsets.only(right: 4.0)
@@ -106,19 +110,19 @@ class PromoCodeScreen extends ConsumerWidget {
                                             : const EdgeInsets.symmetric(
                                                 horizontal: 4.0,
                                               ), // Adjust the spacing between images
-                                    child:
-                                        promoCodeController.promo.images[index],
+                                    child: promoDetailsController
+                                        .promo.images[index],
                                   );
                                 },
                               ),
                             ),
                             const SizedBox(height: 40.0),
                             PromoDescriptionSection(
-                              promoCodeController.promo.description,
+                              promoDetailsController.promo.description,
                             ),
                             const SizedBox(height: 40.0),
                             PromoTermsAndConditionsSection(
-                              promoCodeController.promo.termsAndConditions,
+                              promoDetailsController.promo.termsAndConditions,
                             ),
                           ],
                         ),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kumuly_pocket/providers/breez_sdk_providers.dart';
 import 'package:kumuly_pocket/router/app_router.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 
@@ -13,9 +12,6 @@ class KumulyPocketApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appRouter = ref.watch(appRouterProvider);
-
-    // Initialize the Breez SDK
-    ref.read(breezSdkInitializeProvider);
 
     return MaterialApp.router(
       title: 'Kumuly Pocket',
