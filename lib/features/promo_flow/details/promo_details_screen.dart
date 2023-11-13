@@ -87,7 +87,8 @@ class PromoDetailsScreen extends ConsumerWidget {
                       promoDetailsController.promo.description),
                   const SizedBox(height: 40.0),
                   PromoTermsAndConditionsSection(
-                      promoDetailsController.promo.termsAndConditions),
+                    promoDetailsController.promo.termsAndConditions,
+                  ),
                   const SizedBox(height: 40.0),
                   PromoPriceAndHeadlineSection(
                     promoDetailsController.promo.originalPrice,

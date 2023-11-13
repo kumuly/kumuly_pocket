@@ -3,6 +3,7 @@ import 'package:kumuly_pocket/features/cashier_flow/cashier_flow.dart';
 import 'package:kumuly_pocket/features/landing/landing_screen.dart';
 import 'package:kumuly_pocket/features/promo_flow/code/promo_code_screen.dart';
 import 'package:kumuly_pocket/features/promo_flow/promo_flow.dart';
+import 'package:kumuly_pocket/features/promo_validation_flow/promo_validation_flow.dart';
 import 'package:kumuly_pocket/features/promos/promos_screen.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_flow.dart';
 import 'package:kumuly_pocket/features/root/root_screen.dart';
@@ -11,6 +12,7 @@ import 'package:kumuly_pocket/router/pocket_mode_route.dart';
 import 'package:kumuly_pocket/router/sign_in_route.dart';
 import 'package:kumuly_pocket/router/sign_up_route.dart';
 import 'package:kumuly_pocket/view_models/promo.dart';
+import 'package:path/path.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:go_router/go_router.dart';
 
@@ -87,8 +89,14 @@ GoRouter appRouter(AppRouterRef ref) {
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
         path: '/cashier-mode',
-        name: 'cashier-mode',
+        name: 'cashier-mode-flow',
         builder: (context, state) => const CashierFlow(),
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: '/promo-validation',
+        name: 'promo-validation-flow',
+        builder: (context, state) => const PromoValidationFlow(),
       ),
     ],
   );

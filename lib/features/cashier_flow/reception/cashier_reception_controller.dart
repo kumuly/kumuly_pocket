@@ -10,13 +10,17 @@ part 'cashier_reception_controller.g.dart';
 class CashierReceptionController extends _$CashierReceptionController {
   @override
   void build() {
-    ref
-        .read(breezeSdkLightningNodeServiceProvider)
-        .streamInvoicePayment(
-          bolt11: ref.watch(cashierGenerationControllerProvider).invoice,
-        )
-        .firstWhere((paid) => paid)
-        .then((value) => onReceived());
+    final invoice = ref.watch(cashierGenerationControllerProvider).invoice;
+    if (invoice != null) {
+      ref
+          .read(breezeSdkLightningNodeServiceProvider)
+          .streamInvoicePayment(
+            bolt11: invoice.bolt11,
+            paymentHash: invoice.paymentHash,
+          )
+          .firstWhere((paid) => paid)
+          .then((value) => onReceived());
+    }
   }
 
   void onReceived() async {

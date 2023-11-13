@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 class BottomShadow extends StatelessWidget {
-  const BottomShadow({super.key, required this.width});
+  const BottomShadow({super.key, this.spreadRadius = 30, required this.width});
 
+  final double spreadRadius;
   final double width;
 
   @override
@@ -12,13 +13,13 @@ class BottomShadow extends StatelessWidget {
       child: Container(
         height: 1,
         width: width,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: Colors.white,
           boxShadow: [
             BoxShadow(
               color: Colors.white,
-              offset: Offset(0, -10),
-              spreadRadius: 30,
+              offset: const Offset(0, -10),
+              spreadRadius: spreadRadius,
               blurRadius: 40,
             ),
           ],

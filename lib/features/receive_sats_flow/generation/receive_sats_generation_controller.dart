@@ -1,5 +1,6 @@
 import 'package:kumuly_pocket/features/receive_sats_flow/generation/receive_sats_generation_state.dart';
 import 'package:kumuly_pocket/services/lightning_node_service.dart';
+import 'package:kumuly_pocket/view_models/invoice.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'receive_sats_generation_controller.g.dart';
@@ -62,6 +63,6 @@ class ReceiveSatsGenerationController
 
     print(invoice);
 
-    state = state.copyWith(invoice: invoice);
+    state = state.copyWith(invoice: Invoice.fromInvoiceEntity(invoice));
   }
 }

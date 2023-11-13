@@ -74,7 +74,7 @@ class CashierReceptionScreen extends ConsumerWidget {
                 invoice == null
                     ? const Text('Something went wrong.')
                     : QrImageView(
-                        data: invoice,
+                        data: invoice.bolt11,
                         size: 200,
                         embeddedImage: Image.asset(
                           'assets/images/dummy_merchant_avatar.png',
@@ -86,7 +86,8 @@ class CashierReceptionScreen extends ConsumerWidget {
                 const SizedBox(height: kSpacing1 * 1.5),
                 InkWell(
                   onTap: () {
-                    Clipboard.setData(ClipboardData(text: invoice!)).then(
+                    Clipboard.setData(ClipboardData(text: invoice!.bolt11))
+                        .then(
                       (_) {
                         // Optionally, show a confirmation message to the user.
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -134,7 +135,7 @@ class CashierReceptionScreen extends ConsumerWidget {
                     )
                   ],
                 ),
-                const SizedBox(height: kSpacingHalf),
+                const SizedBox(height: kSpacing1 / 2),
                 Text(
                   '≈ ${ref.watch(displayBitcoinAmountProvider(amountSat))} ${ref.watch(bitcoinUnitProvider).name.toUpperCase()}',
                   style: textTheme.display1(

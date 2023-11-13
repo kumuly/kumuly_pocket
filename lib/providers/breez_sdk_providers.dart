@@ -3,19 +3,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'breez_sdk_providers.g.dart';
 
-final _sdk = BreezSDK();
-
-@riverpod
+@Riverpod(keepAlive: true)
 BreezSDK breezSdk(BreezSdkRef ref) {
-  return _sdk;
-}
-
-@riverpod
-Future<void> breezSdkInitialize(BreezSdkInitializeRef ref) async {
-  final breezSdk = ref.watch(breezSdkProvider);
-  // Initialize flutter specific listeners and logs.
-  if (!(await breezSdk.isInitialized())) {
-    print('BreezSDK is not initialized. Initializing now...');
-    breezSdk.initialize();
-  }
+  // Since the initialization of the Breez SDK is not async,
+  //  it is overridden in the main.dart file to make it synchronous.
+  //  And here we don't need to do anything but declare the provider.
+  throw UnimplementedError();
 }

@@ -1,4 +1,3 @@
-const kSpacingHalf = 4.0;
 const kSpacing1 = 8.0;
 const kSpacing2 = 16.0;
 const kSpacing3 = 24.0;
@@ -28,3 +27,4 @@ const kCarouselPageViewId = 'carousel';
 const kReceiveSatsFlowPageViewId = 'receive-sats-flow';
 const kPromoFlowPageViewId = 'promo-flow';
 const kCashierFlowPageViewId = 'cashier-flow';
+const kPromoValidationFlowPageViewId = 'promo-validation-flow';

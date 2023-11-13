@@ -113,5 +113,14 @@
   "availableInSalesBalance": "Available in your sales balance.",
   "unavailable": "Unavailable",
   "copy": "Copy",
-  "invoiceCopied": "Invoice copied"
+  "invoiceCopied": "Invoice copied",
+  "promoQrScan": "Promo QR scan",
+  "scanQrToRedeemPromo": "Scan a customer's QR code to redeem the promotion.",
+  "validatePromo": "Validate promo",
+  "cancelPromo": "Cancel promo",
+  "validateIfProductOrServiceIsStillAvailable": "If the product or service is still available press validate. Otherwise, press cancel.",
+  "promoValidated": "Promo validated",
+  "pleaseProvideProductOrService": "Please provide the product or service to your customer.",
+  "promoCancelled": "Promo cancelled",
+  "theCustomerCanClaimARefund": "The customer can claim a refund through the app."
 }

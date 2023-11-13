@@ -113,5 +113,14 @@
   "availableInSalesBalance": "Dispobible en tu saldo de ventas.",
   "unavailable": "No disponible",
   "copy": "Copiar",
-  "invoiceCopied": "Factura copiada"
+  "invoiceCopied": "Factura copiada",
+  "promoQrScan": "Escan de código QR de promo",
+  "scanQrToRedeemPromo": "Escanea el código QR de un cliente para reclamar la promo.",
+  "validatePromo": "Validar promo",
+  "cancelPromo": "Cancelar promo",
+  "validateIfProductOrServiceIsStillAvailable": "Si el producto o servicio aún está disponible, presiona validar. De lo contrario, presiona cancelar.",
+  "promoValidated": "Promo validada",
+  "pleaseProvideProductOrService": "Por favor, proporciona el producto o servicio a tu cliente.",
+  "promoCancelled": "Promo cancelada",
+  "theCustomerCanClaimARefund": "El cliente puede reclamar un reembolso a través de la aplicación."
 }
