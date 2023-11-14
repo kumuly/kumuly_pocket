@@ -2,21 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
-import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 import 'package:kumuly_pocket/widgets/shadows/bottom_shadow.dart';
 
 class MenuDrawer extends ConsumerWidget {
-  const MenuDrawer(
-      {Key? key,
-      required this.alias,
-      required this.avatarAssetName,
-      required this.children})
-      : super(key: key);
+  const MenuDrawer({
+    Key? key,
+    required this.avatar,
+    required this.alias,
+    this.onQrTap,
+    required this.children,
+  }) : super(key: key);
 
-  final String alias;
-  final String avatarAssetName;
+  final Widget avatar;
+  final Widget alias;
+  final void Function()? onQrTap;
 
   /// The widgets to display in the drawer beneath the ID header.
   /// Typically, this will be a list of
@@ -64,25 +65,15 @@ class MenuDrawer extends ConsumerWidget {
                 ),
                 child: IntrinsicHeight(
                   child: Row(
-                    mainAxisSize: MainAxisSize.max,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       CircleAvatar(
-                        backgroundImage: AssetImage(avatarAssetName),
+                        backgroundColor: Palette.neutral[120]!,
                         radius: 24.0,
+                        child: avatar,
                       ),
                       const SizedBox(width: kSpacing2),
-                      Text(
-                        alias,
-                        style: Theme.of(context)
-                            .textTheme
-                            .display2(
-                              Palette.neutral[80],
-                              FontWeight.normal,
-                            )
-                            .copyWith(
-                              letterSpacing: 0.0,
-                            ),
-                      ),
+                      alias,
                       const SizedBox(width: kSpacing2),
                       const Spacer(),
                       VerticalDivider(
@@ -93,10 +84,13 @@ class MenuDrawer extends ConsumerWidget {
                         color: Palette.neutral[30]!,
                       ),
                       const SizedBox(width: kSpacing2),
-                      Image.asset(
-                        'assets/images/dummy_id_qr.png',
-                        width: 32.0,
-                        height: 32.0,
+                      InkWell(
+                        onTap: onQrTap,
+                        child: Image.asset(
+                          'assets/images/dummy_id_qr.png',
+                          width: 32.0,
+                          height: 32.0,
+                        ),
                       ),
                     ],
                   ),

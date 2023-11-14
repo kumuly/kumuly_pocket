@@ -34,8 +34,19 @@ class MerchantModeScaffoldWithNestedNavigation extends StatelessWidget {
       scaffoldKey: merchantModeScaffoldKey,
       navigationShell: navigationShell,
       endDrawer: MenuDrawer(
-        alias: merchantName,
-        avatarAssetName: 'assets/images/dummy_merchant_avatar.png',
+        alias: Text(
+          merchantName,
+          style: Theme.of(context)
+              .textTheme
+              .display2(
+                Palette.neutral[120],
+                FontWeight.normal,
+              )
+              .copyWith(
+                letterSpacing: 0.0,
+              ),
+        ),
+        avatar: Image.asset('assets/images/dummy_merchant_avatar.png'),
         children: [
           const DrawerSectionSpace(),
           DrawerItem(
