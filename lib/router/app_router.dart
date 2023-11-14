@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kumuly_pocket/features/cashier_flow/cashier_flow.dart';
+import 'package:kumuly_pocket/features/contact_id/contact_id_screen.dart';
 import 'package:kumuly_pocket/features/landing/landing_screen.dart';
 import 'package:kumuly_pocket/features/promo_flow/code/promo_code_screen.dart';
 import 'package:kumuly_pocket/features/promo_flow/promo_flow.dart';
@@ -53,6 +54,12 @@ GoRouter appRouter(AppRouterRef ref) {
         ),
       ),
       pocketModeRoute,
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: '/contact-id',
+        name: 'contact-id',
+        builder: (context, state) => const ContactIdScreen(),
+      ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
         path: '/receive-sats',

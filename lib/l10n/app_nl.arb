@@ -122,5 +122,9 @@
   "promoValidated": "Promo gevalideerd",
   "pleaseProvideProductOrService": "Geef het product of de dienst aan je klant.",
   "promoCancelled": "Promo geannuleerd",
-  "theCustomerCanClaimARefund": "De klant kan een terugbetaling claimen via de app."
+  "theCustomerCanClaimARefund": "De klant kan een terugbetaling claimen via de app.",
+  "contactId": "Contact ID",
+  "contactIdExplanation": "Je contact ID, ook wel node ID genoemd, is een unieke identificatie binnen het Lightning Network van Bitcoin. Je kunt het delen zodat anderen je gemakkelijk als contact kunnen toevoegen en betalingen kunnen sturen.",
+  "yourId": "Jouw ID",
+  "nodeIdCopied": "Node ID gekopieerd"
 }

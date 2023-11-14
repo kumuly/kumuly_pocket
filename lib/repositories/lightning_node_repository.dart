@@ -26,6 +26,7 @@ LightningNodeRepository breezeSdkLightningNodeRepository(
 }
 
 abstract class LightningNodeRepository {
+  Future<String> get nodeId;
   Future<int> get spendableBalanceMsat;
   Future<int> get onChainBalanceMsat;
   Future<int> get inboundLiquidityMsat;
@@ -86,6 +87,11 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
   );
 
   final BreezSDK _breezSdk;
+
+  @override
+  Future<String> get nodeId async => _breezSdk.nodeInfo().then(
+        (nodeInfo) => nodeInfo?.id ?? '',
+      );
 
   @override
   Future<int> get spendableBalanceMsat => _breezSdk.nodeInfo().then(

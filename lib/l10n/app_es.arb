@@ -122,5 +122,9 @@
   "promoValidated": "Promo validada",
   "pleaseProvideProductOrService": "Por favor, proporciona el producto o servicio a tu cliente.",
   "promoCancelled": "Promo cancelada",
-  "theCustomerCanClaimARefund": "El cliente puede reclamar un reembolso a través de la aplicación."
+  "theCustomerCanClaimARefund": "El cliente puede reclamar un reembolso a través de la aplicación.",
+  "contactId": "Contact ID",
+  "contactIdExplanation": "Tu contact ID, también conocido como node ID, es un identificador único dentro de la red Lightning de Bitcoin. Puedes compartirlo para que otros te agreguen como contacto y envíen pagos fácilmente.",
+  "yourId": "Tu ID",
+  "nodeIdCopied": "Node ID copied"
 }
