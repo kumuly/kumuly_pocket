@@ -55,7 +55,7 @@ class BitcoinUnitSettingsScreen extends ConsumerWidget {
       extendBodyBehindAppBar: false,
       body: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: 24,
+          horizontal: 16,
         ),
         child: Column(
           children: [
@@ -85,16 +85,11 @@ class BitcoinUnitSettingsScreen extends ConsumerWidget {
             const SizedBox(height: 8.0),
             if (bitcoinUnit == BitcoinUnit.sat)
               BounceInUp(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24.0,
-                  ),
-                  child: Text(
-                    copy.satUnitHelperText,
-                    style: textTheme.body2(
-                      Palette.neutral[70],
-                      FontWeight.normal,
-                    ),
+                child: Text(
+                  copy.satUnitHelperText,
+                  style: textTheme.body2(
+                    Palette.neutral[70],
+                    FontWeight.normal,
                   ),
                 ),
               ),
