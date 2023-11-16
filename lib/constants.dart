@@ -1,3 +1,4 @@
+/* Spacing */
 const kSpacing1 = 8.0;
 const kSpacing2 = 16.0;
 const kSpacing3 = 24.0;
@@ -18,13 +19,19 @@ const kSpacing17 = 136.0;
 const kSpacing18 = 144.0;
 const kSpacing19 = 152.0;
 const kSpacing20 = 160.0;
+/* Firebase collections */
 const merchantsCollection = 'merchants';
 const productsSubcollection = 'products';
 const promosSubcollection = 'promos';
 const allProductsCollection = 'all-products';
 const allPromosCollection = 'all-promos';
+/* PageView ids */
 const kCarouselPageViewId = 'carousel';
 const kReceiveSatsFlowPageViewId = 'receive-sats-flow';
 const kPromoFlowPageViewId = 'promo-flow';
 const kCashierFlowPageViewId = 'cashier-flow';
 const kPromoValidationFlowPageViewId = 'promo-validation-flow';
+/* Settings keys */
+const kBitcoinUnitSettingsKey = 'bitcoin-unit-settings';
+const kLocalCurrencySettingsKey = 'local-currency-settings';
+const kLocationSettingsKey = 'location-settings';

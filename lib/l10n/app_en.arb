@@ -126,5 +126,10 @@
   "contactId": "Contact ID",
   "contactIdExplanation": "Your contact ID, also known as a node ID, is a unique identifier within Bitcoin's Lightning Network. You can share it for others to add you as a contact and send payments easily.",
   "yourId": "Your ID",
-  "nodeIdCopied": "Node ID copied"
+  "nodeIdCopied": "Node ID copied",
+  "satUnitHelperText": "Set SAT as the unit in all your bitcoin spending wallets and avoid converting the amounts when interacting with them.",
+  "satUnit": "SAT (satoshis)",
+  "btcUnit": "BTC",
+  "usingSatsMakesYourLifeEasier": "Using satoshis as the unit\nmakes your life easier. 😎",
+  "getToKnowMore": "Get to know more"
 }

@@ -74,7 +74,10 @@ class ReceiveSatsAmountScreen extends ConsumerWidget {
                       IntrinsicWidth(
                         child: TextField(
                           autofocus: true,
-                          keyboardType: TextInputType.number,
+                          keyboardType: TextInputType.numberWithOptions(
+                            decimal: unit == BitcoinUnit.btc ? true : false,
+                            signed: false,
+                          ),
                           textAlign: TextAlign.center,
                           style: textTheme.display7(
                               Palette.neutral[100], FontWeight.w600),
