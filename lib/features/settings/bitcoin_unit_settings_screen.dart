@@ -55,7 +55,7 @@ class BitcoinUnitSettingsScreen extends ConsumerWidget {
       extendBodyBehindAppBar: false,
       body: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: 24,
+          horizontal: 16,
         ),
         child: Column(
           children: [

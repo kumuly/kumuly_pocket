@@ -130,6 +130,6 @@
   "satUnitHelperText": "Set SAT as the unit in all your bitcoin spending wallets and avoid converting the amounts when interacting with them.",
   "satUnit": "SAT (satoshis)",
   "btcUnit": "BTC",
-  "usingSatsMakesYourLifeEasier": "Using satoshis as the unit\nmakes your life easier. 😎",
+  "usingSatsMakesYourLifeEasier": "Using satoshis makes your life easier. 😎",
   "getToKnowMore": "Get to know more"
 }
