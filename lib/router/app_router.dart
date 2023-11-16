@@ -8,12 +8,12 @@ import 'package:kumuly_pocket/features/promo_validation_flow/promo_validation_fl
 import 'package:kumuly_pocket/features/promos/promos_screen.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_flow.dart';
 import 'package:kumuly_pocket/features/root/root_screen.dart';
+import 'package:kumuly_pocket/features/settings/bitcoin_unit_settings_screen.dart';
 import 'package:kumuly_pocket/router/merchant_mode_route.dart';
 import 'package:kumuly_pocket/router/pocket_mode_route.dart';
 import 'package:kumuly_pocket/router/sign_in_route.dart';
 import 'package:kumuly_pocket/router/sign_up_route.dart';
 import 'package:kumuly_pocket/view_models/promo.dart';
-import 'package:path/path.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:go_router/go_router.dart';
 
@@ -59,6 +59,12 @@ GoRouter appRouter(AppRouterRef ref) {
         path: '/contact-id',
         name: 'contact-id',
         builder: (context, state) => const ContactIdScreen(),
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: '/bitcoin-unit',
+        name: 'bitcoin-unit',
+        builder: (context, state) => const BitcoinUnitSettingsScreen(),
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,

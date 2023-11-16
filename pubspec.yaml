@@ -61,6 +61,7 @@ dependencies:
   convert: ^3.1.1
   qr_flutter: ^4.1.0
   mobile_scanner: ^3.5.2
+  animate_do: ^3.1.2
 
 dev_dependencies:
   flutter_test:

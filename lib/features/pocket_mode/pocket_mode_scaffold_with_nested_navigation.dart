@@ -115,6 +115,9 @@ class PocketModeScaffoldWithNestedNavigation extends ConsumerWidget {
             ),
             title: copy.bitcoinUnit,
             subtitle: state != null ? state.bitcoinUnit.name.toUpperCase() : '',
+            onTap: () {
+              router.pushNamed('bitcoin-unit');
+            },
           ),
           DrawerItem(
             leadingIcon:

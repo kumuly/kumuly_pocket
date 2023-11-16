@@ -1,4 +1,7 @@
+import 'package:kumuly_pocket/enums/bitcoin_unit.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/generation/receive_sats_generation_state.dart';
+import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
+import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:kumuly_pocket/services/lightning_node_service.dart';
 import 'package:kumuly_pocket/view_models/invoice.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -23,7 +26,10 @@ class ReceiveSatsGenerationController
         swapFeeEstimate: null,
       );
     } else {
-      final amountSat = int.parse(amount);
+      final amountSat = ref.watch(bitcoinUnitProvider) == BitcoinUnit.sat
+          ? int.parse(amount)
+          : ref.watch(btcToSatProvider(double.parse(amount)));
+
       state = state.copyWith(amountSat: amountSat);
       print('amount sat: $amountSat');
     }

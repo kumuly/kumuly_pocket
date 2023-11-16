@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kumuly_pocket/enums/payment_direction.dart';
+import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
 import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
@@ -118,7 +119,7 @@ class PaymentHistoryItem extends ConsumerWidget {
         FontWeight.w500,
       ),
       trailing: Text(
-        '${payment.direction == PaymentDirection.incoming ? '+' : '-'} ${payment.amountSat} ${unit.name.toUpperCase()}',
+        '${payment.direction == PaymentDirection.incoming ? '+' : '-'} ${ref.watch(displayBitcoinAmountProvider(payment.amountSat))} ${unit.name.toUpperCase()}',
         style: textTheme.display2(
           payment.direction == PaymentDirection.incoming
               ? Palette.success[50]
