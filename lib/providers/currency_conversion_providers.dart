@@ -1,4 +1,6 @@
 import 'package:kumuly_pocket/enums/bitcoin_unit.dart';
+import 'package:kumuly_pocket/enums/local_currency.dart';
+import 'package:kumuly_pocket/providers/breez_sdk_providers.dart';
 import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -34,25 +36,38 @@ String? displayBitcoinAmount(DisplayBitcoinAmountRef ref, int? amountSat) {
 }
 
 @riverpod
-double? satToLocal(SatToLocalRef ref, int? amountSat) {
+Future<double?> fiatRates(FiatRatesRef ref, LocalCurrency localCurrency) async {
+  final fiatRates = await ref.watch(breezSdkProvider).fetchFiatRates();
+
+  return fiatRates[localCurrency.code]?.value;
+}
+
+@riverpod
+Future<double?> satToLocal(SatToLocalRef ref, int? amountSat) async {
   final localCurrency = ref.watch(localCurrencyProvider);
   final amountBtc = ref.read(satToBtcProvider(amountSat));
 
   if (amountBtc == null) {
     return null;
   }
-  // Todo: Implement currency conversion based on localCurrency
-  return amountBtc * 37000;
+
+  return ref.watch(fiatRatesProvider(localCurrency)).when(
+      data: (bitcoinPrice) => amountBtc * bitcoinPrice!,
+      error: (error, stack) => null,
+      loading: () => null);
 }
 
 @riverpod
-int? localToSat(LocalToSatRef ref, double? amountLocal) {
+Future<int?> localToSat(LocalToSatRef ref, double? amountLocal) async {
   final localCurrency = ref.watch(localCurrencyProvider);
 
   if (amountLocal == null) {
     return null;
   }
 
-  // Todo: Implement currency conversion based on localCurrency
-  return ref.read(btcToSatProvider(amountLocal / 37000));
+  return ref.watch(fiatRatesProvider(localCurrency)).when(
+      data: (bitcoinPrice) =>
+          ref.watch(btcToSatProvider(amountLocal / bitcoinPrice!)),
+      error: (error, stack) => null,
+      loading: () => null);
 }

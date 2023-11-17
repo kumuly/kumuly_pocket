@@ -27,5 +27,13 @@ AppNetwork bitcoinNetwork(BitcoinNetworkRef ref) {
 
 @riverpod
 LocalCurrency localCurrency(LocalCurrencyRef ref) {
-  return LocalCurrency.euro; // Todo: Get from settings
+  final localCurrencySetting =
+      ref.watch(sharedPreferencesProvider).getString(kLocalCurrencySettingsKey);
+
+  if (localCurrencySetting == null) {
+    return LocalCurrency.euro;
+  }
+
+  return LocalCurrency.values
+      .firstWhere((element) => element.name == localCurrencySetting);
 }

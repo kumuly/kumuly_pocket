@@ -1,5 +1,6 @@
 import 'package:kumuly_pocket/features/cashier_flow/generation/cashier_generation_state.dart';
 import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
+import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:kumuly_pocket/services/lightning_node_service.dart';
 import 'package:kumuly_pocket/view_models/invoice.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -10,10 +11,11 @@ part 'cashier_generation_controller.g.dart';
 class CashierGenerationController extends _$CashierGenerationController {
   @override
   CashierGenerationState build() {
+    ref.watch(fiatRatesProvider(ref.read(localCurrencyProvider)));
     return const CashierGenerationState(amountSat: 0);
   }
 
-  void amountChangeHandler(String? amount) {
+  Future<void> amountChangeHandler(String? amount) async {
     if (amount == null || amount.isEmpty) {
       state = state.copyWith(
         localCurrencyAmount: null,
@@ -21,13 +23,13 @@ class CashierGenerationController extends _$CashierGenerationController {
       );
     } else {
       final localCurrencyAmount = double.parse(amount);
-      final amountSat = ref.read(localToSatProvider(localCurrencyAmount));
+      final amountSat =
+          await ref.read(localToSatProvider(localCurrencyAmount).future);
+
       state = state.copyWith(
         localCurrencyAmount: localCurrencyAmount,
         amountSat: amountSat,
       );
-      print('local currency amount: $localCurrencyAmount');
-      print('amount sat: $amountSat');
     }
   }
 

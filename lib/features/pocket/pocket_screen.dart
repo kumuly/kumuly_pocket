@@ -25,9 +25,9 @@ class PocketScreen extends ConsumerWidget {
     double screenWidth = MediaQuery.of(context).size.width;
     final router = GoRouter.of(context);
 
-    final pocketBalanceController = ref.watch(pocketBalanceControllerProvider);
+    final state = ref.watch(pocketBalanceControllerProvider);
     const paymentsLimit = 20;
-    final pocketPaymentsHistoryController = ref.watch(
+    final historyState = ref.watch(
       pocketPaymentsHistoryControllerProvider(
         paymentsLimit,
       ),
@@ -36,11 +36,12 @@ class PocketScreen extends ConsumerWidget {
     final unit = ref.watch(bitcoinUnitProvider);
     final balance = ref.watch(
       displayBitcoinAmountProvider(
-        pocketBalanceController.balanceSat,
+        state.balanceSat,
       ),
     );
     final localCurrency = ref.watch(localCurrencyProvider);
-    const localCurrencyBalance = 0;
+    final localCurrencyBalance =
+        ref.watch(satToLocalProvider(state.balanceSat)).asData?.value;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -66,6 +67,7 @@ class PocketScreen extends ConsumerWidget {
         children: [
           RefreshIndicator(
             onRefresh: () async {
+              ref.invalidate(fiatRatesProvider);
               await ref
                   .read(pocketBalanceControllerProvider.notifier)
                   .refreshBalance();
@@ -155,8 +157,8 @@ class PocketScreen extends ConsumerWidget {
                 ),
                 PaymentHistory(
                   title: copy.recentTransactions.toUpperCase(),
-                  payments: pocketPaymentsHistoryController.hasValue
-                      ? pocketPaymentsHistoryController.asData!.value.payments
+                  payments: historyState.hasValue
+                      ? historyState.asData!.value.payments
                       : [],
                   loadPayments: ref
                       .read(
@@ -164,16 +166,14 @@ class PocketScreen extends ConsumerWidget {
                             .notifier,
                       )
                       .fetchPayments,
-                  limit: pocketPaymentsHistoryController.hasValue
-                      ? pocketPaymentsHistoryController
-                          .asData!.value.paymentsLimit
+                  limit: historyState.hasValue
+                      ? historyState.asData!.value.paymentsLimit
                       : paymentsLimit,
-                  hasMore: pocketPaymentsHistoryController.hasValue
-                      ? pocketPaymentsHistoryController
-                          .asData!.value.hasMorePayments
+                  hasMore: historyState.hasValue
+                      ? historyState.asData!.value.hasMorePayments
                       : true,
-                  isLoading: pocketPaymentsHistoryController.isLoading,
-                  isLoadingError: pocketPaymentsHistoryController.hasError,
+                  isLoading: historyState.isLoading,
+                  isLoadingError: historyState.hasError,
                 ),
                 const SizedBox(
                   height: kSpacing3,

@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kumuly_pocket/constants.dart';
-import 'package:kumuly_pocket/enums/bitcoin_unit.dart';
-import 'package:kumuly_pocket/enums/local_currency.dart';
 import 'package:kumuly_pocket/features/sales/sales_controller.dart';
 import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
 import 'package:kumuly_pocket/providers/settings_providers.dart';
@@ -25,16 +23,17 @@ class SalesScreen extends ConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
     double screenWidth = MediaQuery.of(context).size.width;
 
-    final salesController = ref.watch(salesControllerProvider);
+    final state = ref.watch(salesControllerProvider);
 
     final unit = ref.watch(bitcoinUnitProvider);
     final balance = ref.watch(
       displayBitcoinAmountProvider(
-        salesController.balanceSat,
+        state.balanceSat,
       ),
     );
     final localCurrency = ref.watch(localCurrencyProvider);
-    const localCurrencyBalance = 0;
+    final localCurrencyBalance =
+        ref.watch(satToLocalProvider(state.balanceSat)).asData?.value;
 
     return Scaffold(
       backgroundColor: Colors.white,

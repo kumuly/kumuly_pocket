@@ -22,7 +22,7 @@ class ContactIdScreen extends ConsumerWidget {
         ref.watch(pocketModeMenuControllerProvider).asData!.value.nodeId;
 
     return Scaffold(
-      backgroundColor: Palette.neutral[20],
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,

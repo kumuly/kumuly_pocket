@@ -125,6 +125,9 @@ class PocketModeScaffoldWithNestedNavigation extends ConsumerWidget {
             title: copy.localCurrency,
             subtitle:
                 state != null ? state.localCurrency.code.toUpperCase() : '',
+            onTap: () {
+              router.pushNamed('local-currency');
+            },
           ),
           DrawerItem(
             leadingIcon: const DynamicIcon(icon: Icons.my_location_outlined),

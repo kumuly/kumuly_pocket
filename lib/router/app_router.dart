@@ -9,6 +9,7 @@ import 'package:kumuly_pocket/features/promos/promos_screen.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_flow.dart';
 import 'package:kumuly_pocket/features/root/root_screen.dart';
 import 'package:kumuly_pocket/features/settings/bitcoin_unit_settings_screen.dart';
+import 'package:kumuly_pocket/features/settings/local_currency_settings_screen.dart';
 import 'package:kumuly_pocket/router/merchant_mode_route.dart';
 import 'package:kumuly_pocket/router/pocket_mode_route.dart';
 import 'package:kumuly_pocket/router/sign_in_route.dart';
@@ -65,6 +66,12 @@ GoRouter appRouter(AppRouterRef ref) {
         path: '/bitcoin-unit',
         name: 'bitcoin-unit',
         builder: (context, state) => const BitcoinUnitSettingsScreen(),
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: '/local-currency',
+        name: 'local-currency',
+        builder: (context, state) => const LocalCurrencySettingsScreen(),
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,

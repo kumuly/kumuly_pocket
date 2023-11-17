@@ -33,6 +33,7 @@ class BitcoinUnitSettingsScreen extends ConsumerWidget {
     }
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
@@ -107,7 +108,12 @@ class BitcoinUnitSettingsScreen extends ConsumerWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            PrimaryTextButton(text: copy.getToKnowMore, onPressed: () {}),
+            PrimaryTextButton(
+              text: copy.getToKnowMore,
+              trailingIcon: const Icon(Icons.chevron_right),
+              color: Palette.russianViolet[100],
+              onPressed: () {},
+            ),
             const SizedBox(height: 72.0),
           ],
         ),
