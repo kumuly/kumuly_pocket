@@ -41,6 +41,9 @@ class SendSatsScannerScreen extends ConsumerWidget {
           showTransitionDialog(context, copy.oneMomentPlease);
           try {
             state.destinationTextController.text = capture;
+            await ref
+                .read(sendSatsControllerProvider.notifier)
+                .onDestinationChangeHandler(capture);
             router.pop(); // pop the transition dialog
             router.pop(); // pop the scanner screen
           } catch (e) {
