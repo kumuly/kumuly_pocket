@@ -2,34 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
-import 'package:kumuly_pocket/features/receive_sats_flow/generation/receive_sats_generation_controller.dart';
-import 'package:kumuly_pocket/features/receive_sats_flow/reception/receive_sats_reception_controller.dart';
+import 'package:kumuly_pocket/features/send_sats_flow/send_sats_controller.dart';
 import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
 import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:kumuly_pocket/widgets/buttons/primary_text_button.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class ReceiveSatsCompletedScreen extends ConsumerWidget {
-  const ReceiveSatsCompletedScreen({super.key});
+class SendSatsCompletedScreen extends ConsumerWidget {
+  const SendSatsCompletedScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
     final copy = AppLocalizations.of(context)!;
     final router = GoRouter.of(context);
-    final generationProvider =
-        ref.watch(receiveSatsGenerationControllerProvider);
-    final receptionProvider = ref.watch(receiveSatsReceptionControllerProvider);
 
-    final amountSat = generationProvider.amountSat;
-    final isPaid = receptionProvider.isPaid;
-    final isSwapInProgress = receptionProvider.isSwapInProgress;
+    final amountSat = ref.watch(sendSatsControllerProvider).amountSat;
     final amount = ref.watch(displayBitcoinAmountProvider(amountSat));
     final unit = ref.watch(bitcoinUnitProvider);
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         automaticallyImplyLeading: false,
@@ -52,27 +47,25 @@ class ReceiveSatsCompletedScreen extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Image.asset(
-            isPaid
-                ? 'assets/images/payment_received.png'
-                : 'assets/images/payment_pending.png',
+            'assets/images/payment_send.png',
             width: 160.0,
             height: 160.0,
           ),
           Column(
             children: [
               Text(
-                isPaid ? copy.paymentCompleted : copy.paymentInProcess,
+                copy.paymentCompleted,
                 style: textTheme.display5(
-                  Palette.success[50],
+                  Palette.lilac[100],
                   FontWeight.w500,
                 ),
               ),
               const SizedBox(height: 4.0),
               Text(
-                '+ $amount ${unit.name.toUpperCase()}',
+                '- $amount ${unit.name.toUpperCase()}',
                 style: textTheme.display7(
-                  isPaid ? Palette.success[50] : Palette.neutral[60],
-                  FontWeight.w700,
+                  Palette.lilac[100],
+                  FontWeight.bold,
                 ),
               ),
             ],

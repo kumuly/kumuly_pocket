@@ -1,7 +1,9 @@
 import 'package:breez_sdk/breez_sdk.dart';
 import 'package:breez_sdk/bridge_generated.dart';
 import 'package:flutter/foundation.dart';
+import 'package:kumuly_pocket/entities/bip21_entity.dart';
 import 'package:kumuly_pocket/entities/invoice_entity.dart';
+import 'package:kumuly_pocket/entities/lnurl_pay_entity.dart';
 import 'package:kumuly_pocket/entities/payment_entity.dart';
 import 'package:kumuly_pocket/entities/payment_request_entity.dart';
 import 'package:kumuly_pocket/entities/recommended_fees_entity.dart';
@@ -51,18 +53,20 @@ abstract class LightningNodeRepository {
     int? expiry,
     int? cltv,
   });
+  Future<InvoiceEntity> decodeInvoice(String invoice);
   Future<PaymentRequestEntity> decodePaymentRequest(String paymentRequest);
-  Future<void> payInvoice({required String bolt11, int? amountMsat});
+  Future<void> payInvoice(
+      {required String bolt11, int? amountMsat}); // Todo: add return type
   Future<void> payLnUrlPay(
     String paymentLink,
     int amountMsat, {
     String? comment,
     bool useMinimumAmount,
-  });
-  Future<void> sendToKey(
+  }); // Todo: add return type
+  Future<void> keysend(
     String nodeId,
-    int amountSat,
-  );
+    int amountMsat,
+  ); // Todo: add return type
   Future<int> estimateChannelOpeningFeeMsat(int amountSat);
   Future<SwapInfoEntity> swapIn();
   Future<void> swapOut(
@@ -219,40 +223,60 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
 
   @override
   Future<PaymentRequestEntity> decodePaymentRequest(
-      String paymentRequest) async {
+    String paymentRequest,
+  ) async {
     try {
       InputType inputType = await _breezSdk.parseInput(input: paymentRequest);
-      int? amountSat;
-      int amountMsat = 0;
-      int? maxAmountSat;
-      String? description;
-      String? nodeId;
-      String? bitcoinAddress;
 
       if (inputType is InputType_LnUrlPay) {
-        amountMsat = inputType.data.minSendable;
-        maxAmountSat = inputType.data.maxSendable ~/ 1000;
-        print('lnurlpay metadataStr: ${inputType.data.metadataStr}');
+        return PaymentRequestEntity(
+            type: PaymentRequestType.lnurlPay,
+            lnurlPay: LnurlPayEntity(
+              lnurl: paymentRequest,
+              minSendableSat: inputType.data.minSendable,
+              maxSendableSat: inputType.data.maxSendable ~/ 1000,
+              metadata: inputType.data.metadataStr,
+            ));
       } else if (inputType is InputType_Bolt11) {
-        amountMsat = inputType.invoice.amountMsat ?? 0;
-        description = inputType.invoice.description;
+        return PaymentRequestEntity(
+          type: PaymentRequestType.bolt11,
+          invoice: InvoiceEntity(
+            bolt11: inputType.invoice.bolt11,
+            payeePubkey: inputType.invoice.payeePubkey,
+            paymentHash: inputType.invoice.paymentHash,
+            description: inputType.invoice.description,
+            descriptionHash: inputType.invoice.descriptionHash,
+            amountMsat: inputType.invoice.amountMsat,
+            timestamp: inputType.invoice.timestamp,
+            expiry: inputType.invoice.expiry,
+            routingHints: inputType.invoice.routingHints,
+            paymentSecret: inputType.invoice.paymentSecret,
+            minFinalCltvExpiryDelta: inputType.invoice.minFinalCltvExpiryDelta,
+          ),
+        );
       } else if (inputType is InputType_NodeId) {
-        nodeId = inputType.nodeId;
+        return PaymentRequestEntity(
+            type: PaymentRequestType.nodeId, nodeId: inputType.nodeId);
       } else if (inputType is InputType_BitcoinAddress) {
-        amountSat = inputType.address.amountSat;
-        bitcoinAddress = inputType.address.address;
+        if (inputType.address.amountSat == null &&
+            inputType.address.label == null &&
+            inputType.address.message == null) {
+          return PaymentRequestEntity(
+              type: PaymentRequestType.bitcoinAddress,
+              bitcoinAddress: inputType.address.address);
+        }
+        return PaymentRequestEntity(
+          type: PaymentRequestType.bip21,
+          bip21: Bip21Entity(
+            bitcoin: inputType.address.address,
+            amountSat: inputType.address.amountSat,
+            label: inputType.address.label,
+            message: inputType.address.message,
+          ),
+        );
       } else {
         throw Exception('Unsupported payment request type');
       }
-
-      return PaymentRequestEntity(
-        type: PaymentRequestType.lnurlPay,
-        amountSat: amountSat ?? amountMsat ~/ 1000,
-        maxAmountSat: maxAmountSat,
-        description: description,
-        nodeId: nodeId,
-        bitcoinAddress: bitcoinAddress,
-      );
     } catch (error) {
       // Todo: make custom error
       rethrow;
@@ -296,7 +320,8 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
     if (result is LnUrlPayResult_EndpointSuccess) {
       print('Endpoint success SuccessActionProcessesed data: ${result.data}');
       print(
-          'Endpoint success SuccessActionProcessesed data data: ${result.data?.data}');
+          'Endpoint success SuccessActionProcessesed data data: ${result.data.successAction?.data}');
+      print('Paymenthash: ${result.data.paymentHash}');
     }
 
     print('LNURLPAY Payment successful');
@@ -309,12 +334,10 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
       amountMsat: amountMsat,
     );
     await _breezSdk.sendPayment(req: request);
-
-    //await _breezSdk.sendPayment(bolt11: bolt11, amountSats: amountSats);
   }
 
   @override
-  Future<void> sendToKey(String nodeId, int amountMsat) async {
+  Future<void> keysend(String nodeId, int amountMsat) async {
     final request =
         SendSpontaneousPaymentRequest(nodeId: nodeId, amountMsat: amountMsat);
     await _breezSdk.sendSpontaneousPayment(req: request);
@@ -385,13 +408,18 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
     int? offset,
     int? limit,
   }) async {
-    PaymentTypeFilter? filter = direction == null
-        ? PaymentTypeFilter.All
-        : direction == PaymentDirection.incoming
+    List<PaymentTypeFilter>? filters;
+
+    if (direction != null) {
+      filters = [
+        direction == PaymentDirection.incoming
             ? PaymentTypeFilter.Received
-            : PaymentTypeFilter.Sent;
+            : PaymentTypeFilter.Sent,
+      ];
+    }
+
     ListPaymentsRequest req = ListPaymentsRequest(
-      filter: filter,
+      filters: filters,
       fromTimestamp: fromTimestamp,
       toTimestamp: toTimestamp,
       includeFailures: includeFailures,
@@ -496,6 +524,25 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
         ),
       );
     }).toList();
+  }
+
+  @override
+  Future<InvoiceEntity> decodeInvoice(String bolt11) async {
+    LNInvoice invoice = await _breezSdk.parseInvoice(bolt11);
+
+    return InvoiceEntity(
+      bolt11: invoice.bolt11,
+      payeePubkey: invoice.payeePubkey,
+      paymentHash: invoice.paymentHash,
+      description: invoice.description,
+      descriptionHash: invoice.descriptionHash,
+      amountMsat: invoice.amountMsat,
+      timestamp: invoice.timestamp,
+      expiry: invoice.expiry,
+      routingHints: invoice.routingHints,
+      paymentSecret: invoice.paymentSecret,
+      minFinalCltvExpiryDelta: invoice.minFinalCltvExpiryDelta,
+    );
   }
 }
 

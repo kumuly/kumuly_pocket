@@ -634,10 +634,10 @@ PODS:
   - BoringSSL-GRPC/Implementation (0.0.24):
     - BoringSSL-GRPC/Interface (= 0.0.24)
   - BoringSSL-GRPC/Interface (0.0.24)
-  - breez_sdk (0.2.7):
-    - breez_sdkFFI (= 0.2.7)
+  - breez_sdk (0.2.9):
+    - breez_sdkFFI (= 0.2.9)
     - Flutter
-  - breez_sdkFFI (0.2.7)
+  - breez_sdkFFI (0.2.9)
   - cloud_firestore (4.12.0):
     - Firebase/Firestore (= 10.16.0)
     - firebase_core
@@ -717,6 +717,8 @@ PODS:
   - FirebaseSharedSwift (10.16.0)
   - Flutter (1.0.0)
   - flutter_secure_storage (6.0.0):
+    - Flutter
+  - geocoding_ios (1.0.5):
     - Flutter
   - GoogleDataTransport (9.2.5):
     - GoogleUtilities/Environment (~> 7.7)
@@ -855,6 +857,8 @@ PODS:
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
+  - url_launcher_ios (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
   - breez_sdk (from `.symlinks/plugins/breez_sdk/ios`)
@@ -865,9 +869,11 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - Flutter (from `Flutter`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
+  - geocoding_ios (from `.symlinks/plugins/geocoding_ios/ios`)
   - mobile_scanner (from `.symlinks/plugins/mobile_scanner/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
+  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
 SPEC REPOS:
   trunk:
@@ -920,18 +926,22 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_secure_storage:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
+  geocoding_ios:
+    :path: ".symlinks/plugins/geocoding_ios/ios"
   mobile_scanner:
     :path: ".symlinks/plugins/mobile_scanner/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
+  url_launcher_ios:
+    :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 SPEC CHECKSUMS:
   abseil: 926fb7a82dc6d2b8e1f2ed7f3a718bce691d1e46
   BoringSSL-GRPC: 3175b25143e648463a56daeaaa499c6cb86dad33
-  breez_sdk: 73cb44b5c584b6017d0228447a5dc62804229fae
-  breez_sdkFFI: 4981e95425a3e6b9561e9393e8a37e582e15b9c7
+  breez_sdk: 810843937bcf9621bf636e263030af8cfe36c160
+  breez_sdkFFI: fd40b0586453e61c1d156aacf95488a8b55ecb5c
   cloud_firestore: 843f8a06ac49a1177b73a2a2475cc3918593478e
   cloud_functions: 038baf0b0f15ec3c2f360d6693cafda2a59d8dac
   Firebase: 25899099b77d255a636e3579c3d9dce10ec150d5
@@ -951,6 +961,7 @@ SPEC CHECKSUMS:
   FirebaseSharedSwift: 82b618801ddd76ea2ab54c5746bcd48854272232
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_secure_storage: 23fc622d89d073675f2eaa109381aefbcf5a49be
+  geocoding_ios: a389ea40f6f548de6e63006a2e31bf66ff80769a
   GoogleDataTransport: 54dee9d48d14580407f8f5fbf2f496e92437a2f2
   GoogleMLKit: 2bd0dc6253c4d4f227aad460f69215a504b2980e
   GoogleToolboxForMac: 8bef7c7c5cf7291c687cf5354f39f9db6399ad34
@@ -970,6 +981,7 @@ SPEC CHECKSUMS:
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
   shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
+  url_launcher_ios: 68d46cc9766d0c41dbdc884310529557e3cd7a86
 
 PODFILE CHECKSUM: 7be2f5f74864d463a8ad433546ed1de7e0f29aef
 

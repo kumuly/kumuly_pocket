@@ -110,7 +110,7 @@ class PocketScreen extends ConsumerWidget {
                           builder: (context) => ActionsBottomSheetModal(
                             actionIcons: [
                               DynamicIcon(
-                                icon: 'assets/icons/qr_code_scanner.svg',
+                                icon: 'assets/icons/scanner.svg',
                                 color: Palette.neutral[80]!,
                               ),
                               DynamicIcon(
@@ -132,17 +132,23 @@ class PocketScreen extends ConsumerWidget {
                             ],
                             actionTitles: [
                               copy.scan,
-                              copy.send,
                               copy.receive,
+                              copy.send,
                               copy.buyBitcoin,
                               copy.saveInBitcoin,
                             ],
                             actionOnPresseds: [
                               () {},
-                              () {},
                               () {
+                                router.pop(); // Close bottom sheet
                                 router.pushNamed('receive-sats-flow');
                               },
+                              () {
+                                router.pop(); // Close bottom sheet
+                                router.pushNamed('send-sats-flow');
+                              },
+                              () {},
+                              () {},
                               null,
                               null,
                             ],

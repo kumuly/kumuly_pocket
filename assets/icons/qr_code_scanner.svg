@@ -1,3 +1,30 @@
-<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M15 20V18H18V15H20V18.5C20 18.9 19.8 19.2 19.5 19.5C19.2 19.8 18.8 20 18.5 20H15ZM5 20H1.5C1.1 20 0.8 19.8 0.5 19.5C0.2 19.2 0 18.8 0 18.5V15H2V18H5V20ZM15 0H18.5C18.9 0 19.2 0.2 19.5 0.5C19.8 0.8 20 1.1 20 1.5V5H18V2H15V0ZM5 0V2H2V5H0V1.5C0 1.1 0.2 0.8 0.5 0.5C0.8 0.2 1.1 0 1.5 0H5ZM17 9H3V11H17V9Z" fill="currentColor"/>
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M22 0C22.5304 0 23.0391 0.210714 23.4142 0.585786C23.7893 0.960859 24 1.46957 24 2V6H22V2H18V0H22Z" fill="currentColor"/>
+<path d="M2 0C1.46957 0 0.96086 0.210714 0.585787 0.585786C0.210714 0.960859 0 1.46957 0 2V6H2V2H6V0H2Z" fill="currentColor"/>
+<path d="M2 24C1.46957 24 0.96086 23.7893 0.585787 23.4142C0.210714 23.0391 1.28474e-07 22.5304 1.74846e-07 22L5.24537e-07 18L2 18L2 22L6 22L6 24L2 24Z" fill="currentColor"/>
+<path d="M22 24C22.5304 24 23.0391 23.7893 23.4142 23.4142C23.7893 23.0391 24 22.5304 24 22L24 18L22 18L22 22L18 22L18 24L22 24Z" fill="currentColor"/>
+<rect x="4.5" y="11.5" width="1" height="1" fill="currentColor" stroke="currentColor"/>
+<mask id="path-6-inside-1_5881_903" fill="white">
+<rect x="4" y="4" width="6" height="6" rx="1"/>
+</mask>
+<rect x="4" y="4" width="6" height="6" rx="1" stroke="currentColor" stroke-width="4" mask="url(#path-6-inside-1_5881_903)"/>
+<mask id="path-7-inside-2_5881_903" fill="white">
+<rect x="4" y="14" width="6" height="6" rx="1"/>
+</mask>
+<rect x="4" y="14" width="6" height="6" rx="1" stroke="currentColor" stroke-width="4" mask="url(#path-7-inside-2_5881_903)"/>
+<rect x="18.5" y="11.5" width="1" height="1" fill="currentColor" stroke="currentColor"/>
+<rect x="14.5" y="11.5" width="1" height="1" fill="currentColor" stroke="currentColor"/>
+<rect x="8.5" y="11.5" width="1" height="1" fill="currentColor" stroke="currentColor"/>
+<rect x="12.5" y="8.5" width="1" height="1" transform="rotate(90 12.5 8.5)" fill="currentColor" stroke="currentColor"/>
+<rect x="12.5" y="4.5" width="1" height="1" transform="rotate(90 12.5 4.5)" fill="currentColor" stroke="currentColor"/>
+<rect x="12.5" y="14.5" width="1" height="1" transform="rotate(90 12.5 14.5)" fill="currentColor" stroke="currentColor"/>
+<rect x="12.5" y="18.5" width="1" height="1" transform="rotate(90 12.5 18.5)" fill="currentColor" stroke="currentColor"/>
+<mask id="path-15-inside-3_5881_903" fill="white">
+<rect x="14" y="4" width="6" height="6" rx="1"/>
+</mask>
+<rect x="14" y="4" width="6" height="6" rx="1" stroke="currentColor" stroke-width="4" mask="url(#path-15-inside-3_5881_903)"/>
+<mask id="path-16-inside-4_5881_903" fill="white">
+<rect x="14" y="14" width="6" height="6" rx="1"/>
+</mask>
+<rect x="14" y="14" width="6" height="6" rx="1" stroke="currentColor" stroke-width="4" mask="url(#path-16-inside-4_5881_903)"/>
 </svg>

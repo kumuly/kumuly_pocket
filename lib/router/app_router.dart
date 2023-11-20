@@ -8,8 +8,12 @@ import 'package:kumuly_pocket/features/promo_validation_flow/promo_validation_fl
 import 'package:kumuly_pocket/features/promos/promos_screen.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_flow.dart';
 import 'package:kumuly_pocket/features/root/root_screen.dart';
+import 'package:kumuly_pocket/features/send_sats_flow/errors/send_sats_expired_invoice_screen.dart';
+import 'package:kumuly_pocket/features/send_sats_flow/input/send_sats_scanner_screen.dart';
+import 'package:kumuly_pocket/features/send_sats_flow/send_sats_flow.dart';
 import 'package:kumuly_pocket/features/settings/bitcoin_unit_settings_screen.dart';
 import 'package:kumuly_pocket/features/settings/local_currency_settings_screen.dart';
+import 'package:kumuly_pocket/features/settings/location_settings_screen.dart';
 import 'package:kumuly_pocket/router/merchant_mode_route.dart';
 import 'package:kumuly_pocket/router/pocket_mode_route.dart';
 import 'package:kumuly_pocket/router/sign_in_route.dart';
@@ -75,9 +79,33 @@ GoRouter appRouter(AppRouterRef ref) {
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
+        path: '/location',
+        name: 'location',
+        builder: (context, state) => const LocationSettingsScreen(),
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
         path: '/receive-sats',
         name: 'receive-sats-flow',
         builder: (context, state) => const ReceiveSatsFlow(),
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: '/send-sats',
+        name: 'send-sats-flow',
+        builder: (context, state) => const SendSatsFlow(),
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: '/send-sats-scanner',
+        name: 'send-sats-scanner',
+        builder: (context, state) => const SendSatsScannerScreen(),
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: '/expired-invoice',
+        name: 'expired-invoice',
+        builder: (context, state) => const SendSatsExpiredInvoiceScreen(),
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
