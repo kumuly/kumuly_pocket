@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/enums/local_currency.dart';
 import 'package:kumuly_pocket/features/pocket_mode/pocket_mode_menu_controller.dart';
-import 'package:kumuly_pocket/repositories/lightning_node_repository.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/dialogs/transition_dialog.dart';
@@ -133,6 +132,9 @@ class PocketModeScaffoldWithNestedNavigation extends ConsumerWidget {
             leadingIcon: const DynamicIcon(icon: Icons.my_location_outlined),
             title: copy.location,
             subtitle: state != null ? state.location : '',
+            onTap: () {
+              router.pushNamed('location');
+            },
           ),
           const DrawerSectionSpace(),
           DrawerSectionTitle(title: copy.security),

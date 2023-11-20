@@ -9,6 +9,7 @@ import 'package:kumuly_pocket/entities/recommended_fees_entity.dart';
 import 'package:kumuly_pocket/entities/swap_in_info_entity.dart';
 import 'package:kumuly_pocket/enums/app_network.dart';
 import 'package:kumuly_pocket/enums/mnemonic_language.dart';
+import 'package:kumuly_pocket/enums/on_chain_fee_velocity.dart';
 import 'package:kumuly_pocket/enums/payment_request_type.dart';
 import 'package:kumuly_pocket/environment_variables.dart';
 import 'package:kumuly_pocket/repositories/lightning_node_repository.dart';
@@ -65,7 +66,7 @@ abstract class LightningNodeService {
     AppNetwork network,
   );
   Future<InvoiceEntity> createInvoice(int amountSat, String? description);
-  Future<(int minAmountSat, int maxAmountSat)> getLnurlPayAmounts(
+  Future<(int? minAmountSat, int? maxAmountSat)> getLnurlPayAmounts(
     String paymentLink,
   );
   Future<void> payInvoice({required String bolt11, int? amountSat});
@@ -75,13 +76,17 @@ abstract class LightningNodeService {
     String? comment,
     bool useMinimumAmount,
   });
+  Future<void> keysend(
+    String nodeId,
+    int amountSat,
+  );
   Future<void> swapOut(String bitcoinAddress, int amountSat, int satPerVbyte);
   Future<int> getChannelOpeningFeeEstimate(int amountSat);
   Future<SwapInInfoEntity> getSwapInInfo(int amountSat);
   Future<int> get spendableBalanceSat;
   Future<int> get onChainBalanceSat;
   //Future<ReceptionAmountLimitsEntity> get receptionAmountLimits;
-  Future<RecommendedFeesEntity> get recommendedFees;
+  Future<Map<OnChainFeeVelocity, int>> get recommendedFees;
   Future<List<PaymentEntity>> getPaymentHistory({
     int? offset,
     int? limit,
@@ -230,8 +235,8 @@ class BreezSdkLightningNodeService implements LightningNodeService {
   //    throw UnimplementedError();
 
   @override
-  Future<RecommendedFeesEntity> get recommendedFees async {
-    return _lightningNodeRepository.recommendedFees;
+  Future<Map<OnChainFeeVelocity, int>> get recommendedFees async {
+    return (await _lightningNodeRepository.recommendedFees).toMap();
   }
 
   Future<String> _setupWorkingDirectory(String alias) async {
@@ -269,7 +274,7 @@ class BreezSdkLightningNodeService implements LightningNodeService {
   }
 
   @override
-  Future<(int minAmountSat, int maxAmountSat)> getLnurlPayAmounts(
+  Future<(int? minAmountSat, int? maxAmountSat)> getLnurlPayAmounts(
       String paymentLink) async {
     final decodedRequest =
         await _lightningNodeRepository.decodePaymentRequest(paymentLink);
@@ -279,7 +284,10 @@ class BreezSdkLightningNodeService implements LightningNodeService {
       throw Exception('Invalid payment link');
     }
 
-    return (decodedRequest.amountSat, decodedRequest.maxAmountSat!);
+    return (
+      decodedRequest.lnurlPay!.minSendableSat,
+      decodedRequest.lnurlPay!.maxSendableSat
+    );
   }
 
   @override
@@ -337,5 +345,10 @@ class BreezSdkLightningNodeService implements LightningNodeService {
 
     // Return the stream
     return controller.stream;
+  }
+
+  @override
+  Future<void> keysend(String nodeId, int amountSat) {
+    return _lightningNodeRepository.keysend(nodeId, amountSat * 1000);
   }
 }

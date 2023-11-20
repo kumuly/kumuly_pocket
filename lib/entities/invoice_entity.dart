@@ -13,7 +13,8 @@ class InvoiceEntity extends Equatable {
   final int timestamp;
   final int expiry;
   final List<RouteHint> routingHints;
-  final Uint8List paymentSecret;
+  final Uint8List? paymentSecret;
+  final int? minFinalCltvExpiryDelta;
   final OpeningFeeParams? openingFeeParams;
   final int? openingFeeMsat;
 
@@ -27,7 +28,8 @@ class InvoiceEntity extends Equatable {
     required this.timestamp,
     required this.expiry,
     required this.routingHints,
-    required this.paymentSecret,
+    this.paymentSecret,
+    this.minFinalCltvExpiryDelta,
     this.openingFeeParams,
     this.openingFeeMsat,
   });
@@ -44,6 +46,7 @@ class InvoiceEntity extends Equatable {
         expiry,
         routingHints,
         paymentSecret,
+        minFinalCltvExpiryDelta,
         openingFeeParams,
         openingFeeMsat,
       ];

@@ -28,6 +28,7 @@ const allPromosCollection = 'all-promos';
 /* PageView ids */
 const kCarouselPageViewId = 'carousel';
 const kReceiveSatsFlowPageViewId = 'receive-sats-flow';
+const kSendSatsFlowPageViewId = 'send-sats-flow';
 const kPromoFlowPageViewId = 'promo-flow';
 const kCashierFlowPageViewId = 'cashier-flow';
 const kPromoValidationFlowPageViewId = 'promo-validation-flow';
