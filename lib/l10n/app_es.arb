@@ -156,5 +156,8 @@
   "bitcoinAddress": "dirección Bitcoin",
   "lightningInvoice": "factura Lightning",
   "lightningNode": "nodo Lightning",
-  "lnurlPay": "pago LNURL"
+  "lnurlPay": "pago LNURL",
+  "invoiceExpiredAlready": "Ya expiró",
+  "invoiceExpiredInstructions": "Esta facture Lightning ha caducada, crea o solicita una nueva.",
+  "paymentInProcess": "Pago en proceso"
 }

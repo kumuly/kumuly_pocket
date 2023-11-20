@@ -59,10 +59,10 @@ class ReceiveSatsGenerationState extends Equatable {
         onChainAddress!.isEmpty ||
         amountSat! > onChainMaxAmount! ||
         amountSat! < onChainMinAmount!) {
-      return '$invoice';
+      return invoice!.bolt11;
     }
 
-    return 'bitcoin:$onChainAddress?amount=$amountToSendOnChain&lightning=$invoice';
+    return 'bitcoin:$onChainAddress?amount=$amountToSendOnChain&lightning=${invoice!.bolt11}';
   }
 
   @override

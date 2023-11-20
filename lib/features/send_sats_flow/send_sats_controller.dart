@@ -17,8 +17,6 @@ part 'send_sats_controller.g.dart';
 class SendSatsController extends _$SendSatsController {
   @override
   SendSatsState build() {
-    print('SendSatsController build()');
-
     final destinationFocus = FocusNode();
     final destinationTextController = TextEditingController();
     final amountTextController = TextEditingController();

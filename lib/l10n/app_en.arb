@@ -156,5 +156,8 @@
   "bitcoinAddress": "Bitcoin address",
   "lightningInvoice": "Lightning invoice",
   "lightningNode": "Lightning node",
-  "lnurlPay": "LNURLpay"
+  "lnurlPay": "LNURLpay",
+  "invoiceExpiredAlready": "Expired",
+  "invoiceExpiredInstructions": "This Lightning invoice has expired, create or request a new one.",
+  "paymentInProcess": "Payment in process"
 }

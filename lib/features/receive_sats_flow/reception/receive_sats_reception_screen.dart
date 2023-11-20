@@ -19,6 +19,7 @@ class ReceiveSatsReceptionScreen extends ConsumerWidget {
 
     final bip21Uri =
         ref.watch(receiveSatsGenerationControllerProvider).bip21Uri;
+    print('bip21Uri: $bip21Uri');
 
     final copy = AppLocalizations.of(context)!;
 

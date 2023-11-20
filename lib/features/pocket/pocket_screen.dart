@@ -140,9 +140,11 @@ class PocketScreen extends ConsumerWidget {
                             actionOnPresseds: [
                               () {},
                               () {
+                                router.pop(); // Close bottom sheet
                                 router.pushNamed('receive-sats-flow');
                               },
                               () {
+                                router.pop(); // Close bottom sheet
                                 router.pushNamed('send-sats-flow');
                               },
                               () {},

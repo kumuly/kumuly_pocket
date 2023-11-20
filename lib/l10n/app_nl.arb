@@ -156,5 +156,8 @@
   "bitcoinAddress": "Bitcoin address",
   "lightningInvoice": "Lightning factuur",
   "lightningNode": "Lightning node",
-  "lnurlPay": "LNURLpay"
+  "lnurlPay": "LNURLpay",
+  "invoiceExpiredAlready": "Verlopen",
+  "invoiceExpiredInstructions": "Deze Lightning factuur is reeds verlopen, vraag of maak een nieuwe aan.",
+  "paymentInProcess": "Betaling in verwerking"
 }
