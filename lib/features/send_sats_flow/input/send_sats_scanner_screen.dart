@@ -40,6 +40,7 @@ class SendSatsScannerScreen extends ConsumerWidget {
         captureHandler: (capture) async {
           showTransitionDialog(context, copy.oneMomentPlease);
           try {
+            // Todo: move setting the text and trigger the destination change handler to the controller
             state.destinationTextController.text = capture;
             await ref
                 .read(sendSatsControllerProvider.notifier)

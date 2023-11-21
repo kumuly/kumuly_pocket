@@ -114,11 +114,11 @@ class PocketScreen extends ConsumerWidget {
                                 color: Palette.neutral[80]!,
                               ),
                               DynamicIcon(
-                                icon: 'assets/icons/send_arrow.svg',
+                                icon: 'assets/icons/receive_arrow.svg',
                                 color: Palette.neutral[80]!,
                               ),
                               DynamicIcon(
-                                icon: 'assets/icons/receive_arrow.svg',
+                                icon: 'assets/icons/send_arrow.svg',
                                 color: Palette.neutral[80]!,
                               ),
                               DynamicIcon(
