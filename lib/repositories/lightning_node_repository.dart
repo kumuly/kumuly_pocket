@@ -233,7 +233,7 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
             type: PaymentRequestType.lnurlPay,
             lnurlPay: LnurlPayEntity(
               lnurl: paymentRequest,
-              minSendableSat: inputType.data.minSendable,
+              minSendableSat: inputType.data.minSendable ~/ 1000,
               maxSendableSat: inputType.data.maxSendable ~/ 1000,
               metadata: inputType.data.metadataStr,
             ));
