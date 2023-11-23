@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kumuly_pocket/features/contacts/contacts_screen.dart';
 import 'package:kumuly_pocket/features/for_you/for_you_screen.dart';
 import 'package:kumuly_pocket/features/pocket/pocket_screen.dart';
 import 'package:kumuly_pocket/features/pocket_mode/pocket_mode_scaffold_with_nested_navigation.dart';
@@ -45,8 +46,8 @@ final pocketModeRoute = StatefulShellRoute.indexedStack(
         GoRoute(
           path: '/contacts',
           name: 'contacts',
-          pageBuilder: (context, state) => NoTransitionPage(
-            child: Container(color: Colors.white), // ContactsScreen(),
+          pageBuilder: (context, state) => const NoTransitionPage(
+            child: ContactsScreen(),
           ),
           routes: [
             // child route
