@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/enums/payment_direction.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
@@ -68,6 +69,7 @@ class ContactListItemWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
     final copy = AppLocalizations.of(context)!;
+    final router = GoRouter.of(context);
 
     return ListTile(
       horizontalTitleGap: 12,
@@ -144,6 +146,10 @@ class ContactListItemWidget extends ConsumerWidget {
                   ),
                 ),
         ],
+      ),
+      onTap: () => router.pushNamed(
+        'chat',
+        pathParameters: {'id': contactListItem.contactId},
       ),
     );
   }

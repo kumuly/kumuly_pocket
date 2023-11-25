@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
@@ -110,6 +109,7 @@ class FrequentContactItemWidget extends StatelessWidget {
   @override
   Widget build(context) {
     final textTheme = Theme.of(context).textTheme;
+    final router = GoRouter.of(context);
 
     return Padding(
       padding: const EdgeInsets.only(right: kSpacing1 * 3.5),
@@ -142,6 +142,10 @@ class FrequentContactItemWidget extends StatelessWidget {
               ),
             ),
           ],
+        ),
+        onTap: () => router.pushNamed(
+          'chat',
+          pathParameters: {'id': contact.contactId},
         ),
       ),
     );
