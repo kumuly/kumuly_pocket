@@ -142,6 +142,10 @@ class SqliteChatMessageRepository implements ChatMessageRepository {
     }
 
     final results = await db.rawQuery(query);
-    return results.map((row) => ChatMessageEntity.fromMap(row)).toList();
+    return results.map((row) {
+      print(
+          'QUERY MOST RECENT MESSAGE BY CONTACT created at: ${row['createdAt']}');
+      return ChatMessageEntity.fromMap(row);
+    }).toList();
   }
 }

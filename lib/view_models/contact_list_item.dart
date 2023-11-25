@@ -5,15 +5,17 @@ import 'package:kumuly_pocket/enums/payment_direction.dart';
 
 @immutable
 class ContactListItem extends Equatable {
+  final String contactId;
   final String contactName;
   final String? contactImagePath;
   final String? description;
   final int? timestamp;
-  final PaymentDirection? direction;
-  final bool isNewContact;
+  final PaymentDirection? direction; // Todo: remove and use ChatMessageType
+  final bool isNewContact; // Todo: remove and use ChatMessageType
   final bool hasUnreadMessage;
 
   const ContactListItem({
+    required this.contactId,
     required this.contactName,
     this.contactImagePath,
     this.description,
@@ -45,6 +47,7 @@ class ContactListItem extends Equatable {
 
   @override
   List<Object?> get props => [
+        contactId,
         contactName,
         contactImagePath,
         description,

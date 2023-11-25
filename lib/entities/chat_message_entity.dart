@@ -18,7 +18,7 @@ class ChatMessageEntity extends Equatable {
   final ChatMessageType type;
   final int amountSat;
   final bool isRead;
-  final int createdAt;
+  final int createdAt; // Unix timestamp in seconds
 
   // Convert into a Map. The keys must correspond to the names of the
   // columns in the database.

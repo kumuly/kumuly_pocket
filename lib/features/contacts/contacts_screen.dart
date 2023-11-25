@@ -1,13 +1,19 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/enums/payment_direction.dart';
+import 'package:kumuly_pocket/features/contacts/contact_list_controller.dart';
+import 'package:kumuly_pocket/features/contacts/frequent_contacts_controller.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/view_models/contact_list_item.dart';
+import 'package:kumuly_pocket/view_models/frequent_contact_item.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 import 'package:kumuly_pocket/widgets/lists/contacts_list.dart';
+import 'package:kumuly_pocket/widgets/lists/frequent_contacts_list.dart';
 import 'package:kumuly_pocket/widgets/shadows/bottom_shadow.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -19,7 +25,22 @@ class ContactsScreen extends ConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
     final copy = AppLocalizations.of(context)!;
     double screenWidth = MediaQuery.of(context).size.width;
-    final router = GoRouter.of(context);
+
+    const frequentContactsLimit = 10;
+    final frequentContactsState = ref.watch(
+      frequentContactsControllerProvider(frequentContactsLimit),
+    );
+    final frequentContactsNotifier = ref.read(
+      frequentContactsControllerProvider(frequentContactsLimit).notifier,
+    );
+
+    const contactListLimit = 10;
+    final contactListState = ref.watch(
+      contactListControllerProvider(contactListLimit),
+    );
+    final contactListNotifier = ref.read(
+      contactListControllerProvider(contactListLimit).notifier,
+    );
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -30,7 +51,10 @@ class ContactsScreen extends ConsumerWidget {
         child: Stack(
           children: [
             RefreshIndicator(
-              onRefresh: () async {},
+              onRefresh: () async {
+                await frequentContactsNotifier.fetchContacts(refresh: true);
+                await contactListNotifier.fetchContacts(refresh: true);
+              },
               child: ListView(
                 padding: EdgeInsets.zero,
                 children: [
@@ -72,9 +96,27 @@ class ContactsScreen extends ConsumerWidget {
                   // Add contact + frequent/favorite contacts
                   SizedBox(
                     height: 116,
-                    child: ListView.builder(
+                    child: FrequentContactsList(
+                      contactListItems: frequentContactsState.hasValue
+                          ? frequentContactsState.asData!.value.contacts
+                          : [],
+                      loadContactListItems:
+                          frequentContactsNotifier.fetchContacts,
+                      limit: frequentContactsLimit,
+                      hasMore: frequentContactsState.hasValue
+                          ? frequentContactsState.asData!.value.hasMoreContacts
+                          : true,
+                      isLoading: frequentContactsState.isLoading,
+                      isLoadingError: frequentContactsState.hasError,
+                    ),
+                    /*
+                    ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: 10 + 1,
+                      itemCount: frequentContactsState.hasValue
+                          ? frequentContactsState
+                                  .asData!.value.contacts.length +
+                              1
+                          : 1,
                       itemBuilder: (context, index) {
                         return Padding(
                           padding:
@@ -87,44 +129,32 @@ class ContactsScreen extends ConsumerWidget {
                                     context, // The first item (Add contact)
                                   ),
                                 )
-                              : _buildFrequentContactItem(
-                                  context, // Other items (Frequent contacts)
-                                ),
+                              : frequentContactsState.hasValue
+                                  ? _buildFrequentContactItem(
+                                      frequentContactsState
+                                          .value!.contacts[index - 1],
+                                      context, // Other items (Frequent contacts)
+                                    )
+                                  : null,
                         );
                       },
-                    ),
+                    ),*/
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: kSpacing2,
                     ),
                     child: ContactsList(
-                      contactListItems: const [
-                        ContactListItem(
-                          contactName: "Courtney Henry",
-                          description:
-                              'Buy something nice for yourself dfdff fdfdf dffd',
-                          direction: PaymentDirection.incoming,
-                          timestamp: 128383833,
-                        ),
-                        ContactListItem(
-                            contactName: "Jacob Jones", isNewContact: true),
-                        ContactListItem(contactName: "Courtney Henry"),
-                        ContactListItem(contactName: "Jacob Jones"),
-                        ContactListItem(contactName: "Courtney Henry"),
-                        ContactListItem(contactName: "Jacob Jones"),
-                        ContactListItem(contactName: "Courtney Henry"),
-                        ContactListItem(contactName: "Jacob Jones"),
-                        ContactListItem(contactName: "Courtney Henry"),
-                        ContactListItem(contactName: "Jacob Jones"),
-                        ContactListItem(contactName: "Courtney Henry"),
-                        ContactListItem(contactName: "Jacob Jones"),
-                      ],
-                      loadContactListItems: ({bool refresh = false}) async {},
-                      limit: 10,
-                      hasMore: false,
-                      isLoading: false,
-                      isLoadingError: false,
+                      contactListItems: contactListState.hasValue
+                          ? contactListState.asData!.value.contacts
+                          : [],
+                      loadContactListItems: contactListNotifier.fetchContacts,
+                      limit: contactListLimit,
+                      hasMore: contactListState.hasValue
+                          ? contactListState.asData!.value.hasMoreContacts
+                          : true,
+                      isLoading: contactListState.isLoading,
+                      isLoadingError: contactListState.hasError,
                     ),
                   ),
                   const SizedBox(
@@ -176,21 +206,28 @@ Widget _buildAddContactItem(BuildContext context) {
   );
 }
 
-Widget _buildFrequentContactItem(BuildContext context) {
+Widget _buildFrequentContactItem(
+    FrequentContactItem contact, BuildContext context) {
   final textTheme = Theme.of(context).textTheme;
 
   return InkWell(
     child: Column(
       children: [
-        const CircleAvatar(
-          backgroundImage: AssetImage('assets/images/dummy_avatar.png'),
+        CircleAvatar(
+          backgroundImage: contact.contactImagePath != null
+              ? FileImage(File(contact.contactImagePath!))
+              : null,
           radius: 28,
+          backgroundColor: Palette.neutral[20],
+          child: contact.contactImagePath == null
+              ? const Icon(Icons.person, size: 24)
+              : null,
         ),
         const SizedBox(height: kSpacing1),
         SizedBox(
           width: 56,
           child: Text(
-            'Savannah',
+            contact.contactName,
             style: textTheme.display1(
               Palette.neutral[100],
               FontWeight.w400,

@@ -40,6 +40,7 @@ class SqliteContactRepository implements ContactRepository {
     ContactEntity contact, {
     dynamic tx,
   }) {
+    print('SAVING CONTACT TIMESTAMP: ${contact.createdAt}');
     // Save contact to database
     if (tx == null) {
       return db.insert(

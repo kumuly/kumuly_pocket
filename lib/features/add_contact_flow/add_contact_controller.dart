@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:kumuly_pocket/entities/contact_entity.dart';
 import 'package:kumuly_pocket/enums/payment_request_type.dart';
 import 'package:kumuly_pocket/features/add_contact_flow/add_contact_state.dart';
+import 'package:kumuly_pocket/features/contacts/contact_list_controller.dart';
+import 'package:kumuly_pocket/features/contacts/frequent_contacts_controller.dart';
 import 'package:kumuly_pocket/repositories/lightning_node_repository.dart';
 import 'package:kumuly_pocket/services/chat_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -86,9 +88,14 @@ class AddContactController extends _$AddContactController {
       id: state.id!,
       name: state.name!,
       avatarImagePath: state.avatarImagePath,
+      createdAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
     );
     ref.read(sqliteChatServiceProvider).addNewContact(
           newContact,
         );
+
+    // Invalidate contact list and frequent contacts since we added a new contact so the lists need to be refreshed
+    ref.invalidate(contactListControllerProvider);
+    ref.invalidate(frequentContactsControllerProvider);
   }
 }

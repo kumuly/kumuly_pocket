@@ -7,13 +7,13 @@ class ContactEntity extends Equatable {
     required this.id,
     required this.name,
     this.avatarImagePath,
-    this.createdAt,
+    required this.createdAt,
   });
 
   final String id;
   final String name;
   final String? avatarImagePath;
-  final int? createdAt;
+  final int createdAt;
 
   // Convert into a Map. The keys must correspond to the names of the
   // columns in the database.
@@ -31,7 +31,7 @@ class ContactEntity extends Equatable {
       id: map['id'] as String,
       name: map['name'] as String,
       avatarImagePath: map['avatarImagePath'] as String?,
-      createdAt: map['createdAt'] as int?,
+      createdAt: map['createdAt'] as int,
     );
   }
 

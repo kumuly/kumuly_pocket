@@ -14,11 +14,11 @@ part 'chat_service.g.dart';
 
 abstract class ChatService {
   Future<void> addNewContact(ContactEntity contact);
-  Future<List<ContactEntity>> getFrequentContacts(int limit, int offset);
-  Future<List<ChatMessageEntity>> getMostRecentMessageByContact(
-    int limit,
-    int offset,
-  );
+  Future<List<ContactEntity>> getFrequentContacts({int? limit, int? offset});
+  Future<List<ChatMessageEntity>> getMostRecentMessageByContact({
+    int? limit,
+    int? offset,
+  });
   Future<List<ChatMessageEntity>> getMessagesByContactId(
     String contactId,
     int limit,
@@ -50,13 +50,15 @@ class SqliteChatService implements ChatService {
 
   @override
   Future<void> addNewContact(ContactEntity contact) async {
+    // Todo: check if contact already exists, and if so, update it instead of creating a new one
+    // update only the name and avatar and do not create a new chat message
+
     // Create a transaction to save the contact and the new contact message atomically
     await db.transaction((tx) async {
-      final timestamp = DateTime.now().millisecondsSinceEpoch;
       // Since this message is not linked to a payment, we do not have a paymenthash to use as id
       // So we create a hash from the contact id and the timestamp
       final chatMessageId = sha256
-          .convert(utf8.encode(contact.id + timestamp.toString()))
+          .convert(utf8.encode(contact.id + contact.createdAt.toString()))
           .toString();
 
       // Save contact to database
@@ -67,7 +69,7 @@ class SqliteChatService implements ChatService {
           id: chatMessageId,
           contactId: contact.id,
           type: ChatMessageType.newContact,
-          createdAt: timestamp,
+          createdAt: contact.createdAt,
         ),
         tx: tx,
       );
@@ -75,7 +77,10 @@ class SqliteChatService implements ChatService {
   }
 
   @override
-  Future<List<ContactEntity>> getFrequentContacts(int limit, int offset) async {
+  Future<List<ContactEntity>> getFrequentContacts({
+    int? limit,
+    int? offset,
+  }) async {
     final contactIds =
         await chatMessageRepository.queryContactIdsOrderedByMessageCount(
       limit: limit,
@@ -97,10 +102,10 @@ class SqliteChatService implements ChatService {
   }
 
   @override
-  Future<List<ChatMessageEntity>> getMostRecentMessageByContact(
-    int limit,
-    int offset,
-  ) {
+  Future<List<ChatMessageEntity>> getMostRecentMessageByContact({
+    int? limit,
+    int? offset,
+  }) {
     return chatMessageRepository.queryMostRecentMessageByContact(
       limit: limit,
       offset: offset,

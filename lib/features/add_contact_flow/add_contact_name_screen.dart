@@ -100,6 +100,7 @@ class AddContactNameScreen extends ConsumerWidget {
                         ), // Change this to your desired color
                       ),
                     ),
+                    focusNode: state.nameFocusNode,
                     onChanged: notifier.onNameChangeHandler,
                   ),
                 ],
@@ -115,6 +116,7 @@ class AddContactNameScreen extends ConsumerWidget {
                       final savingContact = notifier.saveContact();
                       showTransitionDialog(context, copy.oneMomentPlease);
                       await savingContact;
+                      state.nameFocusNode.unfocus();
                       router.pop();
                       pageController.nextPage();
                     } catch (e) {
