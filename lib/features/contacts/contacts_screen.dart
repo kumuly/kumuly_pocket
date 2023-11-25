@@ -5,7 +5,7 @@ import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/enums/payment_direction.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
-import 'package:kumuly_pocket/view_models/last_contact_message.dart';
+import 'package:kumuly_pocket/view_models/contact_list_item.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 import 'package:kumuly_pocket/widgets/lists/contacts_list.dart';
 import 'package:kumuly_pocket/widgets/shadows/bottom_shadow.dart';
@@ -26,8 +26,6 @@ class ContactsScreen extends ConsumerWidget {
       body: Padding(
         padding: const EdgeInsets.only(
           top: kSpacing6,
-          left: kSpacing2,
-          right: kSpacing2,
         ),
         child: Stack(
           children: [
@@ -38,6 +36,10 @@ class ContactsScreen extends ConsumerWidget {
                 children: [
                   // Search bar
                   Container(
+                    padding: const EdgeInsets.only(
+                      left: kSpacing2,
+                      right: kSpacing2,
+                    ),
                     height: 32,
                     color: Colors.transparent,
                     child: TextField(
@@ -54,7 +56,7 @@ class ContactsScreen extends ConsumerWidget {
                           maxWidth: 24,
                         ),
                         prefix: const SizedBox(width: kSpacing1),
-                        hintText: 'Search a contact',
+                        hintText: copy.searchAContact,
                         hintStyle: textTheme.display2(
                           Palette.neutral[50],
                           FontWeight.w500,
@@ -74,45 +76,56 @@ class ContactsScreen extends ConsumerWidget {
                       scrollDirection: Axis.horizontal,
                       itemCount: 10 + 1,
                       itemBuilder: (context, index) {
-                        return index == 0
-                            ? _buildAddContactItem(
-                                textTheme,
-                              ) // The first item (Add contact)
-                            : Padding(
-                                padding: const EdgeInsets.only(
-                                    left: kSpacing1 * 3.5),
-                                child: _buildFrequentContactItem(textTheme),
-                              ); // Other items (Frequent contacts)
+                        return Padding(
+                          padding:
+                              const EdgeInsets.only(right: kSpacing1 * 3.5),
+                          child: index == 0
+                              ? Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: kSpacing2),
+                                  child: _buildAddContactItem(
+                                    context, // The first item (Add contact)
+                                  ),
+                                )
+                              : _buildFrequentContactItem(
+                                  context, // Other items (Frequent contacts)
+                                ),
+                        );
                       },
                     ),
                   ),
-                  ContactsList(
-                    lastContactMessages: const [
-                      LastContactMessage(
-                        contactName: "Courtney Henry",
-                        description: 'Buy something nice for yourself.',
-                        amountSat: 100000,
-                        direction: PaymentDirection.incoming,
-                        timestamp: 128383833,
-                      ),
-                      LastContactMessage(contactName: "Jacob Jones"),
-                      LastContactMessage(contactName: "Courtney Henry"),
-                      LastContactMessage(contactName: "Jacob Jones"),
-                      LastContactMessage(contactName: "Courtney Henry"),
-                      LastContactMessage(contactName: "Jacob Jones"),
-                      LastContactMessage(contactName: "Courtney Henry"),
-                      LastContactMessage(contactName: "Jacob Jones"),
-                      LastContactMessage(contactName: "Courtney Henry"),
-                      LastContactMessage(contactName: "Jacob Jones"),
-                      LastContactMessage(contactName: "Courtney Henry"),
-                      LastContactMessage(contactName: "Jacob Jones"),
-                    ],
-                    loadLatestContactMessages: (
-                        {bool refresh = false}) async {},
-                    limit: 10,
-                    hasMore: false,
-                    isLoading: false,
-                    isLoadingError: false,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: kSpacing2,
+                    ),
+                    child: ContactsList(
+                      contactListItems: const [
+                        ContactListItem(
+                          contactName: "Courtney Henry",
+                          description:
+                              'Buy something nice for yourself dfdff fdfdf dffd',
+                          direction: PaymentDirection.incoming,
+                          timestamp: 128383833,
+                        ),
+                        ContactListItem(
+                            contactName: "Jacob Jones", isNewContact: true),
+                        ContactListItem(contactName: "Courtney Henry"),
+                        ContactListItem(contactName: "Jacob Jones"),
+                        ContactListItem(contactName: "Courtney Henry"),
+                        ContactListItem(contactName: "Jacob Jones"),
+                        ContactListItem(contactName: "Courtney Henry"),
+                        ContactListItem(contactName: "Jacob Jones"),
+                        ContactListItem(contactName: "Courtney Henry"),
+                        ContactListItem(contactName: "Jacob Jones"),
+                        ContactListItem(contactName: "Courtney Henry"),
+                        ContactListItem(contactName: "Jacob Jones"),
+                      ],
+                      loadContactListItems: ({bool refresh = false}) async {},
+                      limit: 10,
+                      hasMore: false,
+                      isLoading: false,
+                      isLoadingError: false,
+                    ),
                   ),
                   const SizedBox(
                     height: kSpacing3,
@@ -130,24 +143,28 @@ class ContactsScreen extends ConsumerWidget {
   }
 }
 
-Widget _buildAddContactItem(TextTheme textTheme) {
+Widget _buildAddContactItem(BuildContext context) {
+  final textTheme = Theme.of(context).textTheme;
+  final router = GoRouter.of(context);
+  final copy = AppLocalizations.of(context)!;
+
   return InkWell(
     child: Column(
       children: [
         CircleAvatar(
           backgroundColor: Palette.neutral[120],
           radius: 28,
-          child: const DynamicIcon(
+          child: DynamicIcon(
             icon: 'assets/icons/add_contact.svg',
-            color: Colors.white,
-            size: 24,
+            color: Palette.neutral[30],
+            size: 14,
           ),
         ),
         const SizedBox(height: kSpacing1),
         Text(
-          'Add',
+          copy.add,
           style: textTheme.display1(
-            Palette.neutral[80],
+            Palette.neutral[100],
             FontWeight.w400,
             letterSpacing: -0.5,
           ),
@@ -155,10 +172,13 @@ Widget _buildAddContactItem(TextTheme textTheme) {
         ),
       ],
     ),
+    onTap: () => router.pushNamed('add-contact-flow'),
   );
 }
 
-Widget _buildFrequentContactItem(TextTheme textTheme) {
+Widget _buildFrequentContactItem(BuildContext context) {
+  final textTheme = Theme.of(context).textTheme;
+
   return InkWell(
     child: Column(
       children: [
@@ -172,7 +192,7 @@ Widget _buildFrequentContactItem(TextTheme textTheme) {
           child: Text(
             'Savannah',
             style: textTheme.display1(
-              Palette.neutral[80],
+              Palette.neutral[100],
               FontWeight.w400,
               letterSpacing: -0.5,
             ),

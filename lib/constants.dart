@@ -32,7 +32,11 @@ const kSendSatsFlowPageViewId = 'send-sats-flow';
 const kPromoFlowPageViewId = 'promo-flow';
 const kCashierFlowPageViewId = 'cashier-flow';
 const kPromoValidationFlowPageViewId = 'promo-validation-flow';
+const kAddContactFlowPageViewId = 'add-contact-flow';
 /* Settings keys */
 const kBitcoinUnitSettingsKey = 'bitcoin-unit-settings';
 const kLocalCurrencySettingsKey = 'local-currency-settings';
 const kLocationSettingsKey = 'location-settings';
+/* Database tables */
+const kContactsTable = 'Contacts';
+const kChatMessagesTable = 'ChatMessages';

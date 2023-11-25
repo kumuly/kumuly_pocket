@@ -49,13 +49,6 @@ final pocketModeRoute = StatefulShellRoute.indexedStack(
           pageBuilder: (context, state) => const NoTransitionPage(
             child: ContactsScreen(),
           ),
-          routes: [
-            // child route
-            GoRoute(
-              path: 'add-contact',
-              builder: (context, state) => Container(),
-            ),
-          ],
         ),
       ],
     ),

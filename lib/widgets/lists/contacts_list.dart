@@ -4,26 +4,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/enums/payment_direction.dart';
-import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
-import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
-import 'package:kumuly_pocket/view_models/last_contact_message.dart';
+import 'package:kumuly_pocket/view_models/contact_list_item.dart';
+import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 import 'package:kumuly_pocket/widgets/lists/lazy_list.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ContactsList extends StatelessWidget {
   const ContactsList({
     super.key,
-    required this.lastContactMessages,
-    required this.loadLatestContactMessages,
+    required this.contactListItems,
+    required this.loadContactListItems,
     required this.limit,
     this.hasMore = true,
     this.isLoading = false,
     this.isLoadingError = false,
   });
 
-  final List<LastContactMessage> lastContactMessages;
-  final Future<void> Function({bool refresh}) loadLatestContactMessages;
+  final List<ContactListItem> contactListItems;
+  final Future<void> Function({bool refresh}) loadContactListItems;
   final int limit;
   final bool hasMore;
   final bool isLoading;
@@ -35,17 +35,17 @@ class ContactsList extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         LazyList(
-          items: lastContactMessages
+          items: contactListItems
               .map(
-                (lastContactMessages) => LastContactMessageItem(
-                  lastContactMessages,
+                (contactListItem) => ContactListItemWidget(
+                  contactListItem,
                   key: Key(
-                    lastContactMessages.contactName,
+                    contactListItem.contactName,
                   ),
                 ),
               )
               .toList(),
-          loadItems: loadLatestContactMessages,
+          loadItems: loadContactListItems,
           limit: limit,
           hasMore: hasMore,
           isLoading: isLoading,
@@ -59,16 +59,15 @@ class ContactsList extends StatelessWidget {
   }
 }
 
-class LastContactMessageItem extends ConsumerWidget {
-  const LastContactMessageItem(this.lastContactMessage, {required super.key});
+class ContactListItemWidget extends ConsumerWidget {
+  const ContactListItemWidget(this.contactListItem, {required super.key});
 
-  final LastContactMessage lastContactMessage;
+  final ContactListItem contactListItem;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
-
-    final unit = ref.watch(bitcoinUnitProvider);
+    final copy = AppLocalizations.of(context)!;
 
     return ListTile(
       horizontalTitleGap: 12,
@@ -76,60 +75,73 @@ class LastContactMessageItem extends ConsumerWidget {
       contentPadding: const EdgeInsets.symmetric(
         horizontal: 0,
       ),
-      leading: lastContactMessage.contactImagePath != null
+      leading: contactListItem.contactImagePath != null
           ? CircleAvatar(
-              radius: 16,
+              radius: 18,
               backgroundImage:
-                  FileImage(File(lastContactMessage.contactImagePath!)),
+                  FileImage(File(contactListItem.contactImagePath!)),
             )
           : CircleAvatar(
               backgroundColor: Palette.neutral[20],
-              radius: 16,
-              child: const Icon(Icons.person,
-                  size: 12.5), // Default icon if no image is selected
+              radius: 18,
+              child: const Icon(
+                Icons.person,
+                size: 12.5,
+              ), // Default icon if no image is selected
             ),
-      title: Text(lastContactMessage.contactName),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(contactListItem.contactName),
+          contactListItem.direction == null
+              ? const SizedBox.shrink()
+              : contactListItem.direction == PaymentDirection.incoming
+                  ? DynamicIcon(
+                      icon: 'assets/icons/receive_arrow.svg',
+                      color: Palette.success[50],
+                      size: 7.5,
+                    )
+                  : DynamicIcon(
+                      icon: 'assets/icons/send_arrow.svg',
+                      color: Palette.lilac[75],
+                      size: 7.5,
+                    ),
+        ],
+      ),
       titleTextStyle: textTheme.display2(
         Palette.neutral[80],
         FontWeight.w400,
       ),
-      subtitle: lastContactMessage.description != null
-          ? Text(
-              lastContactMessage.description!,
-              style: textTheme.caption1(
+      subtitle: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Text(
+              contactListItem.isNewContact
+                  ? copy.newContact
+                  : contactListItem.description == null
+                      ? contactListItem.direction == PaymentDirection.incoming
+                          ? copy.hasSentYouFunds
+                          : copy.fundsSentSuccessfully
+                      : contactListItem.description!,
+              style: textTheme.display1(
                 Palette.neutral[60],
                 FontWeight.w400,
               ),
-            )
-          : null,
-      trailing: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          lastContactMessage.amountSat == null
-              ? const SizedBox.shrink()
-              : Text(
-                  '${lastContactMessage.direction == PaymentDirection.incoming ? '+' : '-'} ${ref.watch(displayBitcoinAmountProvider(lastContactMessage.amountSat))} ${unit.name.toUpperCase()}',
-                  style: textTheme.display2(
-                    lastContactMessage.direction == PaymentDirection.incoming
-                        ? Palette.success[50]
-                        : Palette.neutral[70],
-                    FontWeight.w500,
-                  ),
-                  textAlign: TextAlign.end,
-                ),
-          const SizedBox(
-            height: 4,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
-          lastContactMessage.timestamp == null
+          const SizedBox(
+            width: kSpacing12,
+          ),
+          contactListItem.timestamp == null
               ? const SizedBox.shrink()
               : Text(
-                  lastContactMessage.dateTime,
+                  contactListItem.dateTime,
                   style: textTheme.caption1(
                     Palette.neutral[60],
                     FontWeight.w400,
                   ),
-                  textAlign: TextAlign.end,
                 ),
         ],
       ),
