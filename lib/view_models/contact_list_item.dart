@@ -9,7 +9,7 @@ class ContactListItem extends Equatable {
   final String contactName;
   final String? contactImagePath;
   final String? description;
-  final int? timestamp;
+  final int timestamp;
   final PaymentDirection? direction; // Todo: remove and use ChatMessageType
   final bool isNewContact; // Todo: remove and use ChatMessageType
   final bool hasUnreadMessage;
@@ -19,17 +19,14 @@ class ContactListItem extends Equatable {
     required this.contactName,
     this.contactImagePath,
     this.description,
-    this.timestamp,
+    required this.timestamp,
     this.direction,
     this.isNewContact = false,
     this.hasUnreadMessage = false,
   });
 
   String get dateTime {
-    if (timestamp == null) return '';
-
-    final DateTime date =
-        DateTime.fromMillisecondsSinceEpoch(timestamp! * 1000);
+    final DateTime date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
     final DateTime now = DateTime.now();
 
     // Check if the date is today

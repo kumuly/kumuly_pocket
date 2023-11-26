@@ -15,15 +15,16 @@ part 'chat_service.g.dart';
 abstract class ChatService {
   Future<void> addNewContact(ContactEntity contact);
   Future<List<ContactEntity>> getFrequentContacts({int? limit, int? offset});
-  Future<List<ChatMessageEntity>> getMostRecentMessageByContact({
+  Future<List<ChatMessageEntity>> getMostRecentMessageOfContacts({
     int? limit,
     int? offset,
   });
   Future<List<ChatMessageEntity>> getMessagesByContactId(
-    String contactId,
-    int limit,
-    int offset,
-  );
+    String contactId, {
+    int? limit,
+    int? offset,
+  });
+  Future<ContactEntity?> getContactById(String contactId);
   Future<void> sendToContact(String contactId, int amountSat);
   Future<void> retrySendToContact(String messageId);
 }
@@ -102,11 +103,11 @@ class SqliteChatService implements ChatService {
   }
 
   @override
-  Future<List<ChatMessageEntity>> getMostRecentMessageByContact({
+  Future<List<ChatMessageEntity>> getMostRecentMessageOfContacts({
     int? limit,
     int? offset,
   }) {
-    return chatMessageRepository.queryMostRecentMessageByContact(
+    return chatMessageRepository.queryMostRecentMessageOfContacts(
       limit: limit,
       offset: offset,
     );
@@ -114,9 +115,22 @@ class SqliteChatService implements ChatService {
 
   @override
   Future<List<ChatMessageEntity>> getMessagesByContactId(
-      String contactId, int limit, int offset) {
-    // TODO: implement getMessagesByContactId
-    throw UnimplementedError();
+    String contactId, {
+    int? limit,
+    int? offset,
+  }) {
+    return chatMessageRepository.queryMessages(
+      where: 'contactId = ?', // SQL where clause
+      whereArgs: [contactId], // Arguments for the where clause
+      orderBy: 'createdAt DESC', // Order by createdAt in descending order
+      limit: limit,
+      offset: offset,
+    );
+  }
+
+  @override
+  Future<ContactEntity?> getContactById(String contactId) {
+    return contactRepository.getContactById(contactId);
   }
 
   @override

@@ -84,9 +84,10 @@ class AddContactCompletedScreen extends ConsumerWidget {
               color: Palette.russianViolet[100],
               size: 16.0,
             ),
-            onPressed: () {
-              // Todo: direct to the path of the chat with this contact
-            },
+            onPressed: () => router.pushNamed(
+              'chat',
+              pathParameters: {'id': state.id!},
+            ),
           ),
         ],
       ),

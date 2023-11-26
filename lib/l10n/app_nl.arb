@@ -177,5 +177,8 @@
   "scanContactId": "Scan contact ID",
   "addContactQrScanInstructions": "Scan of upload een QR code van een Kumuly Pocket contact ID of Ligtning node Id om toe te voegen.",
   "contactAddedSuccessfully": "Contact succesvol toegevoegd",
-  "sendNewContact": "Stuur naar je nieuwe contact"
+  "sendNewContact": "Stuur naar je nieuwe contact",
+  "newContactAdded": "Nieuw contact toegevoegd!",
+  "today": "Vandaag",
+  "yesterday": "Gisteren"
 }

@@ -13,10 +13,11 @@ part 'contact_list_controller.g.dart';
 class ContactListController extends _$ContactListController {
   @override
   FutureOr<ContactListState> build(int contactsLimit) async {
-    final messages =
-        await ref.read(sqliteChatServiceProvider).getMostRecentMessageByContact(
-              limit: contactsLimit,
-            );
+    final messages = await ref
+        .read(sqliteChatServiceProvider)
+        .getMostRecentMessageOfContacts(
+          limit: contactsLimit,
+        );
     final contactListItems = await _messagesToContactListItems(messages);
 
     return ContactListState(
@@ -32,7 +33,7 @@ class ContactListController extends _$ContactListController {
       // Fetch contacts
       final messages = await ref
           .read(sqliteChatServiceProvider)
-          .getMostRecentMessageByContact(
+          .getMostRecentMessageOfContacts(
             limit: state.contactsLimit,
             offset: refresh ? null : state.contactsOffset,
           );

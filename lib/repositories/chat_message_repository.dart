@@ -24,7 +24,7 @@ abstract class ChatMessageRepository {
     int? limit,
     int? offset,
   });
-  Future<List<ChatMessageEntity>> queryMostRecentMessageByContact({
+  Future<List<ChatMessageEntity>> queryMostRecentMessageOfContacts({
     int? limit,
     int? offset,
   });
@@ -121,7 +121,7 @@ class SqliteChatMessageRepository implements ChatMessageRepository {
   }
 
   @override
-  Future<List<ChatMessageEntity>> queryMostRecentMessageByContact({
+  Future<List<ChatMessageEntity>> queryMostRecentMessageOfContacts({
     int? limit,
     int? offset,
   }) async {

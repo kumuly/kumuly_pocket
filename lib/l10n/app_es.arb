@@ -177,5 +177,8 @@
   "scanContactId": "Escanear ID de contacto",
   "addContactQrScanInstructions": "Escanea o sube un código QR de ID de contacto Kumuly Pocket o ID de un nodo Lightning para agregarlo.",
   "contactAddedSuccessfully": "Contacto agregado exitosamente",
-  "sendNewContactSats": "Envia a tu nuevo contacto"
+  "sendNewContactSats": "Envia a tu nuevo contacto",
+  "newContactAdded": "Nuevo contacto agregado!",
+  "today": "Hoy",
+  "yesterday": "Ayer"
 }
