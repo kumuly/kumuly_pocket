@@ -56,13 +56,15 @@ class WalletHeader extends StatelessWidget {
                         FontWeight.w700,
                       ),
                     ),
-                    Text(
-                      '≈ ${localCurrencyBalance?.toStringAsFixed(localCurrency.decimals)} ${localCurrency.code.toUpperCase()}',
-                      style: textTheme.display2(
-                        Palette.neutral[70],
-                        FontWeight.normal,
-                      ),
-                    ),
+                    localCurrencyBalance == null
+                        ? const CircularProgressIndicator()
+                        : Text(
+                            '≈ ${localCurrencyBalance?.toStringAsFixed(localCurrency.decimals)} ${localCurrency.code.toUpperCase()}',
+                            style: textTheme.display2(
+                              Palette.neutral[70],
+                              FontWeight.normal,
+                            ),
+                          ),
                   ],
                 ),
           const SizedBox(

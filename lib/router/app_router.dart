@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:kumuly_pocket/features/add_contact_flow/add_contact_flow.dart';
+import 'package:kumuly_pocket/features/add_contact_flow/add_contact_scanner_screen.dart';
 import 'package:kumuly_pocket/features/cashier_flow/cashier_flow.dart';
+import 'package:kumuly_pocket/features/chat/chat_screen.dart';
 import 'package:kumuly_pocket/features/contact_id/contact_id_screen.dart';
 import 'package:kumuly_pocket/features/landing/landing_screen.dart';
 import 'package:kumuly_pocket/features/promo_flow/code/promo_code_screen.dart';
@@ -106,6 +109,26 @@ GoRouter appRouter(AppRouterRef ref) {
         path: '/expired-invoice',
         name: 'expired-invoice',
         builder: (context, state) => const SendSatsExpiredInvoiceScreen(),
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: '/add-contact',
+        name: 'add-contact-flow',
+        builder: (context, state) => const AddContactFlow(),
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: '/add-contact-scanner',
+        name: 'add-contact-scanner',
+        builder: (context, state) => const AddContactScannerScreen(),
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: '/chat/:id',
+        name: 'chat',
+        builder: (context, state) => ChatScreen(
+          id: state.pathParameters['id']!,
+        ),
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
