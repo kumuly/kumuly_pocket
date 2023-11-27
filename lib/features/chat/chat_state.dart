@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 @immutable
 class ChatState extends Equatable {
@@ -14,6 +14,9 @@ class ChatState extends Equatable {
   ChatState copyWith({
     String? contactAvatarImagePath,
     String? contactName,
+    bool? isFloatingActionButtonExpanded,
+    AnimationController? actionButtonsAnimationController,
+    Animation<double>? actionButtonsExpandAnimation,
   }) {
     return ChatState(
       contactAvatarImagePath:

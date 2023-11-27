@@ -5,6 +5,8 @@ import 'package:kumuly_pocket/features/chat/chat_messages_controller.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/backgrounds/background_container.dart';
+import 'package:kumuly_pocket/widgets/buttons/expandable_fab.dart';
+import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 import 'package:kumuly_pocket/widgets/lists/chat_messages_list.dart';
 
 class ChatScreen extends ConsumerWidget {
@@ -18,7 +20,9 @@ class ChatScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
+
     final chatState = ref.watch(chatControllerProvider(id));
+
     const messagesLimit = 20;
     final messagesState =
         ref.watch(chatMessagesControllerProvider(id, messagesLimit));
@@ -79,6 +83,28 @@ class ChatScreen extends ConsumerWidget {
           isLoadingError: messagesState.hasError,
         ),
       ),
+      floatingActionButton: ExpandableFab(
+        distance: 72,
+        children: [
+          ActionButton(
+            onPressed: () {},
+            icon: const DynamicIcon(
+              icon: 'assets/icons/send_coins.svg',
+              color: Colors.white,
+              size: 24,
+            ),
+          ),
+          ActionButton(
+            onPressed: () {},
+            icon: const DynamicIcon(
+              icon: 'assets/icons/request_coins.svg',
+              color: Colors.white,
+              size: 24,
+            ),
+          ),
+        ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 }
