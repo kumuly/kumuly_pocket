@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 
 class DashedDivider extends StatelessWidget {
-  DashedDivider({
-    color,
+  const DashedDivider({
+    this.color,
     this.thickness = 1,
     this.dashLength = 2,
-    this.dashSpace = 2,
+    this.dashSpace = 4,
     this.length,
     Key? key,
-  })  : color = color ?? Palette.neutral[40]!,
-        super(key: key);
+  }) : super(key: key);
 
-  final Color color;
+  final Color? color;
   final double thickness;
   final double dashLength;
   final double dashSpace;
@@ -22,18 +21,19 @@ class DashedDivider extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: DrawDottedhorizontalline(
-        color: color,
+        color: color ?? Palette.neutral[40]!,
         thickness: thickness,
         dashLength: dashLength,
         dashSpace: dashSpace,
         length: length,
       ),
+      size: Size(length ?? double.infinity, thickness),
     );
   }
 }
 
 class DrawDottedhorizontalline extends CustomPainter {
-  late Paint _paint;
+  final Paint _paint;
   final double dashLength;
   final double dashSpace;
   final double? length;
@@ -44,32 +44,21 @@ class DrawDottedhorizontalline extends CustomPainter {
     required this.dashLength,
     required this.dashSpace,
     this.length,
-  }) {
-    _paint = Paint();
-    _paint.color = color; //dots color
-    _paint.strokeWidth = thickness; //dots thickness
-    _paint.strokeCap = StrokeCap.square; //dots corner edges
-  }
+  }) : _paint = Paint()
+          ..color = color
+          ..strokeWidth = thickness
+          ..strokeCap = StrokeCap.square;
 
   @override
   void paint(Canvas canvas, Size size) {
-    final startX = length == null
-        ? canvas.getLocalClipBounds().center.dx
-        : 0 - length! / 2;
-    final endX = length == null
-        ? canvas.getLocalClipBounds().center.dx.abs()
-        : startX + length!;
+    double startX = 0;
+    double endX = length ?? size.width;
 
-    for (double i = startX; i < endX; i = i + dashSpace) {
-      // 15 is space between dots
-      if (i % 3 == 0) {
-        canvas.drawLine(Offset(i, 0.0), Offset(i + dashLength, 0.0), _paint);
-      }
+    for (double i = startX; i < endX; i += dashLength + dashSpace) {
+      canvas.drawLine(Offset(i, 0.0), Offset(i + dashLength, 0.0), _paint);
     }
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
-  }
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
