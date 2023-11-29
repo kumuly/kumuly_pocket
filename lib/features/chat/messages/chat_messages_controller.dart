@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:kumuly_pocket/entities/chat_message_entity.dart';
-import 'package:kumuly_pocket/features/chat/chat_messages_state.dart';
+import 'package:kumuly_pocket/features/chat/messages/chat_messages_state.dart';
 import 'package:kumuly_pocket/services/chat_service.dart';
 import 'package:kumuly_pocket/view_models/chat_message.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

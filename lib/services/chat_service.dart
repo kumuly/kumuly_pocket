@@ -6,6 +6,7 @@ import 'package:kumuly_pocket/enums/chat_message_type.dart';
 import 'package:kumuly_pocket/providers/local_storage_providers.dart';
 import 'package:kumuly_pocket/repositories/chat_message_repository.dart';
 import 'package:kumuly_pocket/repositories/contact_repository.dart';
+import 'package:kumuly_pocket/services/lightning_node_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:crypto/crypto.dart';
@@ -35,6 +36,7 @@ ChatService sqliteChatService(SqliteChatServiceRef ref) {
     db: ref.watch(sqliteProvider),
     contactRepository: ref.watch(sqliteContactRepositoryProvider),
     chatMessageRepository: ref.watch(sqliteChatMessageRepositoryProvider),
+    lightningNodeService: ref.watch(breezeSdkLightningNodeServiceProvider),
   );
 }
 
@@ -43,11 +45,13 @@ class SqliteChatService implements ChatService {
     required this.db,
     required this.contactRepository,
     required this.chatMessageRepository,
+    required this.lightningNodeService,
   });
 
   final Database db;
   final ContactRepository contactRepository;
   final ChatMessageRepository chatMessageRepository;
+  final LightningNodeService lightningNodeService;
 
   @override
   Future<void> addNewContact(ContactEntity contact) async {
@@ -134,14 +138,15 @@ class SqliteChatService implements ChatService {
   }
 
   @override
-  Future<void> retrySendToContact(String messageId) {
-    // TODO: implement retrySendToContact
-    throw UnimplementedError();
+  Future<void> sendToContact(String contactId, int amountSat) {
+    print('sendToContact: $contactId, $amountSat');
+
+    return Future.value();
   }
 
   @override
-  Future<void> sendToContact(String contactId, int amountSat) {
-    // TODO: implement sendToContact
+  Future<void> retrySendToContact(String messageId) {
+    // TODO: implement retrySendToContact
     throw UnimplementedError();
   }
 }

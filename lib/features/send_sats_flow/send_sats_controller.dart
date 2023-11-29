@@ -85,8 +85,6 @@ class SendSatsController extends _$SendSatsController {
         lnurlPay: lnurlPay,
         isValidDestination: true,
         amountSat: amountSat,
-        destinationInputError: null,
-        amountInputError: null,
       );
 
       state.amountTextController.text =
@@ -107,12 +105,51 @@ class SendSatsController extends _$SendSatsController {
   }
 
   Future<void> amountChangeHandler(String amount) async {
-    // Todo: Validate amount, check balance, check min and maxsendable etc. and set error if needed
-    final unit = ref.watch(bitcoinUnitProvider);
-    final amountSat = unit == BitcoinUnit.sat
-        ? int.parse(amount)
-        : ref.watch(btcToSatProvider(double.parse(amount)));
-    state = state.copyWith(amountSat: amountSat, amountInputError: null);
+    if (amount.isEmpty) {
+      // Keep everything except for the amount and amount input error
+      state = SendSatsState(
+        amountSat: null,
+        amountInputError: null,
+        destinationFocusNode: state.destinationFocusNode,
+        destinationTextController: state.destinationTextController,
+        amountFocusNode: state.amountFocusNode,
+        amountTextController: state.amountTextController,
+        paymentRequestType: state.paymentRequestType,
+        invoice: state.invoice,
+        bitcoinAddress: state.bitcoinAddress,
+        bip21: state.bip21,
+        nodeId: state.nodeId,
+        lnurlPay: state.lnurlPay,
+        isValidDestination: state.isValidDestination,
+        recommendedOnChainFees: state.recommendedOnChainFees,
+        selectedOnChainFeeVelocity: state.selectedOnChainFeeVelocity,
+        destinationInputError: state.destinationInputError,
+      );
+    } else {
+      // Todo: Validate amount, check balance, check min and maxsendable etc. and set error if needed
+      final unit = ref.watch(bitcoinUnitProvider);
+      final amountSat = unit == BitcoinUnit.sat
+          ? int.parse(amount)
+          : ref.watch(btcToSatProvider(double.parse(amount)));
+      state = SendSatsState(
+        amountSat: amountSat,
+        amountInputError: null,
+        destinationFocusNode: state.destinationFocusNode,
+        destinationTextController: state.destinationTextController,
+        amountFocusNode: state.amountFocusNode,
+        amountTextController: state.amountTextController,
+        paymentRequestType: state.paymentRequestType,
+        invoice: state.invoice,
+        bitcoinAddress: state.bitcoinAddress,
+        bip21: state.bip21,
+        nodeId: state.nodeId,
+        lnurlPay: state.lnurlPay,
+        isValidDestination: state.isValidDestination,
+        recommendedOnChainFees: state.recommendedOnChainFees,
+        selectedOnChainFeeVelocity: state.selectedOnChainFeeVelocity,
+        destinationInputError: state.destinationInputError,
+      );
+    }
   }
 
   Future<void> fetchFees() async {

@@ -18,13 +18,7 @@ class ReceiveSatsGenerationController
 
   void amountChangeHandler(String? amount) {
     if (amount == null || amount.isEmpty) {
-      state = state.copyWith(
-        amountSat: null,
-        onChainAddress: null,
-        onChainMaxAmount: null,
-        onChainMinAmount: null,
-        swapFeeEstimate: null,
-      );
+      state = const ReceiveSatsGenerationState();
     } else {
       final amountSat = ref.watch(bitcoinUnitProvider) == BitcoinUnit.sat
           ? int.parse(amount)
