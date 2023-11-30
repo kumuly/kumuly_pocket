@@ -40,7 +40,6 @@ class ContactEntity extends Equatable {
 
   // With id since it is used when retrieving from the database.
   factory ContactEntity.fromMap(Map<String, dynamic> map) {
-    print('Contact entity from map: $map');
     return ContactEntity(
       id: map['rowid'] as int,
       name: map['name'] as String,

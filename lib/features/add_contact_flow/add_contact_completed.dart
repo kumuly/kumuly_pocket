@@ -86,7 +86,9 @@ class AddContactCompletedScreen extends ConsumerWidget {
             ),
             onPressed: () => router.pushNamed(
               'chat',
-              pathParameters: {'id': state.id!},
+              pathParameters: {
+                'id': state.contactId!.toString(),
+              },
             ),
           ),
         ],

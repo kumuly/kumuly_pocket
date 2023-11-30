@@ -90,9 +90,11 @@ class AddContactController extends _$AddContactController {
       nodeId: state.id!,
       createdAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
     );
-    ref.read(sqliteChatServiceProvider).addNewContact(
+    final contactId = await ref.read(sqliteChatServiceProvider).addNewContact(
           newContact,
         );
+
+    state = state.copyWith(contactId: contactId);
 
     // Invalidate contact list and frequent contacts since we added a new contact so the lists need to be refreshed
     ref.invalidate(contactListControllerProvider);
