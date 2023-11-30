@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/features/chat/chat_controller.dart';
 import 'package:kumuly_pocket/features/chat/messages/chat_messages_controller.dart';
 import 'package:kumuly_pocket/features/chat/send/chat_send_bottom_sheet_modal.dart';
@@ -9,15 +8,13 @@ import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/backgrounds/background_container.dart';
 import 'package:kumuly_pocket/widgets/buttons/expandable_fab.dart';
-import 'package:kumuly_pocket/widgets/buttons/rectangular_border_button.dart';
-import 'package:kumuly_pocket/widgets/dividers/dashed_divider.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 import 'package:kumuly_pocket/widgets/lists/chat_messages_list.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   const ChatScreen({Key? key, required this.id}) : super(key: key);
 
-  final String id;
+  final int id;
 
   @override
   ChatScreenState createState() => ChatScreenState();
@@ -55,7 +52,7 @@ class ChatScreenState extends ConsumerState<ChatScreen> {
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              chatState.asData?.value.contactName ?? widget.id,
+              chatState.asData?.value.contactName ?? '',
               style: textTheme.display3(
                 Palette.neutral[100],
                 FontWeight.w400,

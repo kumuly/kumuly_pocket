@@ -7,8 +7,8 @@ import 'package:sqflite/sqflite.dart';
 part 'chat_message_repository.g.dart';
 
 abstract class ChatMessageRepository {
-  Future<void> saveMessage(ChatMessageEntity message, {dynamic tx});
-  Future<void> deleteMessage(ChatMessageEntity message);
+  Future<int> saveMessage(ChatMessageEntity message, {dynamic tx});
+  Future<void> deleteMessage(int id);
   Future<List<ChatMessageEntity>> queryMessages({
     bool? distinct,
     List<String>? columns,
@@ -20,7 +20,7 @@ abstract class ChatMessageRepository {
     int? limit,
     int? offset,
   });
-  Future<List<String>> queryContactIdsOrderedByMessageCount({
+  Future<List<int>> queryContactIdsOrderedByMessageCount({
     int? limit,
     int? offset,
   });
@@ -44,7 +44,7 @@ class SqliteChatMessageRepository implements ChatMessageRepository {
   final Database db;
 
   @override
-  Future<void> saveMessage(
+  Future<int> saveMessage(
     ChatMessageEntity message, {
     dynamic tx,
   }) {
@@ -65,11 +65,11 @@ class SqliteChatMessageRepository implements ChatMessageRepository {
   }
 
   @override
-  Future<void> deleteMessage(ChatMessageEntity message) {
+  Future<void> deleteMessage(int id) {
     return db.delete(
       kChatMessagesTable,
-      where: 'id = ?',
-      whereArgs: [message.id],
+      where: 'rowid = ?',
+      whereArgs: [id],
     );
   }
 
@@ -101,7 +101,7 @@ class SqliteChatMessageRepository implements ChatMessageRepository {
   }
 
   @override
-  Future<List<String>> queryContactIdsOrderedByMessageCount(
+  Future<List<int>> queryContactIdsOrderedByMessageCount(
       {int? limit, int? offset}) async {
     String query = 'SELECT contactId, COUNT(*) as messageCount '
         'FROM $kChatMessagesTable '
@@ -117,7 +117,7 @@ class SqliteChatMessageRepository implements ChatMessageRepository {
     }
 
     final results = await db.rawQuery(query);
-    return results.map((row) => row['contactId'] as String).toList();
+    return results.map((row) => row['contactId'] as int).toList();
   }
 
   @override
@@ -129,7 +129,7 @@ class SqliteChatMessageRepository implements ChatMessageRepository {
         'FROM $kChatMessagesTable '
         'GROUP BY contactId';
 
-    String query = 'SELECT M.* FROM $kChatMessagesTable M '
+    String query = 'SELECT M.rowid, M.* FROM $kChatMessagesTable M '
         'INNER JOIN ($subquery) as Sub ON M.contactId = Sub.contactId AND M.createdAt = Sub.maxCreatedAt '
         'ORDER BY M.createdAt DESC';
 
@@ -142,7 +142,9 @@ class SqliteChatMessageRepository implements ChatMessageRepository {
     }
 
     final results = await db.rawQuery(query);
+    print('queryMostRecentMessageOfContacts: $results');
     return results.map((row) {
+      print('queryMostRecentMessageOfContacts row: $row');
       return ChatMessageEntity.fromMap(row);
     }).toList();
   }

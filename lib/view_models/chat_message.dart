@@ -2,24 +2,27 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:kumuly_pocket/entities/chat_message_entity.dart';
+import 'package:kumuly_pocket/enums/chat_message_status.dart';
 import 'package:kumuly_pocket/enums/chat_message_type.dart';
 
 @immutable
 class ChatMessage extends Equatable {
   const ChatMessage({
     required this.id,
-    required this.contactId,
     required this.type,
+    this.status,
     this.amountSat = 0,
+    this.memo,
     this.isRead = false,
     required this.timestamp,
     this.showDateDivider = false,
   });
 
-  final String id;
-  final String contactId;
+  final int id;
   final ChatMessageType type;
+  final ChatMessageStatus? status;
   final int amountSat;
+  final String? memo;
   final bool isRead;
   final int timestamp; // Unix timestamp in seconds
   final bool showDateDivider;
@@ -29,10 +32,11 @@ class ChatMessage extends Equatable {
     bool showDateDivider = false,
   }) {
     return ChatMessage(
-      id: entity.id,
-      contactId: entity.contactId,
+      id: entity.id!,
       type: entity.type,
+      status: entity.status,
       amountSat: entity.amountSat,
+      memo: entity.memo,
       isRead: entity.isRead,
       timestamp: entity.createdAt,
       showDateDivider: showDateDivider,
@@ -64,9 +68,10 @@ class ChatMessage extends Equatable {
   @override
   List<Object?> get props => [
         id,
-        contactId,
         type,
+        status,
         amountSat,
+        memo,
         isRead,
         timestamp,
         showDateDivider,

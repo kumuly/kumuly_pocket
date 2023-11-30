@@ -145,7 +145,7 @@ class FrequentContactItemWidget extends StatelessWidget {
         ),
         onTap: () => router.pushNamed(
           'chat',
-          pathParameters: {'id': contact.contactId},
+          pathParameters: {'id': contact.contactId.toString()},
         ),
       ),
     );

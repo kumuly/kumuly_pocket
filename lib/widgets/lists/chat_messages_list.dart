@@ -38,7 +38,14 @@ class ChatMessagesList extends StatelessWidget {
                 return NewContactItem(
                   chatMessage,
                   key: Key(
-                    chatMessage.id,
+                    chatMessage.id.toString(),
+                  ),
+                );
+              case ChatMessageType.fundsSent:
+                return FundsSentItem(
+                  chatMessage,
+                  key: Key(
+                    chatMessage.id.toString(),
                   ),
                 );
               default:

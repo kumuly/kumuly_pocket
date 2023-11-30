@@ -188,10 +188,11 @@ class SendSatsController extends _$SendSatsController {
           state.amountSat!,
         );
       case PaymentRequestType.nodeId:
-        return lightningNodeServiceProvider.keysend(
+        await lightningNodeServiceProvider.keysend(
           state.nodeId!,
           state.amountSat!,
         );
+        return;
       case _:
         return;
     }

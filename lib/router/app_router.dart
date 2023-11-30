@@ -127,7 +127,7 @@ GoRouter appRouter(AppRouterRef ref) {
         path: '/chat/:id',
         name: 'chat',
         builder: (context, state) => ChatScreen(
-          id: state.pathParameters['id']!,
+          id: int.parse(state.pathParameters['id']!),
         ),
       ),
       GoRoute(

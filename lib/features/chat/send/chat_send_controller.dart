@@ -1,4 +1,5 @@
 import 'package:kumuly_pocket/enums/bitcoin_unit.dart';
+import 'package:kumuly_pocket/features/chat/messages/chat_messages_controller.dart';
 import 'package:kumuly_pocket/features/chat/send/chat_send_state.dart';
 import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
 import 'package:kumuly_pocket/providers/settings_providers.dart';
@@ -10,7 +11,7 @@ part 'chat_send_controller.g.dart';
 @riverpod
 class ChatSendController extends _$ChatSendController {
   @override
-  ChatSendState build(String contactId) {
+  ChatSendState build(int contactId) {
     return const ChatSendState();
   }
 
@@ -41,12 +42,12 @@ class ChatSendController extends _$ChatSendController {
 
   Future<void> memoChangeHandler(String memo) async {
     // Todo: Validate length etc and set error if needed
-    state = state.copyWith(memo: memo, memoInputError: null);
+    state = state.copyWith(memo: memo);
   }
 
   Future<void> sendHandler() async {
-    ref
+    await ref
         .read(sqliteChatServiceProvider)
-        .sendToContact(contactId, state.amountSat!);
+        .sendToNodeIdOfContact(contactId, state.amountSat!);
   }
 }

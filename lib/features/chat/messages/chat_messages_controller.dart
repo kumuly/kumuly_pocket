@@ -10,7 +10,7 @@ part 'chat_messages_controller.g.dart';
 @riverpod
 class ChatMessagesController extends _$ChatMessagesController {
   @override
-  FutureOr<ChatMessagesState> build(String contactId, int messagesLimit) async {
+  FutureOr<ChatMessagesState> build(int contactId, int messagesLimit) async {
     final messages =
         await ref.read(sqliteChatServiceProvider).getMessagesByContactId(
               contactId,

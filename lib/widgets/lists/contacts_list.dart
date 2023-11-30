@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
+import 'package:kumuly_pocket/enums/chat_message_type.dart';
 import 'package:kumuly_pocket/enums/payment_direction.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
@@ -95,19 +96,19 @@ class ContactListItemWidget extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(contactListItem.contactName),
-          contactListItem.direction == null
-              ? const SizedBox.shrink()
-              : contactListItem.direction == PaymentDirection.incoming
-                  ? DynamicIcon(
-                      icon: 'assets/icons/receive_arrow.svg',
-                      color: Palette.success[50],
-                      size: 7.5,
-                    )
-                  : DynamicIcon(
-                      icon: 'assets/icons/send_arrow.svg',
-                      color: Palette.lilac[75],
-                      size: 7.5,
-                    ),
+          switch (contactListItem.messageType) {
+            ChatMessageType.fundsReceived => DynamicIcon(
+                icon: 'assets/icons/receive_arrow.svg',
+                color: Palette.success[50],
+                size: 7.5,
+              ),
+            ChatMessageType.fundsSent => DynamicIcon(
+                icon: 'assets/icons/send_arrow.svg',
+                color: Palette.lilac[75],
+                size: 7.5,
+              ),
+            _ => const SizedBox.shrink(),
+          }
         ],
       ),
       titleTextStyle: textTheme.display2(
@@ -119,13 +120,15 @@ class ContactListItemWidget extends ConsumerWidget {
         children: [
           Expanded(
             child: Text(
-              contactListItem.isNewContact
-                  ? copy.newContact
-                  : contactListItem.description == null
-                      ? contactListItem.direction == PaymentDirection.incoming
-                          ? copy.hasSentYouFunds
-                          : copy.fundsSentSuccessfully
-                      : contactListItem.description!,
+              contactListItem.description != null &&
+                      contactListItem.description!.isNotEmpty
+                  ? contactListItem.description!
+                  : switch (contactListItem.messageType) {
+                      ChatMessageType.newContact => copy.newContact,
+                      ChatMessageType.fundsReceived => copy.hasSentYouFunds,
+                      ChatMessageType.fundsSent => copy.fundsSentSuccessfully,
+                      _ => '',
+                    },
               style: textTheme.display1(
                 Palette.neutral[60],
                 FontWeight.w400,
@@ -136,20 +139,18 @@ class ContactListItemWidget extends ConsumerWidget {
           const SizedBox(
             width: kSpacing12,
           ),
-          contactListItem.timestamp == null
-              ? const SizedBox.shrink()
-              : Text(
-                  contactListItem.dateTime,
-                  style: textTheme.caption1(
-                    Palette.neutral[60],
-                    FontWeight.w400,
-                  ),
-                ),
+          Text(
+            contactListItem.dateTime,
+            style: textTheme.caption1(
+              Palette.neutral[60],
+              FontWeight.w400,
+            ),
+          ),
         ],
       ),
       onTap: () => router.pushNamed(
         'chat',
-        pathParameters: {'id': contactListItem.contactId},
+        pathParameters: {'id': contactListItem.contactId.toString()},
       ),
     );
   }

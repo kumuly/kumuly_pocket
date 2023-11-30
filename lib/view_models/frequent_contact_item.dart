@@ -9,7 +9,7 @@ class FrequentContactItem extends Equatable {
     this.contactImagePath,
   });
 
-  final String contactId;
+  final int contactId;
   final String contactName;
   final String? contactImagePath;
 

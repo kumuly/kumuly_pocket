@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/enums/local_currency.dart';
 import 'package:kumuly_pocket/features/chat/send/chat_send_controller.dart';
@@ -16,11 +17,12 @@ class ChatSendBottomSheetModal extends ConsumerWidget {
   const ChatSendBottomSheetModal({required this.contactId, Key? key})
       : super(key: key);
 
-  final String contactId;
+  final int contactId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
+    final router = GoRouter.of(context);
     // Calculate the keyboard height
     final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
 
@@ -209,7 +211,10 @@ class ChatSendBottomSheetModal extends ConsumerWidget {
                       onPressed:
                           state.amountSat == null || state.amountSat! <= 0
                               ? null
-                              : notifier.sendHandler,
+                              : () {
+                                  notifier.sendHandler();
+                                  router.pop();
+                                },
                     ),
                   ],
                 ),

@@ -1,15 +1,14 @@
-import 'dart:convert';
-
 import 'package:kumuly_pocket/entities/contact_entity.dart';
 import 'package:kumuly_pocket/entities/chat_message_entity.dart';
+import 'package:kumuly_pocket/enums/chat_message_status.dart';
 import 'package:kumuly_pocket/enums/chat_message_type.dart';
+import 'package:kumuly_pocket/features/chat/messages/chat_messages_controller.dart';
 import 'package:kumuly_pocket/providers/local_storage_providers.dart';
 import 'package:kumuly_pocket/repositories/chat_message_repository.dart';
 import 'package:kumuly_pocket/repositories/contact_repository.dart';
 import 'package:kumuly_pocket/services/lightning_node_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:crypto/crypto.dart';
 
 part 'chat_service.g.dart';
 
@@ -21,13 +20,17 @@ abstract class ChatService {
     int? offset,
   });
   Future<List<ChatMessageEntity>> getMessagesByContactId(
-    String contactId, {
+    int contactId, {
     int? limit,
     int? offset,
   });
-  Future<ContactEntity?> getContactById(String contactId);
-  Future<void> sendToContact(String contactId, int amountSat);
-  Future<void> retrySendToContact(String messageId);
+  Future<ContactEntity?> getContactById(int contactId);
+  Future<void> sendToNodeIdOfContact(int contactId, int amountSat);
+  Future<void> retrySendToNodeIdOfContact(
+    String messageId,
+    int contactId,
+    int amountSat,
+  );
 }
 
 @riverpod
@@ -37,6 +40,7 @@ ChatService sqliteChatService(SqliteChatServiceRef ref) {
     contactRepository: ref.watch(sqliteContactRepositoryProvider),
     chatMessageRepository: ref.watch(sqliteChatMessageRepositoryProvider),
     lightningNodeService: ref.watch(breezeSdkLightningNodeServiceProvider),
+    ref: ref,
   );
 }
 
@@ -46,12 +50,14 @@ class SqliteChatService implements ChatService {
     required this.contactRepository,
     required this.chatMessageRepository,
     required this.lightningNodeService,
+    required this.ref,
   });
 
   final Database db;
   final ContactRepository contactRepository;
   final ChatMessageRepository chatMessageRepository;
   final LightningNodeService lightningNodeService;
+  final SqliteChatServiceRef ref;
 
   @override
   Future<void> addNewContact(ContactEntity contact) async {
@@ -60,19 +66,12 @@ class SqliteChatService implements ChatService {
 
     // Create a transaction to save the contact and the new contact message atomically
     await db.transaction((tx) async {
-      // Since this message is not linked to a payment, we do not have a paymenthash to use as id
-      // So we create a hash from the contact id and the timestamp
-      final chatMessageId = sha256
-          .convert(utf8.encode(contact.id + contact.createdAt.toString()))
-          .toString();
-
       // Save contact to database
-      await contactRepository.saveContact(contact, tx: tx);
+      final contactId = await contactRepository.saveContact(contact, tx: tx);
       // Add new contact message to chat
       await chatMessageRepository.saveMessage(
         ChatMessageEntity(
-          id: chatMessageId,
-          contactId: contact.id,
+          contactId: contactId,
           type: ChatMessageType.newContact,
           createdAt: contact.createdAt,
         ),
@@ -119,11 +118,12 @@ class SqliteChatService implements ChatService {
 
   @override
   Future<List<ChatMessageEntity>> getMessagesByContactId(
-    String contactId, {
+    int contactId, {
     int? limit,
     int? offset,
   }) {
     return chatMessageRepository.queryMessages(
+      columns: ['rowid', '*'],
       where: 'contactId = ?', // SQL where clause
       whereArgs: [contactId], // Arguments for the where clause
       orderBy: 'createdAt DESC', // Order by createdAt in descending order
@@ -133,20 +133,100 @@ class SqliteChatService implements ChatService {
   }
 
   @override
-  Future<ContactEntity?> getContactById(String contactId) {
+  Future<ContactEntity?> getContactById(int contactId) {
     return contactRepository.getContactById(contactId);
   }
 
   @override
-  Future<void> sendToContact(String contactId, int amountSat) {
-    print('sendToContact: $contactId, $amountSat');
+  Future<void> sendToNodeIdOfContact(int contactId, int amountSat) async {
+    // Try to then send to node, then update message status
+    try {
+      // Get contact's node id
+      final contact = await contactRepository.getContactById(contactId);
+      if (contact == null) {
+        // Todo: create a custom exception to throw here
+        throw Exception('Contact not found');
+      }
+      if (contact.nodeId == null || contact.nodeId!.isEmpty) {
+        // Todo: create a custom exception to throw here
+        throw Exception('Contact without node id');
+      }
 
-    return Future.value();
+      // Save message in database with status sending
+      final messageId = await chatMessageRepository.saveMessage(
+        ChatMessageEntity(
+          contactId: contactId,
+          type: ChatMessageType.fundsSent,
+          status: ChatMessageStatus.pending,
+          amountSat: amountSat,
+          isRead: true,
+          createdAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        ),
+      );
+
+      ref.invalidate(chatMessagesControllerProvider(contactId, 20));
+
+      final keysendResult =
+          await lightningNodeService.keysend(contact.nodeId!, amountSat);
+      // Save message in database with status sent
+      await chatMessageRepository.saveMessage(
+        ChatMessageEntity(
+          id: messageId,
+          contactId: contactId,
+          type: ChatMessageType.fundsSent,
+          status: ChatMessageStatus.sent,
+          paymentHash: keysendResult.paymentHash,
+          amountSat: amountSat,
+          isRead: true,
+          createdAt: keysendResult.paymentTime,
+        ),
+      );
+      print('Message send with keysendResult: $keysendResult');
+    } catch (e) {
+      print(e);
+      // Save message in database with status failed
+      await chatMessageRepository.saveMessage(
+        ChatMessageEntity(
+          contactId: contactId,
+          type: ChatMessageType.fundsSent,
+          status: ChatMessageStatus.failed,
+          amountSat: amountSat,
+          isRead: true,
+          createdAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        ),
+      );
+      rethrow; // Todo: create a custom exception to throw here
+    }
   }
 
   @override
-  Future<void> retrySendToContact(String messageId) {
-    // TODO: implement retrySendToContact
-    throw UnimplementedError();
+  Future<void> retrySendToNodeIdOfContact(
+    String messageId,
+    int contactId,
+    int amountSat,
+  ) async {
+    // Todo: obtain message info from database
+    // Todo: compare contactId and amountSat with the ones from the database, to make sure what the user sees is what will be sent
+
+    try {
+      // Get contact's node id
+      final contact = await contactRepository.getContactById(contactId);
+      if (contact == null) {
+        // Todo: create a custom exception to throw here
+        throw Exception('Contact not found');
+      }
+      if (contact.nodeId == null || contact.nodeId!.isEmpty) {
+        // Todo: create a custom exception to throw here
+        throw Exception('Contact without node id');
+      }
+      // Todo: refactor keysend to return the payment hash
+      await lightningNodeService.keysend(contact.nodeId!, amountSat);
+      // Todo: save message in database with status sent and the payment hash as id
+      // Todo: remove the old message with messageId from the database
+    } catch (e) {
+      print(e);
+      // Todo: update createdAt of message in database to now or not???
+      rethrow; // Todo: create a custom exception to throw here
+    }
   }
 }
