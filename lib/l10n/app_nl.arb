@@ -180,5 +180,10 @@
   "sendNewContact": "Stuur naar je nieuwe contact",
   "newContactAdded": "Nieuw contact toegevoegd!",
   "today": "Vandaag",
-  "yesterday": "Gisteren"
+  "yesterday": "Gisteren",
+  "youSent": "Je hebt verstuurd",
+  "failed": "Mislukt",
+  "addANoteHere": "Voeg hier een notitie toe",
+  "sendFunds": "Verstuur fondsen",
+  "failedToSendFunds": "Mislukt om fondsen te versturen"
 }

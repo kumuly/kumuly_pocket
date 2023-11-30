@@ -31,6 +31,7 @@ class FrequentContactsList extends StatelessWidget {
   @override
   Widget build(context) {
     return LazyList(
+      neverScrollable: true,
       scrollDirection: Axis.horizontal,
       items: [
         const AddContactItem(),
@@ -145,7 +146,7 @@ class FrequentContactItemWidget extends StatelessWidget {
         ),
         onTap: () => router.pushNamed(
           'chat',
-          pathParameters: {'id': contact.contactId},
+          pathParameters: {'id': contact.contactId.toString()},
         ),
       ),
     );

@@ -18,7 +18,7 @@ class FrequentContactsController extends _$FrequentContactsController {
       contactsLimit: contactsLimit,
       contacts: contacts
           .map((entity) => FrequentContactItem(
-              contactId: entity.id,
+              contactId: entity.id!,
               contactName: entity.name,
               contactImagePath: entity.avatarImagePath))
           .toList(),
@@ -41,7 +41,7 @@ class FrequentContactsController extends _$FrequentContactsController {
         contacts: refresh
             ? contactEntities
                 .map((entity) => FrequentContactItem(
-                    contactId: entity.id,
+                    contactId: entity.id!,
                     contactName: entity.name,
                     contactImagePath: entity.avatarImagePath))
                 .toList()
@@ -49,7 +49,7 @@ class FrequentContactsController extends _$FrequentContactsController {
                 ...state.contacts,
                 ...contactEntities
                     .map((entity) => FrequentContactItem(
-                        contactId: entity.id,
+                        contactId: entity.id!,
                         contactName: entity.name,
                         contactImagePath: entity.avatarImagePath))
                     .toList(),

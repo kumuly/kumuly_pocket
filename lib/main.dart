@@ -36,21 +36,26 @@ Future<void> main() async {
       // Create the contacts and messages table
       await db.execute(
         'CREATE TABLE $kContactsTable('
-        'id TEXT PRIMARY KEY, '
         'name TEXT, '
         'avatarImagePath TEXT, '
+        'nodeId TEXT, '
+        'bolt12 TEXT, '
+        'lightningAddress TEXT, '
+        'bitcoinAddress TEXT, '
         'createdAt INTEGER'
         ')',
       );
       return db.execute(
         'CREATE TABLE $kChatMessagesTable('
-        'id TEXT NOT NULL PRIMARY KEY, '
-        'contactId TEXT NOT NULL, '
+        'contactId INTEGER NOT NULL, '
         'type TEXT NOT NULL, '
+        'status TEXT, '
+        'paymentHash TEXT, '
         'amountSat INTEGER NOT NULL, '
+        'memo TEXT, '
         'isRead INTEGER DEFAULT 0, '
         'createdAt INTEGER NOT NULL, '
-        'FOREIGN KEY(contactId) REFERENCES $kContactsTable(id)'
+        'FOREIGN KEY(contactId) REFERENCES $kContactsTable(rowid)'
         ')',
       );
     },

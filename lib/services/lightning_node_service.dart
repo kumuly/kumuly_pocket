@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:crypto/crypto.dart';
 import 'package:kumuly_pocket/entities/invoice_entity.dart';
+import 'package:kumuly_pocket/entities/keysend_payment_details_entity.dart';
 import 'package:kumuly_pocket/entities/payment_entity.dart';
 import 'package:kumuly_pocket/entities/recommended_fees_entity.dart';
 import 'package:kumuly_pocket/entities/swap_in_info_entity.dart';
@@ -76,7 +77,7 @@ abstract class LightningNodeService {
     String? comment,
     bool useMinimumAmount,
   });
-  Future<void> keysend(
+  Future<KeysendPaymentDetailsEntity> keysend(
     String nodeId,
     int amountSat,
   );
@@ -348,7 +349,7 @@ class BreezSdkLightningNodeService implements LightningNodeService {
   }
 
   @override
-  Future<void> keysend(String nodeId, int amountSat) {
+  Future<KeysendPaymentDetailsEntity> keysend(String nodeId, int amountSat) {
     return _lightningNodeRepository.keysend(nodeId, amountSat * 1000);
   }
 }

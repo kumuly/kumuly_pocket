@@ -85,9 +85,9 @@ class AddContactController extends _$AddContactController {
     }
 
     final newContact = ContactEntity(
-      id: state.id!,
       name: state.name!,
       avatarImagePath: state.avatarImagePath,
+      nodeId: state.id!,
       createdAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
     );
     ref.read(sqliteChatServiceProvider).addNewContact(

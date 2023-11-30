@@ -7,8 +7,8 @@ import 'package:sqflite/sqflite.dart';
 part 'contact_repository.g.dart';
 
 abstract class ContactRepository {
-  Future<void> saveContact(ContactEntity contact, {dynamic tx});
-  Future<void> deleteContact(ContactEntity contact);
+  Future<int> saveContact(ContactEntity contact, {dynamic tx});
+  Future<void> deleteContact(int id);
   Future<List<ContactEntity>> queryContacts({
     bool? distinct,
     List<String>? columns,
@@ -20,7 +20,7 @@ abstract class ContactRepository {
     int? limit,
     int? offset,
   });
-  Future<ContactEntity?> getContactById(String id);
+  Future<ContactEntity?> getContactById(int id);
 }
 
 @riverpod
@@ -36,7 +36,7 @@ class SqliteContactRepository implements ContactRepository {
   final Database db;
 
   @override
-  Future<void> saveContact(
+  Future<int> saveContact(
     ContactEntity contact, {
     dynamic tx,
   }) {
@@ -57,11 +57,11 @@ class SqliteContactRepository implements ContactRepository {
   }
 
   @override
-  Future<void> deleteContact(ContactEntity contact) async {
+  Future<void> deleteContact(int id) async {
     await db.delete(
       kContactsTable,
-      where: 'id = ?',
-      whereArgs: [contact.id],
+      where: 'rowid = ?',
+      whereArgs: [id],
     );
   }
 
@@ -93,10 +93,11 @@ class SqliteContactRepository implements ContactRepository {
   }
 
   @override
-  Future<ContactEntity?> getContactById(String id) async {
+  Future<ContactEntity?> getContactById(int id) async {
     final List<Map<String, dynamic>> maps = await db.query(
       kContactsTable,
-      where: 'id = ?',
+      columns: ['rowid', '*'],
+      where: 'rowid = ?',
       whereArgs: [id],
     );
 

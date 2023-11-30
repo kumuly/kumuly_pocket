@@ -1,6 +1,4 @@
 import 'package:kumuly_pocket/entities/chat_message_entity.dart';
-import 'package:kumuly_pocket/enums/chat_message_type.dart';
-import 'package:kumuly_pocket/enums/payment_direction.dart';
 import 'package:kumuly_pocket/features/contacts/contact_list_state.dart';
 import 'package:kumuly_pocket/repositories/contact_repository.dart';
 import 'package:kumuly_pocket/services/chat_service.dart';
@@ -65,17 +63,13 @@ class ContactListController extends _$ContactListController {
       }
 
       return ContactListItem(
-        contactId: contact.id,
+        contactId: contact.id!,
         contactName: contact.name,
         contactImagePath: contact.avatarImagePath,
         //description: message.description,
         timestamp: message.createdAt,
-        direction: message.type == ChatMessageType.fundsReceived
-            ? PaymentDirection.incoming
-            : message.type == ChatMessageType.fundsSent
-                ? PaymentDirection.outgoing
-                : null, // Todo: Replace with type here too
-        isNewContact: message.type == ChatMessageType.newContact,
+        messageType: message.type,
+        messageStatus: message.status,
         hasUnreadMessage: !message.isRead,
       );
     });

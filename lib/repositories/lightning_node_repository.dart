@@ -3,6 +3,7 @@ import 'package:breez_sdk/bridge_generated.dart';
 import 'package:flutter/foundation.dart';
 import 'package:kumuly_pocket/entities/bip21_entity.dart';
 import 'package:kumuly_pocket/entities/invoice_entity.dart';
+import 'package:kumuly_pocket/entities/keysend_payment_details_entity.dart';
 import 'package:kumuly_pocket/entities/lnurl_pay_entity.dart';
 import 'package:kumuly_pocket/entities/payment_entity.dart';
 import 'package:kumuly_pocket/entities/payment_request_entity.dart';
@@ -63,7 +64,7 @@ abstract class LightningNodeRepository {
     String? comment,
     bool useMinimumAmount,
   }); // Todo: add return type
-  Future<void> keysend(
+  Future<KeysendPaymentDetailsEntity> keysend(
     String nodeId,
     int amountMsat,
   ); // Todo: add return type
@@ -337,10 +338,23 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
   }
 
   @override
-  Future<void> keysend(String nodeId, int amountMsat) async {
+  Future<KeysendPaymentDetailsEntity> keysend(
+    String nodeId,
+    int amountMsat,
+  ) async {
     final request =
         SendSpontaneousPaymentRequest(nodeId: nodeId, amountMsat: amountMsat);
-    await _breezSdk.sendSpontaneousPayment(req: request);
+    final response = await _breezSdk.sendSpontaneousPayment(req: request);
+
+    if (response.payment.details is PaymentDetails_Ln) {
+      PaymentDetails_Ln details = response.payment.details as PaymentDetails_Ln;
+      return KeysendPaymentDetailsEntity(
+        paymentHash: details.data.paymentHash,
+        paymentTime: response.payment.paymentTime,
+      );
+    } else {
+      throw Exception('Unexpected payment details type');
+    }
   }
 
   @override

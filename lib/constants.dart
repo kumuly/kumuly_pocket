@@ -40,3 +40,6 @@ const kLocationSettingsKey = 'location-settings';
 /* Database tables */
 const kContactsTable = 'Contacts';
 const kChatMessagesTable = 'ChatMessages';
+/* List limits */
+const kChatMessagesLimit = 6;
+const kPaymentsLimit = 20;

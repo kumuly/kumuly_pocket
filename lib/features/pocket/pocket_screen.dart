@@ -26,10 +26,10 @@ class PocketScreen extends ConsumerWidget {
     final router = GoRouter.of(context);
 
     final state = ref.watch(pocketBalanceControllerProvider);
-    const paymentsLimit = 20;
+
     final historyState = ref.watch(
       pocketPaymentsHistoryControllerProvider(
-        paymentsLimit,
+        kPaymentsLimit,
       ),
     );
 
@@ -73,7 +73,7 @@ class PocketScreen extends ConsumerWidget {
                   .refreshBalance();
               await ref
                   .read(
-                    pocketPaymentsHistoryControllerProvider(paymentsLimit)
+                    pocketPaymentsHistoryControllerProvider(kPaymentsLimit)
                         .notifier,
                   )
                   .fetchPayments(refresh: true);
@@ -168,13 +168,13 @@ class PocketScreen extends ConsumerWidget {
                       : [],
                   loadPayments: ref
                       .read(
-                        pocketPaymentsHistoryControllerProvider(paymentsLimit)
+                        pocketPaymentsHistoryControllerProvider(kPaymentsLimit)
                             .notifier,
                       )
                       .fetchPayments,
                   limit: historyState.hasValue
                       ? historyState.asData!.value.paymentsLimit
-                      : paymentsLimit,
+                      : kPaymentsLimit,
                   hasMore: historyState.hasValue
                       ? historyState.asData!.value.hasMorePayments
                       : true,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
+import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 
 class RectangularBorderButton extends StatelessWidget {
   RectangularBorderButton({
@@ -20,9 +21,9 @@ class RectangularBorderButton extends StatelessWidget {
         borderColor = borderColor ?? Palette.neutral[30]!,
         super(key: key);
 
-  final Icon? leadingIcon;
+  final DynamicIcon? leadingIcon;
   final String text;
-  final Icon? trailingIcon;
+  final DynamicIcon? trailingIcon;
   final VoidCallback? onPressed;
   final double width;
   final Color fillColor;
