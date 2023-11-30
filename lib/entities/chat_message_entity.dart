@@ -45,7 +45,6 @@ class ChatMessageEntity extends Equatable {
 
   // With id since it is used when retrieving from the database.
   factory ChatMessageEntity.fromMap(Map<String, dynamic> map) {
-    print('Chat message entity from map: $map');
     return ChatMessageEntity(
       id: map['rowid'] as int,
       contactId: map['contactId'] as int,

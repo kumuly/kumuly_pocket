@@ -38,6 +38,7 @@ class ContactsList extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         LazyList(
+          neverScrollable: true,
           items: contactListItems
               .map(
                 (contactListItem) => ContactListItemWidget(

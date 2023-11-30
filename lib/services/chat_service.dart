@@ -13,7 +13,7 @@ import 'package:sqflite/sqflite.dart';
 part 'chat_service.g.dart';
 
 abstract class ChatService {
-  Future<void> addNewContact(ContactEntity contact);
+  Future<int> addNewContact(ContactEntity contact);
   Future<List<ContactEntity>> getFrequentContacts({int? limit, int? offset});
   Future<List<ChatMessageEntity>> getMostRecentMessageOfContacts({
     int? limit,
@@ -60,24 +60,31 @@ class SqliteChatService implements ChatService {
   final SqliteChatServiceRef ref;
 
   @override
-  Future<void> addNewContact(ContactEntity contact) async {
-    // Todo: check if contact already exists, and if so, update it instead of creating a new one
+  Future<int> addNewContact(ContactEntity contact) async {
+    // Todo: check if contact already exists (payment ids and/or name), and if so, update it instead of creating a new one
     // update only the name and avatar and do not create a new chat message
+
+    int? contactId;
 
     // Create a transaction to save the contact and the new contact message atomically
     await db.transaction((tx) async {
       // Save contact to database
-      final contactId = await contactRepository.saveContact(contact, tx: tx);
+      contactId = await contactRepository.saveContact(contact, tx: tx);
       // Add new contact message to chat
       await chatMessageRepository.saveMessage(
         ChatMessageEntity(
-          contactId: contactId,
+          contactId: contactId!,
           type: ChatMessageType.newContact,
           createdAt: contact.createdAt,
         ),
         tx: tx,
       );
     });
+
+    if (contactId == null) {
+      throw Exception('Contact not saved');
+    }
+    return contactId!;
   }
 
   @override

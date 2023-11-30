@@ -31,7 +31,6 @@ class FrequentContactsList extends StatelessWidget {
   @override
   Widget build(context) {
     return LazyList(
-      neverScrollable: true,
       scrollDirection: Axis.horizontal,
       items: [
         const AddContactItem(),

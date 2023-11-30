@@ -30,6 +30,7 @@ Future<void> main() async {
   }
 
   // The same for the sqlite db
+  // Todo: Refactor to a database per account, create the db on account creation
   final sqliteDb = await openDatabase(
     join(await getDatabasesPath(), 'kumuly_pocket.db'),
     onCreate: (db, version) async {

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 @immutable
 class AddContactState extends Equatable {
   const AddContactState({
+    this.contactId,
     this.id,
     required this.idFocusNode,
     required this.idTextController,
@@ -14,7 +15,9 @@ class AddContactState extends Equatable {
     this.avatarImagePath,
   });
 
-  final String? id;
+  final int? contactId;
+  final String?
+      id; // Can be a nodeId, bolt12, lightningAddress or bitcoinAddress. Todo: rename to staticPaymentId
   final FocusNode idFocusNode;
   final TextEditingController idTextController;
   final Error? idInputError;
@@ -24,6 +27,7 @@ class AddContactState extends Equatable {
   final String? avatarImagePath;
 
   AddContactState copyWith({
+    int? contactId,
     String? id,
     FocusNode? idFocusNode,
     TextEditingController? idTextController,
@@ -34,6 +38,7 @@ class AddContactState extends Equatable {
     String? avatarImagePath,
   }) {
     return AddContactState(
+      contactId: contactId ?? this.contactId,
       id: id ?? this.id,
       idFocusNode: idFocusNode ?? this.idFocusNode,
       idTextController: idTextController ?? this.idTextController,
@@ -47,6 +52,7 @@ class AddContactState extends Equatable {
 
   @override
   List<Object?> get props => [
+        contactId,
         id,
         idFocusNode,
         idTextController,
