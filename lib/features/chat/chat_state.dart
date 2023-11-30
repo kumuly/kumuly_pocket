@@ -14,6 +14,7 @@ class ChatState extends Equatable {
   ChatState copyWith({
     String? contactAvatarImagePath,
     String? contactName,
+    ScrollController? scrollController,
   }) {
     return ChatState(
       contactAvatarImagePath:

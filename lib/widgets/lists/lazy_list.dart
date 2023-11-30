@@ -15,6 +15,7 @@ class LazyList extends StatelessWidget {
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
     this.neverScrollable = false,
+    this.scrollController,
   });
 
   final List<Widget> items; // Make sure to use keys for these items
@@ -29,10 +30,12 @@ class LazyList extends StatelessWidget {
   final Axis scrollDirection;
   final bool reverse;
   final bool neverScrollable;
+  final ScrollController? scrollController;
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      controller: scrollController,
       scrollDirection: scrollDirection,
       reverse: reverse,
       padding: EdgeInsets.zero,

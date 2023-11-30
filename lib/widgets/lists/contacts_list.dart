@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
+import 'package:kumuly_pocket/enums/chat_message_status.dart';
 import 'package:kumuly_pocket/enums/chat_message_type.dart';
 import 'package:kumuly_pocket/enums/payment_direction.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
@@ -102,11 +103,21 @@ class ContactListItemWidget extends ConsumerWidget {
                 color: Palette.success[50],
                 size: 7.5,
               ),
-            ChatMessageType.fundsSent => DynamicIcon(
-                icon: 'assets/icons/send_arrow.svg',
-                color: Palette.lilac[75],
-                size: 7.5,
-              ),
+            ChatMessageType.fundsSent =>
+              contactListItem.messageStatus != null &&
+                      contactListItem.messageStatus == ChatMessageStatus.failed
+                  ? Text(
+                      copy.failed.toUpperCase(),
+                      style: textTheme.caption1(
+                        Palette.error[50],
+                        FontWeight.w400,
+                      ),
+                    )
+                  : DynamicIcon(
+                      icon: 'assets/icons/send_arrow.svg',
+                      color: Palette.lilac[75],
+                      size: 7.5,
+                    ),
             _ => const SizedBox.shrink(),
           }
         ],
@@ -126,7 +137,12 @@ class ContactListItemWidget extends ConsumerWidget {
                   : switch (contactListItem.messageType) {
                       ChatMessageType.newContact => copy.newContact,
                       ChatMessageType.fundsReceived => copy.hasSentYouFunds,
-                      ChatMessageType.fundsSent => copy.fundsSentSuccessfully,
+                      ChatMessageType.fundsSent =>
+                        contactListItem.messageStatus != null &&
+                                contactListItem.messageStatus ==
+                                    ChatMessageStatus.sent
+                            ? copy.fundsSentSuccessfully
+                            : copy.failedToSendFunds,
                       _ => '',
                     },
               style: textTheme.display1(

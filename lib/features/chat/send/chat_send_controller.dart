@@ -1,4 +1,7 @@
+import 'package:flutter/material.dart';
+import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/enums/bitcoin_unit.dart';
+import 'package:kumuly_pocket/features/chat/chat_controller.dart';
 import 'package:kumuly_pocket/features/chat/messages/chat_messages_controller.dart';
 import 'package:kumuly_pocket/features/chat/send/chat_send_state.dart';
 import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
@@ -46,8 +49,17 @@ class ChatSendController extends _$ChatSendController {
   }
 
   Future<void> sendHandler() async {
-    await ref
-        .read(sqliteChatServiceProvider)
-        .sendToNodeIdOfContact(contactId, state.amountSat!);
+    state = state.copyWith(isSending: true);
+    try {
+      await ref
+          .read(sqliteChatServiceProvider)
+          .sendToNodeIdOfContact(contactId, state.amountSat!);
+    } catch (e) {
+      print(e);
+    }
+    ref.invalidate(chatMessagesControllerProvider(
+      contactId,
+      kChatMessagesLimit,
+    ));
   }
 }

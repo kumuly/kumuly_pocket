@@ -69,6 +69,7 @@ class ContactListController extends _$ContactListController {
         //description: message.description,
         timestamp: message.createdAt,
         messageType: message.type,
+        messageStatus: message.status,
         hasUnreadMessage: !message.isRead,
       );
     });

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/enums/local_currency.dart';
+import 'package:kumuly_pocket/features/chat/chat_controller.dart';
 import 'package:kumuly_pocket/features/chat/send/chat_send_controller.dart';
 import 'package:kumuly_pocket/features/pocket/pocket_balance_controller.dart';
 import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
@@ -12,6 +13,7 @@ import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/buttons/rectangular_border_button.dart';
 import 'package:kumuly_pocket/widgets/dividers/dashed_divider.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ChatSendBottomSheetModal extends ConsumerWidget {
   const ChatSendBottomSheetModal({required this.contactId, Key? key})
@@ -23,6 +25,7 @@ class ChatSendBottomSheetModal extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
     final router = GoRouter.of(context);
+    final copy = AppLocalizations.of(context)!;
     // Calculate the keyboard height
     final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
 
@@ -87,7 +90,7 @@ class ChatSendBottomSheetModal extends ConsumerWidget {
                         left: kSpacing3,
                       ),
                       child: Text(
-                        'Pocket balance: $pocketBalance ${bitcoinUnit.name}'
+                        '${copy.pocketBalance}: $pocketBalance ${bitcoinUnit.name}'
                             .toUpperCase(),
                         style: textTheme.caption1(
                           Palette.neutral[50],
@@ -105,7 +108,7 @@ class ChatSendBottomSheetModal extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Amount to send',
+                              copy.amountToSend,
                               style: textTheme.display2(
                                 Palette.neutral[80],
                                 FontWeight.w400,
@@ -183,7 +186,7 @@ class ChatSendBottomSheetModal extends ConsumerWidget {
                         ),
                         decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: 'Add a note here',
+                          hintText: copy.addANoteHere,
                           hintStyle: textTheme.body3(
                             Palette.neutral[50],
                             FontWeight.w400,
@@ -199,22 +202,36 @@ class ChatSendBottomSheetModal extends ConsumerWidget {
                       ),
                     ),
                     RectangularBorderButton(
-                      text: 'Send funds',
+                      leadingIcon: state.isSending
+                          ? DynamicIcon(
+                              icon: CircularProgressIndicator(
+                                color: Palette.neutral[40],
+                              ),
+                            )
+                          : null,
+                      text: copy.sendFunds,
                       trailingIcon: DynamicIcon(
                         icon: 'assets/icons/send_coins.svg',
-                        color: state.amountSat == null || state.amountSat! <= 0
+                        color: state.amountSat == null ||
+                                state.amountSat! <= 0 ||
+                                state.isSending
                             ? Palette.neutral[40]
                             : Palette.russianViolet[100],
                         size: 24,
                       ),
                       borderColor: Palette.neutral[30]!,
-                      onPressed:
-                          state.amountSat == null || state.amountSat! <= 0
-                              ? null
-                              : () {
-                                  notifier.sendHandler();
-                                  router.pop();
-                                },
+                      onPressed: state.amountSat == null ||
+                              state.amountSat! <= 0 ||
+                              state.isSending
+                          ? null
+                          : () async {
+                              await notifier.sendHandler();
+                              /*await ref
+                                  .read(chatControllerProvider(contactId)
+                                      .notifier)
+                                  .scrollToLastChatMessage();*/
+                              router.pop();
+                            },
                     ),
                   ],
                 ),

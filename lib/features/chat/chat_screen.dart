@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/features/chat/chat_controller.dart';
 import 'package:kumuly_pocket/features/chat/messages/chat_messages_controller.dart';
 import 'package:kumuly_pocket/features/chat/send/chat_send_bottom_sheet_modal.dart';
@@ -10,6 +11,7 @@ import 'package:kumuly_pocket/widgets/backgrounds/background_container.dart';
 import 'package:kumuly_pocket/widgets/buttons/expandable_fab.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 import 'package:kumuly_pocket/widgets/lists/chat_messages_list.dart';
+import 'package:kumuly_pocket/widgets/shadows/bottom_shadow.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   const ChatScreen({Key? key, required this.id}) : super(key: key);
@@ -29,16 +31,16 @@ class ChatScreenState extends ConsumerState<ChatScreen> {
 
     final chatState = ref.watch(chatControllerProvider(widget.id));
 
-    const messagesLimit = 20;
-    final messagesState =
-        ref.watch(chatMessagesControllerProvider(widget.id, messagesLimit));
+    final messagesState = ref
+        .watch(chatMessagesControllerProvider(widget.id, kChatMessagesLimit));
     final messagesNotifier = ref.read(
-        chatMessagesControllerProvider(widget.id, messagesLimit).notifier);
+        chatMessagesControllerProvider(widget.id, kChatMessagesLimit).notifier);
 
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 88,
         backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
         title: Row(children: [
           CircleAvatar(
             backgroundColor: Palette.neutral[30],
@@ -82,7 +84,7 @@ class ChatScreenState extends ConsumerState<ChatScreen> {
             assetName: 'assets/backgrounds/chat_background.png',
             color: Palette.neutral[20],
             child: ChatMessagesList(
-              limit: messagesLimit,
+              limit: kChatMessagesLimit,
               chatMessages: messagesState.hasValue
                   ? messagesState.asData!.value.messages
                   : [],
@@ -101,6 +103,10 @@ class ChatScreenState extends ConsumerState<ChatScreen> {
                 color: Palette.neutral[40]!.withOpacity(0.2),
               ),
             ),
+          /*BottomShadow(
+            width: MediaQuery.of(context).size.width,
+            spreadRadius: kSpacing12,
+          ),*/
         ],
       ),
       floatingActionButton: ExpandableFab(

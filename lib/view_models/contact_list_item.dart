@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
+import 'package:kumuly_pocket/enums/chat_message_status.dart';
 import 'package:kumuly_pocket/enums/chat_message_type.dart';
 
 @immutable
@@ -12,6 +13,7 @@ class ContactListItem extends Equatable {
     this.description,
     required this.timestamp,
     required this.messageType,
+    this.messageStatus,
     this.hasUnreadMessage = false,
   });
 
@@ -21,6 +23,7 @@ class ContactListItem extends Equatable {
   final String? description;
   final int timestamp;
   final ChatMessageType messageType;
+  final ChatMessageStatus? messageStatus;
   final bool hasUnreadMessage;
 
   String get dateTime {
@@ -48,6 +51,7 @@ class ContactListItem extends Equatable {
         description,
         timestamp,
         messageType,
+        messageStatus,
         hasUnreadMessage,
       ];
 }

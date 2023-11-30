@@ -20,6 +20,7 @@ class ChatMessage extends Equatable {
 
   final int id;
   final ChatMessageType type;
+  // Todo: add the type of the destination: node id, lightning address, bolt12 of bicoin address..., this is needed to retry the payment
   final ChatMessageStatus? status;
   final int amountSat;
   final String? memo;
@@ -63,6 +64,11 @@ class ChatMessage extends Equatable {
       // Return only the date if it's not today
       return DateFormat.yMd().format(date);
     }
+  }
+
+  String get hour {
+    final DateTime date = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+    return DateFormat.Hm().format(date);
   }
 
   @override

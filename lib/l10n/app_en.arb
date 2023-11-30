@@ -180,5 +180,10 @@
   "sendNewContact": "Send to your new contact",
   "newContactAdded": "New contact added!",
   "today": "Today",
-  "yesterday": "Yesterday"
+  "yesterday": "Yesterday",
+  "youSent": "You sent",
+  "failed": "Failed",
+  "addANoteHere": "Add a note here",
+  "sendFunds": "Send funds",
+  "failedToSendFunds": "Failed to send funds"
 }

@@ -180,5 +180,10 @@
   "sendNewContactSats": "Envia a tu nuevo contacto",
   "newContactAdded": "Nuevo contacto agregado!",
   "today": "Hoy",
-  "yesterday": "Ayer"
+  "yesterday": "Ayer",
+  "youSent": "Enviaste",
+  "failed": "Fallido",
+  "addANoteHere": "Agrega una nota aquí",
+  "sendFunds": "Enviar fondos",
+  "failedToSendFunds": "No se pudo enviar fondos"
 }

@@ -1,8 +1,6 @@
-import 'package:intl/intl.dart';
-import 'package:kumuly_pocket/entities/chat_message_entity.dart';
+import 'package:kumuly_pocket/features/chat/chat_controller.dart';
 import 'package:kumuly_pocket/features/chat/messages/chat_messages_state.dart';
 import 'package:kumuly_pocket/services/chat_service.dart';
-import 'package:kumuly_pocket/view_models/chat_message.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'chat_messages_controller.g.dart';
@@ -19,7 +17,7 @@ class ChatMessagesController extends _$ChatMessagesController {
 
     return ChatMessagesState(
       messagesLimit: messagesLimit,
-      messages: entityToViewModel(messages),
+      messageEntities: messages,
       messagesOffset: messages.length,
       hasMoreMessages: messages.length == messagesLimit,
     );
@@ -37,39 +35,15 @@ class ChatMessagesController extends _$ChatMessagesController {
 
       // Update state
       return state.copyWith(
-        messages: refresh
-            ? entityToViewModel(messages)
+        messageEntities: refresh
+            ? messages
             : [
-                ...state.messages,
-                ...entityToViewModel(messages),
+                ...state.messageEntities,
+                ...messages,
               ],
         messagesOffset: state.messagesOffset + messages.length,
         hasMoreMessages: messages.length == state.messagesLimit,
       );
     });
-  }
-
-  List<ChatMessage> entityToViewModel(List<ChatMessageEntity> entities) {
-    String? latestDate;
-    List<ChatMessage> viewModels = [];
-
-    for (var entity in entities) {
-      // Check if the date divider should be shown
-      String currentDate = DateFormat.yMd()
-          .format(DateTime.fromMillisecondsSinceEpoch(entity.createdAt * 1000));
-      bool showDateDivider = latestDate != currentDate;
-      if (showDateDivider) {
-        latestDate = currentDate; // Update the latest date
-      }
-
-      // Create a new ChatMessage with the appropriate showDateDivider flag
-      ChatMessage viewModel = ChatMessage.fromEntity(
-        entity,
-        showDateDivider: showDateDivider,
-      );
-      viewModels.add(viewModel);
-    }
-
-    return viewModels;
   }
 }

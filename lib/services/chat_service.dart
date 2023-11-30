@@ -27,7 +27,7 @@ abstract class ChatService {
   Future<ContactEntity?> getContactById(int contactId);
   Future<void> sendToNodeIdOfContact(int contactId, int amountSat);
   Future<void> retrySendToNodeIdOfContact(
-    String messageId,
+    int messageId,
     int contactId,
     int amountSat,
   );
@@ -152,26 +152,11 @@ class SqliteChatService implements ChatService {
         throw Exception('Contact without node id');
       }
 
-      // Save message in database with status sending
-      final messageId = await chatMessageRepository.saveMessage(
-        ChatMessageEntity(
-          contactId: contactId,
-          type: ChatMessageType.fundsSent,
-          status: ChatMessageStatus.pending,
-          amountSat: amountSat,
-          isRead: true,
-          createdAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
-        ),
-      );
-
-      ref.invalidate(chatMessagesControllerProvider(contactId, 20));
-
       final keysendResult =
           await lightningNodeService.keysend(contact.nodeId!, amountSat);
       // Save message in database with status sent
       await chatMessageRepository.saveMessage(
         ChatMessageEntity(
-          id: messageId,
           contactId: contactId,
           type: ChatMessageType.fundsSent,
           status: ChatMessageStatus.sent,
@@ -201,7 +186,7 @@ class SqliteChatService implements ChatService {
 
   @override
   Future<void> retrySendToNodeIdOfContact(
-    String messageId,
+    int messageId,
     int contactId,
     int amountSat,
   ) async {
@@ -219,13 +204,36 @@ class SqliteChatService implements ChatService {
         // Todo: create a custom exception to throw here
         throw Exception('Contact without node id');
       }
-      // Todo: refactor keysend to return the payment hash
-      await lightningNodeService.keysend(contact.nodeId!, amountSat);
-      // Todo: save message in database with status sent and the payment hash as id
-      // Todo: remove the old message with messageId from the database
+      final keysendResult =
+          await lightningNodeService.keysend(contact.nodeId!, amountSat);
+      // Save message in database with status sent
+      await chatMessageRepository.saveMessage(
+        ChatMessageEntity(
+          id: messageId,
+          contactId: contactId,
+          type: ChatMessageType.fundsSent,
+          status: ChatMessageStatus.sent,
+          paymentHash: keysendResult.paymentHash,
+          amountSat: amountSat,
+          isRead: true,
+          createdAt: keysendResult.paymentTime,
+        ),
+      );
+      print('Message send with keysendResult: $keysendResult');
     } catch (e) {
       print(e);
-      // Todo: update createdAt of message in database to now or not???
+      // Save message in database with status failed
+      await chatMessageRepository.saveMessage(
+        ChatMessageEntity(
+          id: messageId,
+          contactId: contactId,
+          type: ChatMessageType.fundsSent,
+          status: ChatMessageStatus.failed,
+          amountSat: amountSat,
+          isRead: true,
+          createdAt: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        ),
+      );
       rethrow; // Todo: create a custom exception to throw here
     }
   }
