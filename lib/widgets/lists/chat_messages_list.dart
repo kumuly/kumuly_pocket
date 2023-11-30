@@ -30,36 +30,38 @@ class ChatMessagesList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        LazyList(
-          reverse: true,
-          items: chatMessages.map((chatMessage) {
-            switch (chatMessage.type) {
-              case ChatMessageType.newContact:
-                return NewContactItem(
-                  chatMessage,
-                  key: Key(
-                    chatMessage.id.toString(),
-                  ),
-                );
-              case ChatMessageType.fundsSent:
-                return FundsSentItem(
-                  chatMessage,
-                  key: Key(
-                    chatMessage.id.toString(),
-                  ),
-                );
-              default:
-                return Container();
-            }
-          }).toList(),
-          loadItems: loadChatMessages,
-          limit: limit,
-          hasMore: hasMore,
-          isLoading: isLoading,
-          isLoadingError: isLoadingError,
-          emptyIndicator: null, // TODO: implement emptyIndicator
-          errorIndicator: null, // TODO: implement errorIndicator
-          noMoreItemsIndicator: null, // TODO: implement noMoreItemsIndicator
+        Expanded(
+          child: LazyList(
+            reverse: true,
+            items: chatMessages.map((chatMessage) {
+              switch (chatMessage.type) {
+                case ChatMessageType.newContact:
+                  return NewContactItem(
+                    chatMessage,
+                    key: Key(
+                      chatMessage.id.toString(),
+                    ),
+                  );
+                case ChatMessageType.fundsSent:
+                  return FundsSentItem(
+                    chatMessage,
+                    key: Key(
+                      chatMessage.id.toString(),
+                    ),
+                  );
+                default:
+                  return Container();
+              }
+            }).toList(),
+            loadItems: loadChatMessages,
+            limit: limit,
+            hasMore: hasMore,
+            isLoading: isLoading,
+            isLoadingError: isLoadingError,
+            emptyIndicator: null, // TODO: implement emptyIndicator
+            errorIndicator: null, // TODO: implement errorIndicator
+            noMoreItemsIndicator: null, // TODO: implement noMoreItemsIndicator
+          ),
         ),
       ],
     );
@@ -168,9 +170,16 @@ class FundsSentItem extends StatelessWidget {
         ),
       ),
       title: Text(
-        copy.fundsSentSuccessfully,
-        style: textTheme.display2(
+        copy.fundsSentSuccessfully + ' ${message.amountSat} sat',
+        style: textTheme.display7(
           Palette.neutral[80],
+          FontWeight.w400,
+        ),
+      ),
+      subtitle: Text(
+        message.getDateTime(copy.today, copy.yesterday),
+        style: textTheme.caption1(
+          Palette.neutral[70],
           FontWeight.w400,
         ),
       ),

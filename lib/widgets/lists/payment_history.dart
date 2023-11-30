@@ -49,6 +49,7 @@ class PaymentHistory extends StatelessWidget {
           ),
         ),
         LazyList(
+          neverScrollable: true,
           items: payments
               .map(
                 (payment) => PaymentHistoryItem(

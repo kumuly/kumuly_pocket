@@ -14,6 +14,7 @@ class LazyList extends StatelessWidget {
     this.noMoreItemsIndicator,
     this.scrollDirection = Axis.vertical,
     this.reverse = false,
+    this.neverScrollable = false,
   });
 
   final List<Widget> items; // Make sure to use keys for these items
@@ -27,6 +28,7 @@ class LazyList extends StatelessWidget {
   final Widget? noMoreItemsIndicator;
   final Axis scrollDirection;
   final bool reverse;
+  final bool neverScrollable;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +37,7 @@ class LazyList extends StatelessWidget {
       reverse: reverse,
       padding: EdgeInsets.zero,
       shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
+      physics: neverScrollable ? const NeverScrollableScrollPhysics() : null,
       itemCount: items.length +
           (isLoading ||
                   isLoadingError && errorIndicator != null ||
