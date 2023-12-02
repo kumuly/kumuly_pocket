@@ -20,6 +20,7 @@ class AddContactCompletedScreen extends ConsumerWidget {
     final router = GoRouter.of(context);
 
     final state = ref.watch(addContactControllerProvider);
+    state.nameFocusNode.unfocus();
 
     return Scaffold(
       backgroundColor: Colors.white,
