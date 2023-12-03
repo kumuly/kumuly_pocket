@@ -33,6 +33,7 @@ const kPromoFlowPageViewId = 'promo-flow';
 const kCashierFlowPageViewId = 'cashier-flow';
 const kPromoValidationFlowPageViewId = 'promo-validation-flow';
 const kAddContactFlowPageViewId = 'add-contact-flow';
+const kSeedBackupFlowPageViewId = 'seed-backup-flow';
 /* Settings keys */
 const kBitcoinUnitSettingsKey = 'bitcoin-unit-settings';
 const kLocalCurrencySettingsKey = 'local-currency-settings';

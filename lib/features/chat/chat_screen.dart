@@ -11,7 +11,6 @@ import 'package:kumuly_pocket/widgets/backgrounds/background_container.dart';
 import 'package:kumuly_pocket/widgets/buttons/expandable_fab.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 import 'package:kumuly_pocket/widgets/lists/chat_messages_list.dart';
-import 'package:kumuly_pocket/widgets/shadows/bottom_shadow.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   const ChatScreen({Key? key, required this.id}) : super(key: key);
@@ -103,10 +102,6 @@ class ChatScreenState extends ConsumerState<ChatScreen> {
                 color: Palette.neutral[40]!.withOpacity(0.2),
               ),
             ),
-          /*BottomShadow(
-            width: MediaQuery.of(context).size.width,
-            spreadRadius: kSpacing12,
-          ),*/
         ],
       ),
       floatingActionButton: ExpandableFab(

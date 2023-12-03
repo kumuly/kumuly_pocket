@@ -321,7 +321,7 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
     if (result is LnUrlPayResult_EndpointSuccess) {
       print('Endpoint success SuccessActionProcessesed data: ${result.data}');
       print(
-          'Endpoint success SuccessActionProcessesed data data: ${result.data.successAction?.data}');
+          'Endpoint success SuccessActionProcessesed data data: ${result.data.successAction}');
       print('Paymenthash: ${result.data.paymentHash}');
     }
 
@@ -469,33 +469,35 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
             lnurlSuccessAction: LnurlSuccessAction(
               description:
                   details.data.lnurlSuccessAction is SuccessActionProcessed_Aes
-                      ? (details.data.lnurlSuccessAction!.data
-                              as SuccessActionProcessed_Aes)
+                      ? ((details.data.lnurlSuccessAction!
+                                  as SuccessActionProcessed_Aes)
+                              .result as AesSuccessActionDataResult_Decrypted)
                           .data
                           .description
                       : details.data.lnurlSuccessAction
                               is SuccessActionProcessed_Url
-                          ? (details.data.lnurlSuccessAction!.data
+                          ? (details.data.lnurlSuccessAction!
                                   as SuccessActionProcessed_Url)
                               .data
                               .description
                           : null,
               plaintext:
                   details.data.lnurlSuccessAction is SuccessActionProcessed_Aes
-                      ? (details.data.lnurlSuccessAction!.data
-                              as SuccessActionProcessed_Aes)
+                      ? ((details.data.lnurlSuccessAction!
+                                  as SuccessActionProcessed_Aes)
+                              .result as AesSuccessActionDataResult_Decrypted)
                           .data
                           .plaintext
                       : null,
               message: details.data.lnurlSuccessAction
                       is SuccessActionProcessed_Message
-                  ? (details.data.lnurlSuccessAction!.data
+                  ? (details.data.lnurlSuccessAction!
                           as SuccessActionProcessed_Message)
                       .data
                       .message
                   : null,
               url: details.data.lnurlSuccessAction is SuccessActionProcessed_Url
-                  ? (details.data.lnurlSuccessAction!.data
+                  ? (details.data.lnurlSuccessAction!
                           as SuccessActionProcessed_Url)
                       .data
                       .url

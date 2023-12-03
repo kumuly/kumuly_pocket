@@ -61,7 +61,9 @@ class ReceiveSatsGenerationController
               state.description,
             );
 
-    print(invoice);
+    if (invoice.bolt11.isEmpty) {
+      throw Exception('Invoice creation failed'); // Todo: create a custom error
+    }
 
     state = state.copyWith(invoice: Invoice.fromInvoiceEntity(invoice));
   }

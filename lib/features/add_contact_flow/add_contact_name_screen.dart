@@ -115,8 +115,8 @@ class AddContactNameScreen extends ConsumerWidget {
                     try {
                       final savingContact = notifier.saveContact();
                       showTransitionDialog(context, copy.oneMomentPlease);
-                      await savingContact;
                       state.nameFocusNode.unfocus();
+                      await savingContact;
                       router.pop();
                       pageController.nextPage();
                     } catch (e) {

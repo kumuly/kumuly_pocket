@@ -11,6 +11,7 @@ import 'package:kumuly_pocket/features/promo_validation_flow/promo_validation_fl
 import 'package:kumuly_pocket/features/promos/promos_screen.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_flow.dart';
 import 'package:kumuly_pocket/features/root/root_screen.dart';
+import 'package:kumuly_pocket/features/seed_backup_flow/seed_backup_flow.dart';
 import 'package:kumuly_pocket/features/send_sats_flow/errors/send_sats_expired_invoice_screen.dart';
 import 'package:kumuly_pocket/features/send_sats_flow/input/send_sats_scanner_screen.dart';
 import 'package:kumuly_pocket/features/send_sats_flow/send_sats_flow.dart';
@@ -22,6 +23,8 @@ import 'package:kumuly_pocket/router/pocket_mode_route.dart';
 import 'package:kumuly_pocket/router/sign_in_route.dart';
 import 'package:kumuly_pocket/router/sign_up_route.dart';
 import 'package:kumuly_pocket/view_models/promo.dart';
+import 'package:kumuly_pocket/widgets/screens/pin_screen.dart';
+import 'package:path/path.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:go_router/go_router.dart';
 
@@ -85,6 +88,12 @@ GoRouter appRouter(AppRouterRef ref) {
         path: '/location',
         name: 'location',
         builder: (context, state) => const LocationSettingsScreen(),
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: '/seed-backup',
+        name: 'seed-backup-flow',
+        builder: (context, state) => const SeedBackupFlow(),
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,

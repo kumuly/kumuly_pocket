@@ -20,7 +20,6 @@ class AddContactCompletedScreen extends ConsumerWidget {
     final router = GoRouter.of(context);
 
     final state = ref.watch(addContactControllerProvider);
-    state.nameFocusNode.unfocus();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -85,7 +84,7 @@ class AddContactCompletedScreen extends ConsumerWidget {
               color: Palette.russianViolet[100],
               size: 16.0,
             ),
-            onPressed: () => router.pushNamed(
+            onPressed: () => router.pushReplacementNamed(
               'chat',
               pathParameters: {
                 'id': state.contactId!.toString(),

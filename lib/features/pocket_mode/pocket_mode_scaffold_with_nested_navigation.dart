@@ -151,6 +151,9 @@ class PocketModeScaffoldWithNestedNavigation extends ConsumerWidget {
               color: Palette.neutral[80],
             ),
             title: copy.seedWords,
+            onTap: () {
+              router.pushNamed('seed-backup-flow');
+            },
           ),
           const DrawerSectionSpace(),
           DrawerSectionTitle(title: copy.kumulyPocketApp),

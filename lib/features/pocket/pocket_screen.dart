@@ -114,11 +114,11 @@ class PocketScreen extends ConsumerWidget {
                                 color: Palette.neutral[80]!,
                               ),
                               DynamicIcon(
-                                icon: 'assets/icons/receive_arrow.svg',
+                                icon: 'assets/icons/send_arrow.svg',
                                 color: Palette.neutral[80]!,
                               ),
                               DynamicIcon(
-                                icon: 'assets/icons/send_arrow.svg',
+                                icon: 'assets/icons/receive_arrow.svg',
                                 color: Palette.neutral[80]!,
                               ),
                               DynamicIcon(
@@ -132,8 +132,8 @@ class PocketScreen extends ConsumerWidget {
                             ],
                             actionTitles: [
                               copy.scan,
-                              copy.receive,
                               copy.send,
+                              copy.receive,
                               copy.buyBitcoin,
                               copy.saveInBitcoin,
                             ],
@@ -141,11 +141,11 @@ class PocketScreen extends ConsumerWidget {
                               () {},
                               () {
                                 router.pop(); // Close bottom sheet
-                                router.pushNamed('receive-sats-flow');
+                                router.pushNamed('send-sats-flow');
                               },
                               () {
                                 router.pop(); // Close bottom sheet
-                                router.pushNamed('send-sats-flow');
+                                router.pushNamed('receive-sats-flow');
                               },
                               () {},
                               () {},
