@@ -50,6 +50,15 @@ class ReceiveSatsGenerationState extends Equatable {
   double get amountToSendOnChain =>
       (amountSat! + (swapFeeEstimate ?? 0)) / 100000000;
 
+  String? get partialOnChainAddress => onChainAddress == null ||
+          onChainAddress!.isEmpty
+      ? null
+      : '${onChainAddress!.substring(0, 8)}...${onChainAddress!.substring(onChainAddress!.length - 8)}';
+
+  String? get partialInvoice => invoice == null || invoice!.bolt11.isEmpty
+      ? null
+      : '${invoice!.bolt11.substring(0, 8)}...${invoice!.bolt11.substring(invoice!.bolt11.length - 8)}';
+
   String? get bip21Uri {
     if (amountSat == null) {
       return null;

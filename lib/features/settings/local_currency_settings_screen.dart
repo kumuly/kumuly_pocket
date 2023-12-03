@@ -52,32 +52,34 @@ class LocalCurrencySettingsScreen extends ConsumerWidget {
       ),
       resizeToAvoidBottomInset: true,
       extendBodyBehindAppBar: false,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-        ),
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            Column(
-              children: LocalCurrency.values
-                  .map(
-                    (currency) => ListTile(
-                      onTap: () => localCurrencySelectionHandler(currency),
-                      title: Text(
-                        '${currency.flag} ${currency.name} (${currency.symbol}${currency.symbol.isNotEmpty ? ' ' : ''}${currency.code})',
-                        style: textTheme.display3(
-                          Palette.neutral[80],
-                          FontWeight.normal,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 16,
+          ),
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              Column(
+                children: LocalCurrency.values
+                    .map(
+                      (currency) => ListTile(
+                        onTap: () => localCurrencySelectionHandler(currency),
+                        title: Text(
+                          '${currency.flag} ${currency.name} (${currency.symbol}${currency.symbol.isNotEmpty ? ' ' : ''}${currency.code})',
+                          style: textTheme.display3(
+                            Palette.neutral[80],
+                            FontWeight.normal,
+                          ),
                         ),
+                        leading:
+                            RadioButton(isSelected: localCurrency == currency),
                       ),
-                      leading:
-                          RadioButton(isSelected: localCurrency == currency),
-                    ),
-                  )
-                  .toList(),
-            ),
-          ],
+                    )
+                    .toList(),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 
 class PinCodeDisplay extends StatelessWidget {
@@ -18,25 +19,25 @@ class PinCodeDisplay extends StatelessWidget {
     this.pinCodeLength = 4,
     completedPinColor,
     incompletePinColor,
-    this.pinRadius = 5.0,
-  })  : completedPinColor = completedPinColor ?? Palette.neutral[100]!,
-        incompletePinColor = incompletePinColor ?? Palette.neutral[50]!,
+    this.pinRadius = 6,
+  })  : completedPinColor = completedPinColor ?? Palette.russianViolet[100]!,
+        incompletePinColor = incompletePinColor ?? Palette.blueViolet[25]!,
         super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(pinCodeLength, (index) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0),
-          child: CircleAvatar(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: List.generate(
+        pinCodeLength,
+        (index) {
+          return CircleAvatar(
             backgroundColor:
                 index < pinCode.length ? completedPinColor : incompletePinColor,
             radius: pinRadius,
-          ),
-        );
-      }),
+          );
+        },
+      ),
     );
   }
 }

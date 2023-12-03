@@ -23,6 +23,7 @@ class SendSatsAmountScreen extends ConsumerWidget {
     final state = ref.watch(sendSatsControllerProvider);
 
     return AmountInputScreen(
+      inputAmountSat: state.amountSat ?? 0,
       appBar: AppBar(
         title: Text(
           copy.amountToSend,

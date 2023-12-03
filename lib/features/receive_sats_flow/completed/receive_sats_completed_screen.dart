@@ -25,7 +25,6 @@ class ReceiveSatsCompletedScreen extends ConsumerWidget {
 
     final amountSat = generationProvider.amountSat;
     final isPaid = receptionProvider.isPaid;
-    final isSwapInProgress = receptionProvider.isSwapInProgress;
     final amount = ref.watch(displayBitcoinAmountProvider(amountSat));
     final unit = ref.watch(bitcoinUnitProvider);
 
