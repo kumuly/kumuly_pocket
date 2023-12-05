@@ -5,38 +5,106 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/enums/promo_type.dart';
+import 'package:kumuly_pocket/features/for_you/for_you_controller.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/view_models/promo.dart';
 import 'package:kumuly_pocket/widgets/buttons/primary_text_button.dart';
-import 'package:kumuly_pocket/widgets/shadows/bottom_shadow.dart';
+import 'package:kumuly_pocket/widgets/tabs/chip_tab.dart';
 
 class ForYouScreen extends ConsumerWidget {
   const ForYouScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    double screenWidth = MediaQuery.of(context).size.width;
+    final router = GoRouter.of(context);
+
+    final state = ref.watch(forYouControllerProvider);
+    final notifier = ref.read(forYouControllerProvider.notifier);
 
     return Scaffold(
-        backgroundColor: Colors.white,
-        body: Stack(
-          children: [
-            SingleChildScrollView(
-              child: Column(
-                children: [
-                  const SizedBox(
-                    height: kSpacing3,
+      backgroundColor: Palette.neutral[20],
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                const SizedBox(
+                  height: kSpacing8,
+                ),
+                ForYouTabs(
+                  tabs: state.tabs,
+                  selectedTab: state.selectedTab,
+                  onTabSelectHandler: (int index) {
+                    notifier.onTabSelectHandler(index);
+                  },
+                ),
+                //PromosRow(),
+              ],
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              height: 1,
+              width: MediaQuery.of(context).size.width,
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.white,
+                    offset: Offset(0, -10),
+                    spreadRadius: 30,
+                    blurRadius: 40,
                   ),
-                  PromosRow(),
                 ],
               ),
             ),
-            BottomShadow(
-              width: screenWidth,
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class ForYouTabs extends StatelessWidget {
+  const ForYouTabs({
+    required this.tabs,
+    required this.selectedTab,
+    required this.onTabSelectHandler,
+    Key? key,
+  }) : super(key: key);
+
+  final List<String> tabs;
+  final int selectedTab;
+  final Function(int) onTabSelectHandler;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 30,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: EdgeInsets.zero,
+        shrinkWrap: true,
+        itemCount: tabs.length, // + 1 for the add button
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: EdgeInsets.only(
+              left: index == 0 ? kSpacing2 : 0,
+              right: kSpacing2,
             ),
-          ],
-        ));
+            child: ChipTab(
+              label: tabs[index],
+              isSelected: selectedTab == index,
+              onPressed: index == 0
+                  ? () {/*Todo: open tab personalization screen */}
+                  : () => onTabSelectHandler(index),
+            ),
+          );
+        },
+      ),
+    );
   }
 }
 
