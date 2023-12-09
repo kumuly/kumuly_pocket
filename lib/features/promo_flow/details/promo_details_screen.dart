@@ -285,8 +285,15 @@ class ConfirmPaymentBottomSheetModal extends ConsumerWidget {
                               ).notifier)
                               .nextPage();
                         } catch (e) {
+                          // TODO: temporary fix for pitch video
                           // Todo: add an error message to the state to show
                           router.pop();
+                          router.pop();
+                          ref
+                              .read(pageViewControllerProvider(
+                                kPromoFlowPageViewId,
+                              ).notifier)
+                              .nextPage();
                           print(e);
                         }
                       },
