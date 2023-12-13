@@ -8,21 +8,25 @@ class PromoDetailsState extends Equatable {
     required this.promo,
     this.amountSat,
     this.priceUpdatedError = false,
+    this.paymentErrorMessage,
   });
 
   final Promo promo;
   final int? amountSat;
   final bool priceUpdatedError;
+  final String? paymentErrorMessage;
 
   PromoDetailsState copyWith({
     Promo? promo,
     int? amountSat,
     bool? priceUpdatedError,
+    String? paymentErrorMessage,
   }) {
     return PromoDetailsState(
       promo: promo ?? this.promo,
       amountSat: amountSat ?? this.amountSat,
       priceUpdatedError: priceUpdatedError ?? this.priceUpdatedError,
+      paymentErrorMessage: paymentErrorMessage ?? this.paymentErrorMessage,
     );
   }
 
@@ -31,5 +35,6 @@ class PromoDetailsState extends Equatable {
         promo,
         amountSat,
         priceUpdatedError,
+        paymentErrorMessage,
       ];
 }
