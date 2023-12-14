@@ -315,7 +315,7 @@ class PromoCodeContainer extends StatelessWidget {
                     ),
                     const SizedBox(height: kSpacing2),
                     Text(
-                      '${copy.validUntil} 17/12/2023',
+                      '${copy.validUntil} ${promo.expiryDate}',
                       style: textTheme.display2(
                         Palette.neutral[70],
                         FontWeight.w400,

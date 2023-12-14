@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:kumuly_pocket/features/activity/activities_screen.dart';
+import 'package:kumuly_pocket/features/activity/paid_promos/paid_promos_screen.dart';
 import 'package:kumuly_pocket/features/add_contact_flow/add_contact_flow.dart';
 import 'package:kumuly_pocket/features/add_contact_flow/add_contact_scanner_screen.dart';
 import 'package:kumuly_pocket/features/cashier_flow/cashier_flow.dart';
@@ -70,6 +72,18 @@ GoRouter appRouter(AppRouterRef ref) {
         path: '/contact-id',
         name: 'contact-id',
         builder: (context, state) => const ContactIdScreen(),
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: '/activity',
+        name: 'activity',
+        builder: (context, state) => const ActivitiesScreen(),
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: '/paid-promos',
+        name: 'paid-promos',
+        builder: (context, state) => const PaidPromosScreen(),
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,

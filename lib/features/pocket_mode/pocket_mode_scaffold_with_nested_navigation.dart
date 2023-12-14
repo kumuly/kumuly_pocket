@@ -97,13 +97,14 @@ class PocketModeScaffoldWithNestedNavigation extends ConsumerWidget {
                 '${state != null ? state.notifications.length : 0} ${copy.newNotifications}',
           ),
           const DrawerSectionSpace(),
-          DrawerSectionTitle(title: copy.yourActivity),
+          DrawerSectionTitle(title: copy.forYou),
           DrawerItem(
             leadingIcon: DynamicIcon(
               icon: 'assets/icons/gift.svg',
               color: Palette.neutral[80],
             ),
-            title: copy.promos,
+            title: copy.yourActivity,
+            onTap: () => router.pushNamed('activity'),
           ),
           const DrawerSectionSpace(),
           DrawerSectionTitle(title: copy.appSettings),

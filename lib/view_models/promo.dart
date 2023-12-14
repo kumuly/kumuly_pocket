@@ -16,6 +16,7 @@ class Promo extends Equatable {
     required this.termsAndConditions,
     required this.merchant,
     required this.lnurlPayLink,
+    required this.expiry,
   });
 
   final String? id;
@@ -29,6 +30,7 @@ class Promo extends Equatable {
   final List<String> termsAndConditions;
   final PromoMerchant merchant;
   final String lnurlPayLink;
+  final int expiry; // timestamp in seconds
 
   double get discountedPrice {
     switch (type) {
@@ -45,6 +47,23 @@ class Promo extends Equatable {
     }
   }
 
+  String get expiryDate {
+    final expiryDate = DateTime.fromMillisecondsSinceEpoch(
+      expiry * 1000,
+    );
+
+    return '${expiryDate.day}/${expiryDate.month}/${expiryDate.year}';
+  }
+
+  int get daysLeft {
+    final now = DateTime.now();
+    final expiryDate = DateTime.fromMillisecondsSinceEpoch(
+      expiry * 1000,
+    );
+
+    return expiryDate.difference(now).inDays;
+  }
+
   @override
   List<Object?> get props => [
         id,
@@ -58,6 +77,7 @@ class Promo extends Equatable {
         termsAndConditions,
         merchant,
         lnurlPayLink,
+        expiry,
       ];
 }
 

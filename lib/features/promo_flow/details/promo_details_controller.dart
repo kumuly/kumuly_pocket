@@ -76,6 +76,7 @@ class PromoDetailsController extends _$PromoDetailsController {
           ),
           lnurlPayLink:
               'LNURL1DP68GURN8GHJ7WPHXUUKGDRPX3JNSTNY9EMX7MR5V9NK2CTSWQHXJME0D3H82UNVWQH4SDTWW34HW6L9LQU',
+          expiry: 1702853999,
         ),
       );
     }
@@ -111,10 +112,12 @@ class PromoDetailsController extends _$PromoDetailsController {
       if (e is LnUrlPayMinAmount || e is LnUrlPayMaxAmount) {
         state = state.copyWith(
           priceUpdatedError: true,
+          paymentErrorMessage: '',
         );
       } else {
         state = state.copyWith(
           priceUpdatedError: false,
+          paymentErrorMessage: e.toString(),
         );
       }
       rethrow;

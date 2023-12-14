@@ -166,6 +166,7 @@ class ConfirmPaymentBottomSheetModal extends ConsumerWidget {
                 promoDetailsController.amountSat!
             : false;
     final isUpdatedPriceError = promoDetailsController.priceUpdatedError;
+    final paymentErrorMessage = promoDetailsController.paymentErrorMessage;
 
     return SizedBox(
       width: double.infinity,
@@ -254,7 +255,17 @@ class ConfirmPaymentBottomSheetModal extends ConsumerWidget {
                           ),
                           textAlign: TextAlign.center,
                         )
-                      : Container(),
+                      : paymentErrorMessage != null &&
+                              paymentErrorMessage.isNotEmpty
+                          ? Text(
+                              paymentErrorMessage,
+                              style: textTheme.caption1(
+                                Palette.error[100],
+                                FontWeight.w400,
+                              ),
+                              textAlign: TextAlign.center,
+                            )
+                          : Container(),
                   const SizedBox(height: kSpacing1),
                 ],
               ),
@@ -285,15 +296,7 @@ class ConfirmPaymentBottomSheetModal extends ConsumerWidget {
                               ).notifier)
                               .nextPage();
                         } catch (e) {
-                          // TODO: temporary fix for pitch video
-                          // Todo: add an error message to the state to show
                           router.pop();
-                          router.pop();
-                          ref
-                              .read(pageViewControllerProvider(
-                                kPromoFlowPageViewId,
-                              ).notifier)
-                              .nextPage();
                           print(e);
                         }
                       },

@@ -1,29 +1,17 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:kumuly_pocket/enums/promo_type.dart';
-import 'package:kumuly_pocket/features/for_you/for_you_state.dart';
+import 'package:kumuly_pocket/features/activity/paid_promos/paid_promos_state.dart';
 import 'package:kumuly_pocket/view_models/promo.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'for_you_controller.g.dart';
+part 'paid_promos_controller.g.dart';
 
 @riverpod
-class ForYouController extends _$ForYouController {
+class PaidPromosController extends _$PaidPromosController {
   @override
-  ForYouState build() {
-    // Todo: replace with real data obtained from API
-    final List<String> tabs = [
-      '+',
-      'Promos 🔥',
-      'Tickets',
-      'Transportation',
-      'Subscriptions',
-      'Merchants map',
-    ];
-
-    // Todo: get Promos from API
-    final List<Promo> promos = [
+  PaidPromosState build() {
+    // Todo: get active promos from real API
+    final List<Promo> activePromos = [
       Promo(
         id: '1',
         type: PromoType.custom,
@@ -82,15 +70,17 @@ class ForYouController extends _$ForYouController {
       ),
     ];
 
-    return ForYouState(
-      tabs: tabs,
-      selectedTab: 1,
-      promos: promos,
+    List<Promo> redeemedPromos = [];
+
+    return PaidPromosState(
+      isOnActiveTab: true,
+      activePromos: activePromos,
+      redeemedPromos: redeemedPromos,
     );
   }
 
-  void onTabSelectHandler(int index) {
+  void onTabSelectHandler(bool isTabOnActive) {
     // Todo: query products for tab and set them in state correctly
-    state = state.copyWith(selectedTab: index);
+    state = state.copyWith(isOnActiveTab: isTabOnActive);
   }
 }
