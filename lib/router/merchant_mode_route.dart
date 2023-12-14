@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kumuly_pocket/features/my_posts/my_posts_screen.dart';
 import 'package:kumuly_pocket/features/sales/sales_screen.dart';
 import 'package:kumuly_pocket/features/merchant_mode/merchant_mode_scaffold_with_nested_navigation.dart';
 
@@ -58,8 +59,8 @@ final merchantModeRoute = StatefulShellRoute.indexedStack(
         GoRoute(
           path: '/my-posts',
           name: 'my-posts',
-          pageBuilder: (context, state) => NoTransitionPage(
-            child: Container(color: Colors.white), // MyPostsScreen(),
+          pageBuilder: (context, state) => const NoTransitionPage(
+            child: MyPostsScreen(),
           ),
           routes: const [
             // child route

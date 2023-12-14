@@ -19,20 +19,18 @@ class ContactsScreen extends ConsumerWidget {
     final copy = AppLocalizations.of(context)!;
     double screenWidth = MediaQuery.of(context).size.width;
 
-    const frequentContactsLimit = 10;
     final frequentContactsState = ref.watch(
-      frequentContactsControllerProvider(frequentContactsLimit),
+      frequentContactsControllerProvider(kFrequentContactsLimit),
     );
     final frequentContactsNotifier = ref.read(
-      frequentContactsControllerProvider(frequentContactsLimit).notifier,
+      frequentContactsControllerProvider(kFrequentContactsLimit).notifier,
     );
 
-    const contactListLimit = 10;
     final contactListState = ref.watch(
-      contactListControllerProvider(contactListLimit),
+      contactListControllerProvider(kContactListLimit),
     );
     final contactListNotifier = ref.read(
-      contactListControllerProvider(contactListLimit).notifier,
+      contactListControllerProvider(kContactListLimit).notifier,
     );
 
     return Scaffold(
@@ -95,7 +93,7 @@ class ContactsScreen extends ConsumerWidget {
                           : [],
                       loadContactListItems:
                           frequentContactsNotifier.fetchContacts,
-                      limit: frequentContactsLimit,
+                      limit: kFrequentContactsLimit,
                       hasMore: frequentContactsState.hasValue
                           ? frequentContactsState.asData!.value.hasMoreContacts
                           : true,
@@ -112,7 +110,7 @@ class ContactsScreen extends ConsumerWidget {
                           ? contactListState.asData!.value.contacts
                           : [],
                       loadContactListItems: contactListNotifier.fetchContacts,
-                      limit: contactListLimit,
+                      limit: kContactListLimit,
                       hasMore: contactListState.hasValue
                           ? contactListState.asData!.value.hasMoreContacts
                           : true,

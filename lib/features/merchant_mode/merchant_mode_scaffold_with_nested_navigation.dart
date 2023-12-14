@@ -25,7 +25,7 @@ class MerchantModeScaffoldWithNestedNavigation extends StatelessWidget {
   Widget build(BuildContext context) {
     final router = GoRouter.of(context);
     final copy = AppLocalizations.of(context)!;
-    const merchantName = 'A company name here';
+    const merchantName = 'Oishiki Japanese Food';
     const nrOfNotifications = 3;
     const version = '0.0.0';
 
@@ -46,7 +46,7 @@ class MerchantModeScaffoldWithNestedNavigation extends StatelessWidget {
                 letterSpacing: 0.0,
               ),
         ),
-        avatar: Image.asset('assets/images/dummy_merchant_avatar.png'),
+        avatar: Image.asset('assets/images/dummy_logo.png'),
         children: [
           const DrawerSectionSpace(),
           DrawerItem(
