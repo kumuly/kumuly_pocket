@@ -1,3 +1,4 @@
+// Todo: Move to pin feature folder and use the PinScreen for all insert pin screens
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 

@@ -315,6 +315,11 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
     );
     print('Payment result: $result');
     if (result is LnUrlPayResult_EndpointError) {
+      print('Endpoint error: ${result.data.reason}');
+      throw LnUrlPayFailure(result.data.reason);
+    }
+    if (result is LnUrlPayResult_PayError) {
+      print('Pay error: ${result.data.reason}');
       throw LnUrlPayFailure(result.data.reason);
     }
 

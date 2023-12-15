@@ -7,7 +7,7 @@ import 'package:kumuly_pocket/services/lightning_node_service.dart';
 import 'package:kumuly_pocket/widgets/dialogs/transition_dialog.dart';
 import 'package:kumuly_pocket/features/sign_up/sign_up_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:kumuly_pocket/widgets/screens/pin_screen.dart';
+import 'package:kumuly_pocket/widgets/screens/pin_input_screen.dart';
 
 class ConfirmPinScreen extends ConsumerWidget {
   const ConfirmPinScreen({super.key});
@@ -28,7 +28,7 @@ class ConfirmPinScreen extends ConsumerWidget {
     final pin = ref.watch(signUpController).pin;
     final mnemonicWords = ref.watch(signUpController).mnemonicWords;
 
-    return PinScreen(
+    return PinInputScreen(
       title: copy.confirmPIN,
       subtitle: copy.confirmPINDescription,
       pin: pinConfirmation,

@@ -25,7 +25,7 @@ class MerchantModeScaffoldWithNestedNavigation extends StatelessWidget {
   Widget build(BuildContext context) {
     final router = GoRouter.of(context);
     final copy = AppLocalizations.of(context)!;
-    const merchantName = 'A company name here';
+    const merchantName = 'Oishiki Japanese Food';
     const nrOfNotifications = 3;
     const version = '0.0.0';
 
@@ -46,7 +46,7 @@ class MerchantModeScaffoldWithNestedNavigation extends StatelessWidget {
                 letterSpacing: 0.0,
               ),
         ),
-        avatar: Image.asset('assets/images/dummy_merchant_avatar.png'),
+        avatar: Image.asset('assets/images/dummy_logo.png'),
         children: [
           const DrawerSectionSpace(),
           DrawerItem(
@@ -60,9 +60,14 @@ class MerchantModeScaffoldWithNestedNavigation extends StatelessWidget {
               color: Palette.neutral[80],
             ),
             onTap: () async {
-              showTransitionDialog(context, copy.oneMomentPlease);
-              await Future.delayed(const Duration(milliseconds: 1500));
-              router.goNamed('pocket');
+              router.pushNamed(
+                'pin',
+                extra: () async {
+                  showTransitionDialog(context, copy.oneMomentPlease);
+                  await Future.delayed(const Duration(milliseconds: 1500));
+                  router.goNamed('pocket');
+                },
+              );
             },
           ),
           const DrawerSectionSpace(),

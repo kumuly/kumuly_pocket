@@ -8,7 +8,7 @@ import 'package:kumuly_pocket/services/account_service.dart';
 import 'package:kumuly_pocket/features/sign_in/sign_in_controller.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:kumuly_pocket/widgets/screens/pin_screen.dart';
+import 'package:kumuly_pocket/widgets/screens/pin_input_screen.dart';
 
 class InsertPinScreen extends ConsumerWidget {
   const InsertPinScreen({super.key});
@@ -30,7 +30,7 @@ class InsertPinScreen extends ConsumerWidget {
     final isValidPin =
         ref.watch(checkPinProvider(nodeId, pin)).asData?.value ?? false;
 
-    return PinScreen(
+    return PinInputScreen(
       pin: pin,
       isValidPin: isValidPin,
       onNumberSelectHandler: signInControllerNotifier.addNumberToPin,

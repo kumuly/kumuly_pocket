@@ -44,3 +44,6 @@ const kChatMessagesTable = 'ChatMessages';
 /* List limits */
 const kChatMessagesLimit = 6;
 const kPaymentsLimit = 20;
+const kContactListLimit = 10;
+const kFrequentContactsLimit = 10;
+const kMyPostsLimit = 10;

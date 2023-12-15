@@ -10,8 +10,8 @@ import 'package:kumuly_pocket/theme/custom_theme.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class PinScreen extends ConsumerWidget {
-  const PinScreen({
+class PinInputScreen extends ConsumerWidget {
+  const PinInputScreen({
     this.leading,
     this.title,
     this.subtitle,

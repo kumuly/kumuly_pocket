@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 
@@ -26,12 +27,21 @@ class TransactionList extends StatelessWidget {
         ),
         Column(
           children: List.generate(
-            25,
+            1,
             (index) => ListTile(
-              title: Text('Item $index'),
+              title: Text(
+                'No transactions yet.',
+                style: textTheme.body3(
+                  Palette.neutral[50],
+                  FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              titleAlignment: ListTileTitleAlignment.center,
             ),
           ),
         ),
+        const SizedBox(height: kSpacing4),
       ],
     );
   }

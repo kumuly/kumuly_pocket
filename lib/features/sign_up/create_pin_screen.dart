@@ -6,7 +6,7 @@ import 'package:kumuly_pocket/services/authentication_service.dart';
 import 'package:kumuly_pocket/services/lightning_node_service.dart';
 import 'package:kumuly_pocket/features/sign_up/sign_up_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:kumuly_pocket/widgets/screens/pin_screen.dart';
+import 'package:kumuly_pocket/widgets/screens/pin_input_screen.dart';
 
 class CreatePinScreen extends ConsumerWidget {
   const CreatePinScreen({super.key});
@@ -24,7 +24,7 @@ class CreatePinScreen extends ConsumerWidget {
     );
     final pin = ref.watch(signUpController).pin;
 
-    return PinScreen(
+    return PinInputScreen(
       title: copy.createPIN,
       subtitle: copy.chooseAPIN,
       pin: pin,

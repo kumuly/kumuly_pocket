@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:kumuly_pocket/constants.dart';
-import 'package:kumuly_pocket/features/seed_backup_flow/seed_backup_controller.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/services/authentication_service.dart';
 import 'package:kumuly_pocket/services/account_service.dart';
-import 'package:kumuly_pocket/widgets/page_views/page_view_controller.dart';
 import 'package:kumuly_pocket/widgets/pin/pin_controller.dart';
 import 'package:kumuly_pocket/widgets/screens/pin_input_screen.dart';
 
-class SeedBackupPinScreen extends ConsumerWidget {
-  const SeedBackupPinScreen({super.key});
+class PinScreen extends ConsumerWidget {
+  const PinScreen({required this.confirmHandler, super.key});
+
+  final void Function() confirmHandler;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pageController = ref.watch(
-      pageViewControllerProvider(kSeedBackupFlowPageViewId).notifier,
-    );
+    final router = GoRouter.of(context);
 
     final pinState = ref.watch(pinControllerProvider);
     final pinNotifier = ref.read(
@@ -33,18 +31,13 @@ class SeedBackupPinScreen extends ConsumerWidget {
     return PinInputScreen(
       leading: IconButton(
         icon: const Icon(Icons.arrow_back),
-        onPressed: pageController.previousPage,
+        onPressed: router.pop,
       ),
       pin: pinState.pin,
       isValidPin: isValidPin,
       onNumberSelectHandler: pinNotifier.addNumberToPin,
       onBackspaceHandler: pinNotifier.removeNumberFromPin,
-      confirmHandler: () async {
-        await ref
-            .read(seedBackupControllerProvider.notifier)
-            .loadWords(connectedNodeId);
-        pageController.nextPage();
-      },
+      confirmHandler: confirmHandler,
     );
   }
 }
