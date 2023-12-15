@@ -25,8 +25,7 @@ import 'package:kumuly_pocket/router/pocket_mode_route.dart';
 import 'package:kumuly_pocket/router/sign_in_route.dart';
 import 'package:kumuly_pocket/router/sign_up_route.dart';
 import 'package:kumuly_pocket/view_models/promo.dart';
-import 'package:kumuly_pocket/widgets/screens/pin_screen.dart';
-import 'package:path/path.dart';
+import 'package:kumuly_pocket/features/pin/pin_screen.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:go_router/go_router.dart';
 
@@ -65,6 +64,16 @@ GoRouter appRouter(AppRouterRef ref) {
             child: Text('>>> Insert seed phrase here <<<'),
           ),
         ),
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: '/pin',
+        name: 'pin',
+        builder: (context, state) {
+          return PinScreen(
+            confirmHandler: state.extra as void Function(),
+          );
+        },
       ),
       pocketModeRoute,
       GoRoute(

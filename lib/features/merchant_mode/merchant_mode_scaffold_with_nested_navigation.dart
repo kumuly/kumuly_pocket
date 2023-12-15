@@ -60,9 +60,14 @@ class MerchantModeScaffoldWithNestedNavigation extends StatelessWidget {
               color: Palette.neutral[80],
             ),
             onTap: () async {
-              showTransitionDialog(context, copy.oneMomentPlease);
-              await Future.delayed(const Duration(milliseconds: 1500));
-              router.goNamed('pocket');
+              router.pushNamed(
+                'pin',
+                extra: () async {
+                  showTransitionDialog(context, copy.oneMomentPlease);
+                  await Future.delayed(const Duration(milliseconds: 1500));
+                  router.goNamed('pocket');
+                },
+              );
             },
           ),
           const DrawerSectionSpace(),
