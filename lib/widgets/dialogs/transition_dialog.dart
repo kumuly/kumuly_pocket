@@ -31,7 +31,7 @@ class TransitionDialog extends StatelessWidget {
       height: MediaQuery.of(context).size.height,
       child: BackgroundContainer(
         color: Colors.transparent,
-        assetName: 'assets/backgrounds/russian_violet_background.png',
+        assetName: 'assets/backgrounds/lilac_background.png',
         child: Stack(
           alignment: AlignmentDirectional.topCenter,
           children: [
@@ -49,7 +49,7 @@ class TransitionDialog extends StatelessWidget {
                   Text(
                     caption,
                     style: textTheme.body2(
-                      Palette.blueViolet[75],
+                      Colors.white,
                       FontWeight.normal,
                     ),
                     textAlign: TextAlign.center,
