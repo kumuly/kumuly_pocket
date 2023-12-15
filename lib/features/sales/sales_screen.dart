@@ -84,7 +84,7 @@ class SalesScreen extends ConsumerWidget {
                 ],
               ),
               const SizedBox(
-                height: kSpacing8,
+                height: kSpacing4,
               ),
               const SalesGraph(),
               const SizedBox(
@@ -115,8 +115,9 @@ class SalesGraph extends StatelessWidget {
         border: Border.all(color: Palette.neutral[30]!),
         borderRadius: BorderRadius.circular(16.0),
       ),
-      height: 200,
-      child: Container(),
+      child: Container(
+        child: Image.asset('assets/images/mock_sales_graph.png'),
+      ),
     );
   }
 }

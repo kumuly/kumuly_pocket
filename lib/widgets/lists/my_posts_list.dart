@@ -36,11 +36,18 @@ class MyPostsList extends StatelessWidget {
           neverScrollable: true,
           items: myPostsListItems
               .map(
-                (myPostListItem) => MyPostsListItemWidget(
-                  myPostListItem,
-                  key: Key(
-                    myPostListItem.promoId,
-                  ),
+                (myPostListItem) => Column(
+                  children: [
+                    MyPostsListItemWidget(
+                      myPostListItem,
+                      key: Key(
+                        myPostListItem.promoId,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: kSpacing3,
+                    ),
+                  ],
                 ),
               )
               .toList(),
@@ -82,13 +89,21 @@ class MyPostsListItemWidget extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  '${myPostListItem.daysLeft} days left',
-                  style: textTheme.caption1(
-                    Palette.success[50],
-                    FontWeight.w500,
-                  ),
-                ),
+                myPostListItem.isFinished
+                    ? Text(
+                        'Finished'.toUpperCase(),
+                        style: textTheme.caption1(
+                          Palette.neutral[100],
+                          FontWeight.w500,
+                        ),
+                      )
+                    : Text(
+                        '${myPostListItem.daysLeft} days left'.toUpperCase(),
+                        style: textTheme.caption1(
+                          Palette.success[50],
+                          FontWeight.w500,
+                        ),
+                      ),
                 Text(
                   myPostListItem.createdAtDate,
                   style: textTheme.caption1(
@@ -106,8 +121,10 @@ class MyPostsListItemWidget extends ConsumerWidget {
                   child: Text(
                     myPostListItem.title,
                     style: textTheme.display5(
-                      Palette.neutral[400],
-                      FontWeight.w500,
+                      myPostListItem.isFinished
+                          ? Palette.neutral[60]
+                          : Palette.neutral[100],
+                      FontWeight.w400,
                     ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -116,13 +133,29 @@ class MyPostsListItemWidget extends ConsumerWidget {
                 const SizedBox(
                   width: kSpacing5,
                 ),
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(kSpacing3),
-                  ),
-                  child: myPostListItem.image,
+                // Image container with overlay if finished
+                Stack(
+                  children: [
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(kSpacing1 * 1.5),
+                      ),
+                      clipBehavior: Clip.hardEdge,
+                      child: myPostListItem.image,
+                    ),
+                    if (myPostListItem.isFinished) // Check if promo is finished
+                      Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: Colors.white
+                              .withOpacity(0.5), // Semi-transparent overlay
+                          borderRadius: BorderRadius.circular(kSpacing1 * 1.5),
+                        ),
+                      ),
+                  ],
                 ),
               ],
             ),
@@ -133,14 +166,18 @@ class MyPostsListItemWidget extends ConsumerWidget {
               text: TextSpan(
                 text: myPostListItem.tag,
                 style: textTheme.body3(
-                  Palette.neutral[60],
+                  myPostListItem.isFinished
+                      ? Palette.neutral[40]
+                      : Palette.neutral[60],
                   FontWeight.w700,
                 ),
                 children: [
                   TextSpan(
                     text: ' ・ ${myPostListItem.headline}',
                     style: textTheme.body3(
-                      Palette.neutral[60],
+                      myPostListItem.isFinished
+                          ? Palette.neutral[40]
+                          : Palette.neutral[60],
                       FontWeight.w400,
                     ),
                   ),
@@ -158,26 +195,41 @@ class MyPostsListItemWidget extends ConsumerWidget {
                 MetricIconAndValue(
                   icon: DynamicIcon(
                     icon: Icons.visibility,
-                    color: Palette.neutral[50],
+                    color: myPostListItem.isFinished
+                        ? Palette.neutral[30]
+                        : Palette.neutral[50],
                     size: 16,
                   ),
                   value: myPostListItem.views,
+                  labelColor: myPostListItem.isFinished
+                      ? Palette.neutral[40]
+                      : Palette.neutral[70],
                 ),
                 MetricIconAndValue(
                   icon: DynamicIcon(
                     icon: Icons.timelapse,
-                    color: Palette.neutral[50],
+                    color: myPostListItem.isFinished
+                        ? Palette.neutral[30]
+                        : Palette.neutral[50],
                     size: 16,
                   ),
                   value: myPostListItem.toRedeem,
+                  labelColor: myPostListItem.isFinished
+                      ? Palette.neutral[40]
+                      : Palette.neutral[70],
                 ),
                 MetricIconAndValue(
                   icon: DynamicIcon(
                     icon: Icons.how_to_reg,
-                    color: Palette.neutral[50],
+                    color: myPostListItem.isFinished
+                        ? Palette.neutral[30]
+                        : Palette.neutral[50],
                     size: 16,
                   ),
                   value: myPostListItem.redeemed,
+                  labelColor: myPostListItem.isFinished
+                      ? Palette.neutral[40]
+                      : Palette.neutral[70],
                 ),
               ],
             ),
@@ -189,14 +241,19 @@ class MyPostsListItemWidget extends ConsumerWidget {
 }
 
 class MetricIconAndValue extends StatelessWidget {
-  const MetricIconAndValue({
+  MetricIconAndValue({
     super.key,
     required this.icon,
     required this.value,
-  });
+    borderColor,
+    labelColor,
+  })  : borderColor = borderColor ?? Palette.neutral[20],
+        labelColor = labelColor ?? Palette.neutral[70];
 
   final DynamicIcon icon;
   final String value;
+  final Color borderColor;
+  final Color labelColor;
 
   @override
   Widget build(BuildContext context) {
@@ -207,7 +264,7 @@ class MetricIconAndValue extends StatelessWidget {
       height: 48,
       decoration: BoxDecoration(
         border: Border.all(
-          color: Palette.neutral[20]!,
+          color: borderColor,
           width: 1.5,
         ),
         borderRadius: BorderRadius.circular(kSpacing1 * 1.5),
@@ -222,7 +279,7 @@ class MetricIconAndValue extends StatelessWidget {
           Text(
             value,
             style: textTheme.caption1(
-              Palette.neutral[70],
+              labelColor,
               FontWeight.w500,
             ),
           ),
