@@ -30,6 +30,7 @@ class CashierAmountScreen extends ConsumerWidget {
     final localCurrency = ref.watch(localCurrencyProvider);
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(

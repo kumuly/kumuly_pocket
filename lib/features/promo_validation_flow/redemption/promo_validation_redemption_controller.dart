@@ -24,7 +24,7 @@ class PromoValidationRedemptionController
     // Todo: post to server that this payment hash is canceled and generate the withdraw LNURL
     // Todo: receive the amount that was paid in Sats
     const amountSat = 90000;
-    print('Setting to validated');
+    print('Setting to canceled');
     state = state.copyWith(
         isValidated: false, isCancelled: true, amountSat: amountSat);
   }
