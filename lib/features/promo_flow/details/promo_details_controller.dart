@@ -52,7 +52,7 @@ class PromoDetailsController extends _$PromoDetailsController {
               fit: BoxFit.cover,
             ),
           ],
-          originalPrice: 32,
+          originalPrice: 10,
           discountValue: 0,
           termsAndConditions: const [
             'This promotion is only valid for payments made with Bitcoin.',
@@ -75,7 +75,7 @@ class PromoDetailsController extends _$PromoDetailsController {
             distance: 'Nearby - 2km',
           ),
           lnurlPayLink:
-              'LNURL1DP68GURN8GHJ7WPHXUUKGDRPX3JNSTNY9EMX7MR5V9NK2CTSWQHXJME0D3H82UNVWQH4SDTWW34HW6L9LQU',
+              'LNURL1DP68GURN8GHJ7WPHXUUKGDRPX3JNSTNY9EMX7MR5V9NK2CTSWQHXJME0D3H82UNVWQH5UMNCXEF95UC9QG3',
           expiry: 1702853999,
         ),
       );

@@ -320,6 +320,14 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
     }
     if (result is LnUrlPayResult_PayError) {
       print('Pay error: ${result.data.reason}');
+      ReportIssueRequest req = ReportIssueRequest.paymentFailure(
+        data: ReportPaymentFailureDetails(
+          paymentHash: result.data.paymentHash,
+        ),
+      );
+      print('Reporting issue for hash: ${result.data.paymentHash}');
+      await BreezSDK().reportIssue(req: req);
+      print('Issue reported');
       throw LnUrlPayFailure(result.data.reason);
     }
 
