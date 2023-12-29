@@ -26,6 +26,7 @@ const promosSubcollection = 'promos';
 const allProductsCollection = 'all-products';
 const allPromosCollection = 'all-promos';
 /* PageView ids */
+const kOnboardingFlowPageViewId = 'onboarding-flow';
 const kCarouselPageViewId = 'carousel';
 const kReceiveSatsFlowPageViewId = 'receive-sats-flow';
 const kSendSatsFlowPageViewId = 'send-sats-flow';
@@ -34,6 +35,11 @@ const kCashierFlowPageViewId = 'cashier-flow';
 const kPromoValidationFlowPageViewId = 'promo-validation-flow';
 const kAddContactFlowPageViewId = 'add-contact-flow';
 const kSeedBackupFlowPageViewId = 'seed-backup-flow';
+const kSeedImportFlowPageViewId = 'seed-recovery-flow';
+/* Secure storage keys */
+const kMnemonicKey = 'mnemonic';
+const kMnemonicLanguageKey = 'mnemonic-language';
+const kPinDigestKey = 'pin-digest';
 /* Settings keys */
 const kBitcoinUnitSettingsKey = 'bitcoin-unit-settings';
 const kLocalCurrencySettingsKey = 'local-currency-settings';
@@ -47,3 +53,7 @@ const kPaymentsLimit = 20;
 const kContactListLimit = 10;
 const kFrequentContactsLimit = 10;
 const kMyPostsLimit = 10;
+/* Other */
+const kInviteCodeLength = 9;
+const kPinLength = 4;
+const kBreezSdkWorkingDirName = 'breezSdk';

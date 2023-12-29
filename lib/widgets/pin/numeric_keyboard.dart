@@ -6,13 +6,15 @@ class NumericKeyboard extends StatelessWidget {
   NumericKeyboard({
     Key? key,
     required this.onNumberSelected,
-    required this.onBackspace,
+    this.onBackspace,
+    this.onConfirmation,
     color,
   })  : color = color ?? Palette.russianViolet[100]!,
         super(key: key);
 
   final Function(String) onNumberSelected;
-  final VoidCallback onBackspace;
+  final VoidCallback? onBackspace;
+  final VoidCallback? onConfirmation;
   final Color color;
 
   @override
@@ -27,7 +29,10 @@ class NumericKeyboard extends StatelessWidget {
       ),
       itemBuilder: (context, index) {
         if (index == 9) {
-          return Container();
+          return IconKeyboardButton(
+            onPressed: onBackspace,
+            iconData: Icons.backspace_outlined,
+          );
         } else if (index == 10) {
           return NumericKeyboardButton(
             onPressed: () => onNumberSelected('0'),
@@ -36,8 +41,8 @@ class NumericKeyboard extends StatelessWidget {
           );
         } else if (index == 11) {
           return IconKeyboardButton(
-            onPressed: onBackspace,
-            icon: Icon(Icons.backspace_outlined, size: 30, color: color),
+            onPressed: onConfirmation,
+            iconData: Icons.check_circle,
           );
         } else {
           return NumericKeyboardButton(
@@ -86,14 +91,17 @@ class NumericKeyboardButton extends StatelessWidget {
 }
 
 class IconKeyboardButton extends StatelessWidget {
-  const IconKeyboardButton({
+  IconKeyboardButton({
     Key? key,
-    required this.onPressed,
-    required this.icon,
-  }) : super(key: key);
+    this.onPressed,
+    required this.iconData,
+    color,
+  })  : color = color ?? Palette.russianViolet[100]!,
+        super(key: key);
 
-  final VoidCallback onPressed;
-  final Icon icon;
+  final VoidCallback? onPressed;
+  final IconData iconData;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +111,9 @@ class IconKeyboardButton extends StatelessWidget {
       color: Colors.transparent,
       child: TextButton(
         onPressed: onPressed,
-        child: icon,
+        child: Icon(iconData,
+            size: 30,
+            color: onPressed == null ? color.withOpacity(0.1) : color),
       ),
     );
   }

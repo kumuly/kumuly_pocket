@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kumuly_pocket/enums/bitcoin_unit.dart';
+import 'package:kumuly_pocket/enums/on_chain_fee_velocity.dart';
 import 'package:kumuly_pocket/enums/payment_request_type.dart';
 import 'package:kumuly_pocket/features/send_sats_flow/send_sats_state.dart';
 import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
@@ -40,6 +41,8 @@ class SendSatsController extends _$SendSatsController {
       destinationTextController: destinationTextController,
       amountTextController: amountTextController,
       amountFocusNode: amountFocus,
+      selectedOnChainFeeVelocity: OnChainFeeVelocity
+          .fastest, // Todo: set default from settings or let user choose
     );
   }
 
@@ -159,7 +162,10 @@ class SendSatsController extends _$SendSatsController {
         .contains(state.paymentRequestType)) {
       // Todo: also fetch and set swapOutInfo with swap fees and min/max
       final onchainFees = await lightningNodeServiceProvider.recommendedFees;
-      state = state.copyWith(recommendedOnChainFees: onchainFees);
+      print('Onchain fees: $onchainFees');
+      state = state.copyWith(
+        recommendedOnChainFees: onchainFees,
+      );
     }
   }
 
@@ -168,11 +174,17 @@ class SendSatsController extends _$SendSatsController {
         ref.read(breezeSdkLightningNodeServiceProvider);
     switch (state.paymentRequestType) {
       case PaymentRequestType.bitcoinAddress:
+        await fetchFees();
+        print('Sending to bitcoin address: ${state.bitcoinAddress}');
+        print('Amount: ${state.amountSat}');
+        print(
+            'Fee: ${state.recommendedOnChainFees![state.selectedOnChainFeeVelocity!]}');
         return lightningNodeServiceProvider.swapOut(
             state.bitcoinAddress!,
             state.amountSat!,
             state.recommendedOnChainFees![state.selectedOnChainFeeVelocity!]!);
       case PaymentRequestType.bip21:
+        await fetchFees();
         return lightningNodeServiceProvider.swapOut(
             state.bip21!.bitcoin,
             state.amountSat!,

@@ -11,10 +11,10 @@ class SeedBackupController extends _$SeedBackupController {
     return const SeedBackupState();
   }
 
-  Future<void> loadWords(String nodeId) async {
+  Future<void> loadWords() async {
     final mnemonicRepository =
         ref.watch(secureStorageMnemonicRepositoryProvider);
-    List<String> words = await mnemonicRepository.getWords(nodeId);
+    List<String> words = await mnemonicRepository.getWords();
 
     state = state.copyWith(
       words: words,

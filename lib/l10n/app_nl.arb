@@ -204,5 +204,9 @@
   "obtainSeed": "Haal seed op",
   "betterAtAnotherTime": "Beter op een andere keer",
   "yourSeedWords": "Je seed woorden",
-  "writeDownAndNumberSeedWords": "Schrijf deze woorden op een stuk papier en nummer ze in volgorde"
+  "writeDownAndNumberSeedWords": "Schrijf deze woorden op een stuk papier en nummer ze in volgorde",
+  "inviteCode": "Invite code",
+  "inviteCodeDescription": "Momenteel is Kumuly Pocket in beta en heb je een invite code nodig om een account aan te maken.",
+  "enterInviteCodeHere": "Voer invite code hier in",
+  "confirmInviteCode": "Bevestig invite code"
 }

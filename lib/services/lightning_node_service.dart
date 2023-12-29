@@ -1,15 +1,12 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:crypto/crypto.dart';
+import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/entities/invoice_entity.dart';
 import 'package:kumuly_pocket/entities/keysend_payment_details_entity.dart';
 import 'package:kumuly_pocket/entities/payment_entity.dart';
-import 'package:kumuly_pocket/entities/recommended_fees_entity.dart';
 import 'package:kumuly_pocket/entities/swap_in_info_entity.dart';
 import 'package:kumuly_pocket/enums/app_network.dart';
-import 'package:kumuly_pocket/enums/mnemonic_language.dart';
 import 'package:kumuly_pocket/enums/on_chain_fee_velocity.dart';
 import 'package:kumuly_pocket/enums/payment_request_type.dart';
 import 'package:kumuly_pocket/environment_variables.dart';
@@ -52,20 +49,11 @@ Future<int> spendableBalanceSat(SpendableBalanceSatRef ref) {
 abstract class LightningNodeService {
   Stream<bool> streamInvoicePayment({String? bolt11, String? paymentHash});
   Stream<String> inProgressSwapPolling(Duration interval);
-  Future<(String nodeId, String workingDirPath)> newNodeConnect(
-    String alias,
-    List<String> mnemonicWords,
-    MnemonicLanguage language,
-    AppNetwork network,
-    String apiKey, {
+  Future<void> connect(
+    AppNetwork network, {
     String? inviteCode,
     String? partnerCredentials,
   });
-  Future<void> existingNodeConnect(
-    String nodeId,
-    String workingDirPath,
-    AppNetwork network,
-  );
   Future<InvoiceEntity> createInvoice(int amountSat, String? description);
   Future<(int? minAmountSat, int? maxAmountSat)> getLnurlPayAmounts(
     String paymentLink,
@@ -105,51 +93,24 @@ class BreezSdkLightningNodeService implements LightningNodeService {
   final MnemonicRepository _mnemonicRepository;
 
   @override
-  Future<(String nodeId, String workingDirPath)> newNodeConnect(
-    String alias,
-    List<String> mnemonicWords,
-    MnemonicLanguage language,
-    AppNetwork network,
-    String apiKey, {
+  Future<void> connect(
+    AppNetwork network, {
     String? inviteCode,
     String? partnerCredentials,
   }) async {
     // The node needs to be initialized with a seed derived from the mnemonic.
-    final seed = _mnemonicRepository.wordsToSeed(mnemonicWords, language);
+    final seed = await _mnemonicRepository.getSeed();
 
     // The node needs a working directory to store its data.
-    final path = await _setupWorkingDirectory(alias);
+    final path = await _getWorkingDirectory();
 
-    final nodeId = await _lightningNodeRepository.connect(
-      seed,
-      network,
-      apiKey,
-      path,
-      inviteCode: inviteCode,
-      partnerCredentials: partnerCredentials,
-    );
-
-    return (nodeId, path);
-  }
-
-  @override
-  Future<void> existingNodeConnect(
-    String nodeId,
-    String workingDirPath,
-    AppNetwork network,
-  ) async {
-    // Get the mnemonic for the alias from secure storage.
-    List<String> words = await _mnemonicRepository.getWords(nodeId);
-    // Todo: take correct language instead of hardcoding english.
-    final seed =
-        _mnemonicRepository.wordsToSeed(words, MnemonicLanguage.english);
-
-    // Connect to the breez node.
     await _lightningNodeRepository.connect(
       seed,
       network,
       breezSdkApiKey,
-      workingDirPath,
+      path,
+      inviteCode: inviteCode,
+      partnerCredentials: partnerCredentials,
     );
   }
 
@@ -240,33 +201,17 @@ class BreezSdkLightningNodeService implements LightningNodeService {
     return (await _lightningNodeRepository.recommendedFees).toMap();
   }
 
-  Future<String> _setupWorkingDirectory(String alias) async {
-    // Create a new folder for the user to have a separate working directory
-    //  from nodes of other users on the same device/app.
-    // The folder name is the hash of the alias to avoid special
-    // characters and a timestamp so that later accounts can have the same name as the previous name of an older account where the name got changed for already.
-    final aliasHash = _hash('$alias ${DateTime.now()}');
+  Future<String> _getWorkingDirectory() async {
     final appDocDir = await getApplicationDocumentsDirectory();
-    final path = join(appDocDir.path, aliasHash);
+    final path = join(appDocDir.path, kBreezSdkWorkingDirName);
     final dir = Directory(path);
 
-    if (await dir.exists()) {
-      throw FileSystemException(
-        'Working directory already used for other node',
-        path,
-      );
-    } else {
+    if (!(await dir.exists())) {
+      // If the folder doesn't exist yet, create it.
       await dir.create(recursive: true);
     }
 
     return path;
-  }
-
-  // Todo: move this function to a common crypto utilities file and use it in the pin repository as well.
-  String _hash(String message) {
-    final bytes = utf8.encode(message);
-    final hash = sha256.convert(bytes);
-    return hash.toString();
   }
 
   @override

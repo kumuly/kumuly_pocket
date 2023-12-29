@@ -7,6 +7,7 @@ import 'package:kumuly_pocket/features/cashier_flow/cashier_flow.dart';
 import 'package:kumuly_pocket/features/chat/chat_screen.dart';
 import 'package:kumuly_pocket/features/contact_id/contact_id_screen.dart';
 import 'package:kumuly_pocket/features/landing/landing_screen.dart';
+import 'package:kumuly_pocket/features/onboarding/onboarding_flow.dart';
 import 'package:kumuly_pocket/features/promo_flow/code/promo_code_screen.dart';
 import 'package:kumuly_pocket/features/promo_flow/promo_flow.dart';
 import 'package:kumuly_pocket/features/promo_validation_flow/promo_validation_flow.dart';
@@ -14,6 +15,7 @@ import 'package:kumuly_pocket/features/promos/promos_screen.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_flow.dart';
 import 'package:kumuly_pocket/features/root/root_screen.dart';
 import 'package:kumuly_pocket/features/seed_backup_flow/seed_backup_flow.dart';
+import 'package:kumuly_pocket/features/seed_import_flow/seed_import_flow.dart';
 import 'package:kumuly_pocket/features/send_sats_flow/errors/send_sats_expired_invoice_screen.dart';
 import 'package:kumuly_pocket/features/send_sats_flow/input/send_sats_scanner_screen.dart';
 import 'package:kumuly_pocket/features/send_sats_flow/send_sats_flow.dart';
@@ -22,8 +24,6 @@ import 'package:kumuly_pocket/features/settings/local_currency_settings_screen.d
 import 'package:kumuly_pocket/features/settings/location_settings_screen.dart';
 import 'package:kumuly_pocket/router/merchant_mode_route.dart';
 import 'package:kumuly_pocket/router/pocket_mode_route.dart';
-import 'package:kumuly_pocket/router/sign_in_route.dart';
-import 'package:kumuly_pocket/router/sign_up_route.dart';
 import 'package:kumuly_pocket/view_models/promo.dart';
 import 'package:kumuly_pocket/features/pin/pin_screen.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -50,20 +50,15 @@ GoRouter appRouter(AppRouterRef ref) {
         name: 'landing',
         builder: (context, state) => const LandingScreen(),
       ),
-      signUpRoute,
-      signInRoute,
       GoRoute(
-        path: '/import-account',
-        name: 'import-account-flow',
-        builder: (context, state) => Scaffold(
-          appBar: AppBar(
-            title: const Text('Import Account'),
-            centerTitle: true,
-          ),
-          body: const Center(
-            child: Text('>>> Insert seed phrase here <<<'),
-          ),
-        ),
+        path: '/onboarding',
+        name: 'onboarding-flow',
+        builder: (context, state) => const OnboardingFlow(),
+      ),
+      GoRoute(
+        path: '/seed-recovery',
+        name: 'seed-recovery-flow',
+        builder: (context, state) => const SeedImportFlow(),
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,

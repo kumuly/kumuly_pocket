@@ -3,16 +3,16 @@ import 'package:kumuly_pocket/entities/auth_user_entity.dart';
 import 'package:kumuly_pocket/providers/firebase_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'authentication_repository.g.dart';
+part 'firebase_auth_repository.g.dart';
 
 @riverpod
-AuthenticationRepository firebaseAuthenticationRepository(
-    FirebaseAuthenticationRepositoryRef ref) {
+FirebaseAuthRepository firebaseAuthRepositoryImpl(
+    FirebaseAuthRepositoryImplRef ref) {
   final firebaseAuth = ref.watch(firebaseAuthProvider);
-  return FirebaseAuthenticationRepository(firebaseAuth);
+  return FirebaseAuthRepositoryImpl(firebaseAuth);
 }
 
-abstract class AuthenticationRepository {
+abstract class FirebaseAuthRepository {
   Stream<AuthUserEntity> get authUser;
   Future<void> signInWithCustomToken(String token);
   Future<void> logOut();
@@ -21,8 +21,8 @@ abstract class AuthenticationRepository {
 /// Thrown during the logout process if a failure occurs.
 class LogOutFailure implements Exception {}
 
-class FirebaseAuthenticationRepository implements AuthenticationRepository {
-  FirebaseAuthenticationRepository(this._firebaseAuth);
+class FirebaseAuthRepositoryImpl implements FirebaseAuthRepository {
+  FirebaseAuthRepositoryImpl(this._firebaseAuth);
 
   final FirebaseAuth _firebaseAuth;
 

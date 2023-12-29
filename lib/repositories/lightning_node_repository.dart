@@ -347,7 +347,22 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
       bolt11: bolt11,
       amountMsat: amountMsat,
     );
-    await _breezSdk.sendPayment(req: request);
+
+    try {
+      await _breezSdk.sendPayment(req: request);
+    } catch (e) {
+      print('$e');
+      final invoice = await decodeInvoice(bolt11);
+      ReportIssueRequest req = ReportIssueRequest.paymentFailure(
+        data: ReportPaymentFailureDetails(
+          paymentHash: invoice.paymentHash,
+        ),
+      );
+      print('Reporting issue for hash: ${invoice.paymentHash}');
+      await BreezSDK().reportIssue(req: req);
+      print('Issue reported');
+      rethrow;
+    }
   }
 
   @override

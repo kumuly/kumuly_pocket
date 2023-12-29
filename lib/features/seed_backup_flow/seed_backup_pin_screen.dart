@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/features/seed_backup_flow/seed_backup_controller.dart';
 import 'package:kumuly_pocket/services/authentication_service.dart';
-import 'package:kumuly_pocket/services/account_service.dart';
+import 'package:kumuly_pocket/services/wallet_service.dart';
 import 'package:kumuly_pocket/widgets/page_views/page_view_controller.dart';
 import 'package:kumuly_pocket/widgets/pin/pin_controller.dart';
 import 'package:kumuly_pocket/widgets/screens/pin_input_screen.dart';
@@ -22,13 +22,8 @@ class SeedBackupPinScreen extends ConsumerWidget {
       pinControllerProvider.notifier,
     );
 
-    final connectedNodeId =
-        ref.watch(connectedAccountProvider).asData?.value.nodeId ?? '';
-    final isValidPin = ref
-            .watch(checkPinProvider(connectedNodeId, pinState.pin))
-            .asData
-            ?.value ??
-        false;
+    final isValidPin =
+        ref.watch(checkPinProvider(pinState.pin)).asData?.value ?? false;
 
     return PinInputScreen(
       leading: IconButton(
@@ -40,9 +35,7 @@ class SeedBackupPinScreen extends ConsumerWidget {
       onNumberSelectHandler: pinNotifier.addNumberToPin,
       onBackspaceHandler: pinNotifier.removeNumberFromPin,
       confirmHandler: () async {
-        await ref
-            .read(seedBackupControllerProvider.notifier)
-            .loadWords(connectedNodeId);
+        await ref.read(seedBackupControllerProvider.notifier).loadWords();
         pageController.nextPage();
       },
     );

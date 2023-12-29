@@ -1,8 +1,7 @@
-import 'package:kumuly_pocket/entities/account_entity.dart';
-import 'package:kumuly_pocket/repositories/authentication_repository.dart';
-import 'package:kumuly_pocket/repositories/lightning_message_repository.dart';
+import 'package:kumuly_pocket/entities/auth_user_entity.dart';
+import 'package:kumuly_pocket/repositories/firebase_auth_repository.dart';
+import 'package:kumuly_pocket/repositories/lightning_auth_repository.dart';
 import 'package:kumuly_pocket/repositories/lightning_node_repository.dart';
-import 'package:kumuly_pocket/repositories/account_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'authentication_service.g.dart';
@@ -11,98 +10,72 @@ part 'authentication_service.g.dart';
 @riverpod
 AuthenticationService firebaseAuthenticationService(
     FirebaseAuthenticationServiceRef ref) {
-  final authenticationRepository =
-      ref.watch(firebaseAuthenticationRepositoryProvider);
-  final accountRepository =
-      ref.watch(sharedPreferencesAccountRepositoryProvider);
-  final lightningMessageRepository =
-      ref.watch(firebaseLightningMessageRepositoryProvider);
+  final firebaseAuthRepository = ref.watch(firebaseAuthRepositoryImplProvider);
+  final lightningAuthRepository =
+      ref.watch(firebaseLightningAuthRepositoryProvider);
   final lightningNodeRepository =
       ref.watch(breezeSdkLightningNodeRepositoryProvider);
 
   return FirebaseLightningMessageAuthenticationService(
-    authenticationRepository,
-    accountRepository,
-    lightningMessageRepository,
+    firebaseAuthRepository,
+    lightningAuthRepository,
     lightningNodeRepository,
   );
 }
 
-@riverpod
-class ConnectedAccount extends _$ConnectedAccount {
-  @override
-  Stream<AccountEntity> build() {
-    final authenticationService =
-        ref.watch(firebaseAuthenticationServiceProvider);
-    return authenticationService.connectedAccount;
-  }
-}
-
 abstract class AuthenticationService {
-  Stream<AccountEntity> get connectedAccount;
-  Future<void> logIn(String nodeId);
+  Stream<AuthUserEntity> get authUser;
+  Future<void> logIn();
   Future<void> logOut();
 }
 
 class FirebaseLightningMessageAuthenticationService
     implements AuthenticationService {
   FirebaseLightningMessageAuthenticationService(
-    this._authenticationRepository,
-    this._accountRepository,
-    this._lightningMessageRepository,
+    this._firebaseAuthRepository,
+    this._lightningAuthRepository,
     this._lightningNodeRepository,
   );
 
-  final AuthenticationRepository _authenticationRepository;
-  final AccountRepository _accountRepository;
-  final LightningMessageRepository _lightningMessageRepository;
+  final FirebaseAuthRepository _firebaseAuthRepository;
+
+  final LightningAuthRepository _lightningAuthRepository;
   final LightningNodeRepository _lightningNodeRepository;
 
   @override
-  Stream<AccountEntity> get connectedAccount {
-    return _authenticationRepository.authUser
+  Stream<AuthUserEntity> get authUser {
+    return _firebaseAuthRepository.authUser
         //.distinct((prev, next) => prev.id == next.id)
         .map((authUser) {
-      print('connectedAccount rebuild');
-      if (authUser.isEmpty) {
-        return AccountEntity.empty;
-      } else {
-        return _accountRepository.get(authUser.id);
-      }
+      return authUser;
     }).asBroadcastStream();
   }
 
   @override
-  Future<void> logIn(String nodeId) async {
+  Future<void> logIn() async {
     // Get the sign in message from the server.
     print("LOG IN");
-    final signInMessage = await _lightningMessageRepository.getSignInMessage();
+    final signInMessage = await _lightningAuthRepository.getSignInMessage();
     print("SIGN IN MESSAGE: ${signInMessage.message}");
 
     // Sign the message.
     final signature =
         await _lightningNodeRepository.signMessage(signInMessage.message);
+    final nodeId = await _lightningNodeRepository.nodeId;
 
     // Send the signature to the server.
-    final jwt = await _lightningMessageRepository.getJwtForValidSignature(
+    final jwt = await _lightningAuthRepository.getJwtForValidSignature(
       signInMessage.id,
       signature,
       nodeId,
     );
     // Login to firebase with the jwt.
-    await _authenticationRepository.signInWithCustomToken(jwt);
-
-    // Save the last login time for the user.
-    final user =
-        _accountRepository.get(nodeId).copyWith(lastLogin: DateTime.now());
-    await _accountRepository.save(user);
+    await _firebaseAuthRepository.signInWithCustomToken(jwt);
   }
 
   @override
   Future<void> logOut() async {
     print('Logging out...');
-    await _authenticationRepository.logOut();
-    print('Disconnecting from node...');
-    await _lightningNodeRepository.disconnect();
+    await _firebaseAuthRepository.logOut();
   }
 }

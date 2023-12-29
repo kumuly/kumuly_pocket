@@ -42,7 +42,7 @@ class LandingScreen extends ConsumerWidget {
               PrimaryBorderButton(
                 text: copy.createAccount,
                 onPressed: () {
-                  context.pushNamed('sign-up');
+                  context.pushNamed('onboarding-flow');
                 },
               ),
             ],
@@ -62,7 +62,7 @@ class LandingScreen extends ConsumerWidget {
               PrimaryTextButton(
                 text: copy.importAccount,
                 onPressed: () {
-                  context.pushNamed('import-account-flow');
+                  context.pushNamed('seed-recovery-flow');
                 },
               ),
             ],

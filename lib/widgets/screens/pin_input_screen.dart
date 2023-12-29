@@ -100,21 +100,11 @@ class PinInputScreen extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: kSpacing8),
               child: NumericKeyboard(
                 onNumberSelected: onNumberSelectHandler,
-                onBackspace: onBackspaceHandler,
+                onBackspace: pin.isNotEmpty ? onBackspaceHandler : null,
+                onConfirmation: pin.length != 4 || !isValidPin
+                    ? null
+                    : confirmHandler ?? router.pop,
               ),
-            ),
-            const SizedBox(height: kSpacing7),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                PrimaryFilledButton(
-                  text: confirmButtonText ?? copy.confirm,
-                  onPressed: pin.length != 4 || !isValidPin
-                      ? null
-                      : confirmHandler ?? router.pop,
-                ),
-              ],
             ),
             const SizedBox(height: kSpacing8),
           ],
