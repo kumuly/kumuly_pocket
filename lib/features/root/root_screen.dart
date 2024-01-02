@@ -34,7 +34,7 @@ class RootScreen extends ConsumerWidget {
       // If no accounts exist on the device yet, go to the landing screen.
       if (!hasWallet || !hasPin) {
         router.pop();
-        router.goNamed('landing');
+        router.goNamed('landing-flow');
         return Container(color: Palette.russianViolet[100]);
       } else {
         // Connect the node

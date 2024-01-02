@@ -6,6 +6,7 @@ import 'package:kumuly_pocket/features/add_contact_flow/add_contact_scanner_scre
 import 'package:kumuly_pocket/features/cashier_flow/cashier_flow.dart';
 import 'package:kumuly_pocket/features/chat/chat_screen.dart';
 import 'package:kumuly_pocket/features/contact_id/contact_id_screen.dart';
+import 'package:kumuly_pocket/features/landing/landing_flow.dart';
 import 'package:kumuly_pocket/features/landing/landing_screen.dart';
 import 'package:kumuly_pocket/features/onboarding/onboarding_flow.dart';
 import 'package:kumuly_pocket/features/promo_flow/code/promo_code_screen.dart';
@@ -47,8 +48,8 @@ GoRouter appRouter(AppRouterRef ref) {
       ),
       GoRoute(
         path: '/landing',
-        name: 'landing',
-        builder: (context, state) => const LandingScreen(),
+        name: 'landing-flow',
+        builder: (context, state) => const LandingFlow(),
       ),
       GoRoute(
         path: '/onboarding',

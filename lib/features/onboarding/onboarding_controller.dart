@@ -106,7 +106,7 @@ class OnboardingController extends _$OnboardingController {
 
   Future<void> setup() async {
     if (state.error is! CouldNotSetPinException) {
-      // If the pin could not be set, it means connecting to the node already worked and the wallet is already set up.
+      // If the pin could not be set, it means connecting to the node already worked and the wallet is already generated.
       // We should not generate a new mnemonic for the same invite code in that case or it will give an error. One mnemonic per invite code.
       try {
         // Generate and set a mnemonic.
@@ -114,7 +114,7 @@ class OnboardingController extends _$OnboardingController {
             .read(
               walletServiceImplProvider,
             )
-            .setupWallet(
+            .generateWallet(
               state.language,
             );
       } catch (e) {

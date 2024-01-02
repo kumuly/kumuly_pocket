@@ -26,6 +26,7 @@ const promosSubcollection = 'promos';
 const allProductsCollection = 'all-products';
 const allPromosCollection = 'all-promos';
 /* PageView ids */
+const kLandingFlowPageViewId = 'landing-flow';
 const kOnboardingFlowPageViewId = 'onboarding-flow';
 const kCarouselPageViewId = 'carousel';
 const kReceiveSatsFlowPageViewId = 'receive-sats-flow';
@@ -54,6 +55,8 @@ const kContactListLimit = 10;
 const kFrequentContactsLimit = 10;
 const kMyPostsLimit = 10;
 /* Other */
+const kMaxSeedEntropyLength = 256;
+const kSeedEntropyLength = 128;
 const kInviteCodeLength = 9;
 const kPinLength = 4;
 const kBreezSdkWorkingDirName = 'breezSdk';

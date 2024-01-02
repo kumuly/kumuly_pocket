@@ -23,6 +23,7 @@ abstract class MnemonicRepository {
   Future<void> create(
     MnemonicLanguage language,
   );
+  Future<void> set(MnemonicLanguage language, List<String> words);
   Future<List<String>> getWords();
   Future<MnemonicLanguage> getLanguage();
   Future<Uint8List> getSeed();
@@ -40,10 +41,24 @@ class SecureStorageMnemonicRepository implements MnemonicRepository {
     // Generate a new mnemonic
     final mnemonic = bip39.Mnemonic.generate(
       language.bip39Language,
-      entropyLength: 128,
+      entropyLength: kSeedEntropyLength,
     );
 
-    final words = mnemonic.words;
+    set(language, mnemonic.words);
+  }
+
+  @override
+  Future<void> set(MnemonicLanguage language, List<String> words) async {
+    try {
+      bip39.Mnemonic.fromSentence(
+        words.join(language.bip39Language.separator),
+        language.bip39Language,
+      );
+    } catch (e) {
+      print(e);
+      throw InvalidSeedException(e.toString());
+    }
+
     final mnemonicWordsString = jsonEncode(words);
 
     // Store the mnemonic and the language in secure storage.
@@ -109,4 +124,10 @@ class SecureStorageMnemonicRepository implements MnemonicRepository {
 
     return bytes;
   }
+}
+
+class InvalidSeedException implements Exception {
+  InvalidSeedException(this.message);
+
+  final String message;
 }

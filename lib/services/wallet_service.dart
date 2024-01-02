@@ -22,8 +22,12 @@ WalletService walletServiceImpl(WalletServiceImplRef ref) {
 }
 
 abstract class WalletService {
-  Future<void> setupWallet(
+  Future<void> generateWallet(
     MnemonicLanguage language,
+  );
+  Future<void> restoreWallet(
+    MnemonicLanguage language,
+    List<String> words,
   );
   Future<bool> hasWallet();
   Future<void> setPin(String pin);
@@ -42,10 +46,18 @@ class WalletServiceImpl implements WalletService {
   final PinRepository _pinRepository;
 
   @override
-  Future<void> setupWallet(
+  Future<void> generateWallet(
     MnemonicLanguage language,
   ) async {
     await _mnemonicRepository.create(language);
+  }
+
+  @override
+  Future<void> restoreWallet(
+    MnemonicLanguage language,
+    List<String> words,
+  ) async {
+    await _mnemonicRepository.set(language, words);
   }
 
   @override

@@ -30,6 +30,7 @@ class PrimaryTextButton extends StatelessWidget {
       onPressed: onPressed,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           if (leadingIcon != null) leadingIcon!,
           const SizedBox(width: 8),
