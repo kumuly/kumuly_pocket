@@ -7,7 +7,7 @@ import 'package:kumuly_pocket/features/cashier_flow/cashier_flow.dart';
 import 'package:kumuly_pocket/features/chat/chat_screen.dart';
 import 'package:kumuly_pocket/features/contact_id/contact_id_screen.dart';
 import 'package:kumuly_pocket/features/landing/landing_flow.dart';
-import 'package:kumuly_pocket/features/landing/landing_screen.dart';
+import 'package:kumuly_pocket/features/landing/pages/landing_screen.dart';
 import 'package:kumuly_pocket/features/onboarding/onboarding_flow.dart';
 import 'package:kumuly_pocket/features/promo_flow/code/promo_code_screen.dart';
 import 'package:kumuly_pocket/features/promo_flow/promo_flow.dart';

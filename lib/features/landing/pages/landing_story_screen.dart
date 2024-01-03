@@ -10,7 +10,18 @@ import 'package:kumuly_pocket/widgets/page_views/page_view_line_indicator.dart';
 import 'package:kumuly_pocket/widgets/shadows/bottom_shadow.dart';
 
 class LandingStoryScreen extends ConsumerWidget {
-  const LandingStoryScreen({super.key});
+  const LandingStoryScreen({
+    super.key,
+    required this.coverImageAssetPath,
+    required this.icon,
+    required this.headline,
+    required this.description,
+  });
+
+  final String coverImageAssetPath;
+  final Widget icon;
+  final String headline;
+  final String description;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -22,6 +33,8 @@ class LandingStoryScreen extends ConsumerWidget {
       ).notifier,
     );
 
+    const storyPageCount = 4;
+
     return Scaffold(
       backgroundColor: Colors.black,
       body: SingleChildScrollView(
@@ -30,20 +43,38 @@ class LandingStoryScreen extends ConsumerWidget {
             Stack(
               children: [
                 Image.asset(
-                  'assets/images/mock_up_home.jpeg',
+                  coverImageAssetPath,
                   fit: BoxFit.cover,
                   height: MediaQuery.of(context).size.height * 0.6,
                 ),
-                const Positioned(
-                  top: 0,
+                Positioned(
+                  top: kSpacing6,
+                  left: 0,
+                  right: 0,
                   child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: kSpacing2,
-                    ),
-                    child: PageViewLineIndicator(
-                      pageViewId: kLandingFlowPageViewId,
-                      pageCount: 1,
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: kSpacing2),
+                    child: Column(children: [
+                      const PageViewLineIndicator(
+                        pageViewId: kLandingFlowPageViewId,
+                        pageCount: storyPageCount,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            alignment: Alignment.centerRight,
+                            padding: const EdgeInsets.all(0),
+                            onPressed: () =>
+                                pageController.jumpToPage(storyPageCount),
+                            icon: Icon(
+                              Icons.close,
+                              color: Colors.white.withOpacity(0.3),
+                              size: 24,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ]),
                   ),
                 ),
                 BottomShadow(
@@ -62,22 +93,18 @@ class LandingStoryScreen extends ConsumerWidget {
                   Row(
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(kSpacing2),
                         height: 56,
                         width: 56,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           color: Colors.white.withOpacity(0.1),
                         ),
-                        child: Image.asset(
-                          'assets/illustrations/bitcoin_coin.png',
-                          fit: BoxFit.cover,
-                        ),
+                        child: Center(child: icon),
                       ),
                       const SizedBox(width: kSpacing2),
                       Expanded(
                         child: Text(
-                          'Take full control and become unstoppable',
+                          headline,
                           style: textTheme.display6(
                             Colors.white,
                             FontWeight.w500,
@@ -88,7 +115,7 @@ class LandingStoryScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: kSpacing2),
                   Text(
-                    'In Kumuly Pocket your money is really yours. Nobody can stop you from using it as you wish. Only you can access it through your secret 12 words.',
+                    description,
                     style: textTheme.body3(
                       Palette.neutral[60],
                       FontWeight.w400,

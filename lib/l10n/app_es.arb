@@ -1,7 +1,7 @@
 {
   "createAccountPrompt1": "Crea una cuenta en segundos y ",
   "createAccountPrompt2": "descubre que ",
-  "createAccountPrompt3": "todo lo que necesitas son sats.",
+  "createAccountPrompt3": "todo lo que necesitas son sats",
   "createAccount": "Crear cuenta",
   "alreadyHaveAnAccount": "¿Ya tienes una cuenta?",
   "importAccount": "Importar cuenta",
