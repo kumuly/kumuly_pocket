@@ -1,4 +1,12 @@
 {
+  "takeFullControlHeadline": "Neem volledige controle en word onstuitbaar",
+  "takeFullControlDescription": "Kumuly Pocket is een niet-custodiale portemonnee, wat betekent dat jouw geld echt van jou is. Niemand kan je tegenhouden om het te gebruiken zoals jij dat wilt. Alleen jij hebt toegang tot jouw fondsen via jouw 12 geheime woorden.",
+  "getYourFamilyAndFriendsOnboardHeadline": "Haal je familie en vrienden aan boord",
+  "getYourFamilyAndFriendsOnboardDescription": "Voeg contacten toe en stuur, ontvang en vraag spontaan fondsen aan zonder facturen te hoeven genereren. Zo simpel, iedereen kan het.",
+  "directlySpendOnProductsAndServicesHeadline": "Besteed sats rechtstreeks aan producten en diensten",
+  "directlySpendOnProductsAndServicesDescription": "Je kunt een constant groeiend aanbod van producten en diensten vinden om in de app direct in sats te betalen. Geen behoefte om naar fiat-valuta om te zetten. Geen behoefte om persoonlijke informatie te delen. Geen toestemming nodig. Besteed gewoon je sats rechtstreeks en ondersteun de circulaire economie.",
+  "letYourBusinessBeDiscoveredHeadline": "Laat jouw bedrijf ontdekt worden",
+  "letYourBusinessBeDiscoveredDescription": "Maak gebruik van de handelaarsfuncties om jouw bedrijf op Bitcoin te laten groeien. Laat jouw producten opvallen met exclusieve promoties en word omarmd door de Bitcoin-gemeenschap terwijl je jouw verkopen ziet toenemen.",
   "createAccountPrompt1": "Maak een account in enkele seconden en ",
   "createAccountPrompt2": "ontdek dat ",
   "createAccountPrompt3": "alles wat je nodig hebt, zijn sats",

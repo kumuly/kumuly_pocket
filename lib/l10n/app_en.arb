@@ -1,4 +1,12 @@
 {
+  "takeFullControlHeadline": "Take full control and become unstoppable",
+  "takeFullControlDescription": "Kumuly Pocket is a non-custodial wallet, meaning your money is really yours. Nobody can stop you from using it as you wish. Only you can access your funds through your 12 secret words.",
+  "getYourFamilyAndFriendsOnboardHeadline": "Get your family and friends onboard",
+  "getYourFamilyAndFriendsOnboardDescription": "Add contacts and spontaneously send, receive and request funds without having to generate invoices. So simple, everyone can do it.",
+  "directlySpendOnProductsAndServicesHeadline": "Directly spend sats on products and services",
+  "directlySpendOnProductsAndServicesDescription": "You can find a constantly growing offering of products and services to pay for in the app directly in sats. No need to convert to fiat currency. No need to share personal info. No need to ask for permission. Just spend your sats directly and support the circular economy.",
+  "letYourBusinessBeDiscoveredHeadline": "Let your business be discovered",
+  "letYourBusinessBeDiscoveredDescription": "Access merchant features to grow your business on bitcoin. Make your products stand out with exclusive promotions and be embraced by the Bitcoin community as you see your sales increase.",
   "createAccountPrompt1": "Create an account in seconds and ",
   "createAccountPrompt2": "find out ",
   "createAccountPrompt3": "all you need is sats",
