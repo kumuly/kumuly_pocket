@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:kumuly_pocket/entities/mnemonic_entity.dart';
 import 'package:kumuly_pocket/enums/app_network.dart';
 import 'package:kumuly_pocket/enums/mnemonic_language.dart';
-import 'package:kumuly_pocket/features/onboarding/onboarding_state.dart';
+import 'package:kumuly_pocket/features/onboarding/new_wallet_flow/new_wallet_state.dart';
 import 'package:kumuly_pocket/services/wallet_service.dart';
 import 'package:kumuly_pocket/services/lightning_node_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'onboarding_controller.g.dart';
+part 'new_wallet_controller.g.dart';
 
 @riverpod
-class OnboardingController extends _$OnboardingController {
+class NewWalletController extends _$NewWalletController {
   @override
-  OnboardingState build(int inviteCodeLength) {
+  NewWalletState build(int inviteCodeLength) {
     ref.onDispose(() {
       for (var controller in state.inviteCodeControllers) {
         controller.dispose();
@@ -30,7 +31,7 @@ class OnboardingController extends _$OnboardingController {
       (_) => FocusNode(),
     );
 
-    return OnboardingState(
+    return NewWalletState(
       inviteCodeControllers: inviteCodeControllers,
       inviteCodeFocusNodes: inviteCodeFocusNodes,
     );
@@ -78,48 +79,21 @@ class OnboardingController extends _$OnboardingController {
     }
   }
 
-  void addNumberToPin(String number) {
-    if (state.pin.length < 4) {
-      state = state.copyWith(pin: state.pin + number);
-    }
-  }
-
-  void removeNumberFromPin() {
-    if (state.pin.isNotEmpty) {
-      state = state.copyWith(pin: state.pin.substring(0, state.pin.length - 1));
-    }
-  }
-
-  void addNumberToPinConfirmation(String number) {
-    if (state.pinConfirmation.length < 4) {
-      state = state.copyWith(pinConfirmation: state.pinConfirmation + number);
-    }
-  }
-
-  void removeNumberFromPinConfirmation() {
-    if (state.pinConfirmation.isNotEmpty) {
-      state = state.copyWith(
-          pinConfirmation: state.pinConfirmation
-              .substring(0, state.pinConfirmation.length - 1));
-    }
-  }
-
   Future<void> setup() async {
-    if (state.error is! CouldNotSetPinException) {
-      // If the pin could not be set, it means connecting to the node already worked and the wallet is already generated.
-      // We should not generate a new mnemonic for the same invite code in that case or it will give an error. One mnemonic per invite code.
+    if (state.mnemonicWords.isEmpty) {
       try {
-        // Generate and set a mnemonic.
-        await ref
+        // Generate a new mnemonic.
+        List<String> mnemonic = await ref
             .read(
               walletServiceImplProvider,
             )
             .generateWallet(
               state.language,
             );
+        state = state.copyWith(mnemonicWords: mnemonic);
       } catch (e) {
         print(e);
-        const error = CouldNotSetupWalletException();
+        const error = CouldNotGenerateWalletException();
         state = state.copyWith(error: error);
         throw error;
       }
@@ -133,47 +107,54 @@ class OnboardingController extends _$OnboardingController {
           )
           .connect(
             AppNetwork.bitcoin, // Todo: Get network from App Network Provider
+            mnemonic: MnemonicEntity(
+              words: state.mnemonicWords,
+              language: state.language,
+            ),
             inviteCode: state.inviteCode,
           );
     } catch (e) {
       print(e);
       const error = CouldNotConnectToNodeException();
-      state = OnboardingState(
+      state = NewWalletState(
         language: state.language,
         inviteCode: state.inviteCode,
         inviteCodeControllers: state.inviteCodeControllers,
         inviteCodeFocusNodes: state.inviteCodeFocusNodes,
-        pin: '',
-        pinConfirmation: '',
         error: error,
       );
       throw error;
     }
 
     try {
-      // Set the pin.
+      // Store the mnemonic.
       await ref
           .read(
             walletServiceImplProvider,
           )
-          .setPin(state.pin);
+          .saveWallet(
+            MnemonicEntity(
+              words: state.mnemonicWords,
+              language: state.language,
+            ),
+          );
     } catch (e) {
       print(e);
-      const error = CouldNotSetPinException();
+      const error = CouldNotStoreMnemonicException();
       state = state.copyWith(error: error);
       throw error;
     }
   }
 }
 
-class CouldNotSetupWalletException implements Exception {
-  const CouldNotSetupWalletException();
+class CouldNotGenerateWalletException implements Exception {
+  const CouldNotGenerateWalletException();
 }
 
 class CouldNotConnectToNodeException implements Exception {
   const CouldNotConnectToNodeException();
 }
 
-class CouldNotSetPinException implements Exception {
-  const CouldNotSetPinException();
+class CouldNotStoreMnemonicException implements Exception {
+  const CouldNotStoreMnemonicException();
 }

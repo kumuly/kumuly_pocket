@@ -13,6 +13,12 @@
   "createAccount": "Account aanmaken",
   "alreadyHaveAnAccount": "Heb je al een account?",
   "importAccount": "Importeer account",
+  "walletCreated": "Portemonnee aangemaakt",
+  "pressContinueAfterWalletCreation": "Druk op ga verder om een PIN in te stellen en begin met het uitgeven van ⚡ sats vanuit je pocket.",
+  "seedImport": "Seed importeren",
+  "seedImportHelpText": "Om je seed te importeren, voer je de 12 woorden in de juiste volgorde in.",
+  "walletRecovered": "Portemonnee hersteld",
+  "pressContinueDescriptionAfterRecovery": "Druk op ga verder om een PIN in te stellen en begin met het uitgeven van ⚡ sats vanuit je pocket.",
   "oneMomentPlease": "Een ogenblik aub.",
   "pocketBalance": "Pocket saldo",
   "totalSales": "Totaal sales",
@@ -216,7 +222,7 @@
   "yourSeedWords": "Je seed woorden",
   "writeDownAndNumberSeedWords": "Schrijf deze woorden op een stuk papier en nummer ze in volgorde",
   "inviteCode": "Invite code",
-  "inviteCodeDescription": "Momenteel is Kumuly Pocket in beta en heb je een invite code nodig om een account aan te maken.",
+  "inviteCodeDescription": "Momenteel zit Kumuly Pocket in een testing fase en heb je een invite code nodig om een account aan te maken.",
   "enterInviteCodeHere": "Voer invite code hier in",
   "confirmInviteCode": "Bevestig invite code"
 }

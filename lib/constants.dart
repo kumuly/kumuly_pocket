@@ -27,7 +27,8 @@ const allProductsCollection = 'all-products';
 const allPromosCollection = 'all-promos';
 /* PageView ids */
 const kLandingFlowPageViewId = 'landing-flow';
-const kOnboardingFlowPageViewId = 'onboarding-flow';
+const kPinSetupFlowPageViewId = 'pin-setup-flow';
+const kNewWalletFlowPageViewId = 'new-wallet-flow';
 const kCarouselPageViewId = 'carousel';
 const kReceiveSatsFlowPageViewId = 'receive-sats-flow';
 const kSendSatsFlowPageViewId = 'send-sats-flow';
@@ -36,7 +37,7 @@ const kCashierFlowPageViewId = 'cashier-flow';
 const kPromoValidationFlowPageViewId = 'promo-validation-flow';
 const kAddContactFlowPageViewId = 'add-contact-flow';
 const kSeedBackupFlowPageViewId = 'seed-backup-flow';
-const kSeedImportFlowPageViewId = 'seed-recovery-flow';
+const kWalletRecoveryFlowPageViewId = 'wallet-recovery-flow';
 /* Secure storage keys */
 const kMnemonicKey = 'mnemonic';
 const kMnemonicLanguageKey = 'mnemonic-language';

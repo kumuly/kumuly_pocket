@@ -29,20 +29,29 @@ class RootScreen extends ConsumerWidget {
       // for accounts and connection.
       await Future.delayed(const Duration(milliseconds: 1500));
       final hasWallet = await fetchingHasWallet;
-      final hasPin = await fetchingHasPin;
 
       // If no accounts exist on the device yet, go to the landing screen.
-      if (!hasWallet || !hasPin) {
+      if (!hasWallet) {
         router.pop();
         router.goNamed('landing-flow');
-        return Container(color: Palette.russianViolet[100]);
+        return Container(color: Palette.lilac[100]);
       } else {
-        // Connect the node
+        // Wallet was created already, so can connect to node
         await ref.read(breezeSdkLightningNodeServiceProvider).connect(
               AppNetwork.bitcoin,
             );
-        router.pop();
-        router.goNamed('pocket');
+
+        // Check if a pin exists, else go to pin setup flow
+        final hasPin = await fetchingHasPin;
+        if (!hasPin) {
+          router.pop();
+          router.goNamed('pin-setup-flow');
+          return Container(color: Palette.lilac[100]);
+        } else {
+          router.pop();
+          router.goNamed('pocket');
+          return Container(color: Palette.lilac[100]);
+        }
       }
     });
 

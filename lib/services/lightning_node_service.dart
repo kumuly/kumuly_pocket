@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/entities/invoice_entity.dart';
 import 'package:kumuly_pocket/entities/keysend_payment_details_entity.dart';
+import 'package:kumuly_pocket/entities/mnemonic_entity.dart';
 import 'package:kumuly_pocket/entities/payment_entity.dart';
 import 'package:kumuly_pocket/entities/swap_in_info_entity.dart';
 import 'package:kumuly_pocket/enums/app_network.dart';
+import 'package:kumuly_pocket/enums/mnemonic_language.dart';
 import 'package:kumuly_pocket/enums/on_chain_fee_velocity.dart';
 import 'package:kumuly_pocket/enums/payment_request_type.dart';
 import 'package:kumuly_pocket/environment_variables.dart';
@@ -51,6 +54,7 @@ abstract class LightningNodeService {
   Stream<String> inProgressSwapPolling(Duration interval);
   Future<void> connect(
     AppNetwork network, {
+    MnemonicEntity? mnemonic,
     String? inviteCode,
     String? partnerCredentials,
   });
@@ -95,17 +99,18 @@ class BreezSdkLightningNodeService implements LightningNodeService {
   @override
   Future<void> connect(
     AppNetwork network, {
+    MnemonicEntity? mnemonic,
     String? inviteCode,
     String? partnerCredentials,
   }) async {
-    // The node needs to be initialized with a seed derived from the mnemonic.
-    final seed = await _mnemonicRepository.getSeed();
-
     // The node needs a working directory to store its data.
     final path = await _getWorkingDirectory();
 
     await _lightningNodeRepository.connect(
-      seed,
+      mnemonic != null
+          ? _mnemonicRepository
+              .mnemonicToSeed(mnemonic) // Use the provided mnemonic.
+          : await _mnemonicRepository.getSeed(), // Use the stored mnemonic.
       network,
       breezSdkApiKey,
       path,

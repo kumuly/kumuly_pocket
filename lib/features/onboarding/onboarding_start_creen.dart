@@ -10,11 +10,12 @@ import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:kumuly_pocket/widgets/shadows/bottom_shadow.dart';
 
-class LandingScreen extends ConsumerWidget {
-  const LandingScreen({super.key});
+class OnboardingStartScreen extends ConsumerWidget {
+  const OnboardingStartScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final router = GoRouter.of(context);
     final copy = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
 
@@ -79,7 +80,7 @@ class LandingScreen extends ConsumerWidget {
                 PrimaryFilledButton(
                   text: copy.createAccount,
                   onPressed: () {
-                    context.pushNamed('onboarding-flow');
+                    router.goNamed('new-wallet-flow');
                   },
                 ),
               ],
@@ -99,7 +100,7 @@ class LandingScreen extends ConsumerWidget {
                 PrimaryTextButton(
                   text: copy.importAccount,
                   onPressed: () {
-                    context.pushNamed('seed-recovery-flow');
+                    context.goNamed('wallet-recovery-flow');
                   },
                 ),
               ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kumuly_pocket/constants.dart';
-import 'package:kumuly_pocket/features/landing/pages/landing_screen.dart';
+import 'package:kumuly_pocket/features/onboarding/onboarding_start_creen.dart';
 import 'package:kumuly_pocket/features/landing/pages/landing_story_screen.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 import 'package:kumuly_pocket/widgets/page_views/page_view_controller.dart';
@@ -64,7 +64,6 @@ class LandingFlow extends ConsumerWidget {
           headline: copy.letYourBusinessBeDiscoveredHeadline,
           description: copy.letYourBusinessBeDiscoveredDescription,
         ),
-        const LandingScreen(),
       ],
     );
   }

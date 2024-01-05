@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
-import 'package:kumuly_pocket/widgets/buttons/primary_filled_button.dart';
 import 'package:kumuly_pocket/widgets/pin/numeric_keyboard.dart';
 import 'package:kumuly_pocket/widgets/pin/pin_code_display.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';

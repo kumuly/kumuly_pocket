@@ -1,3 +1,4 @@
+import 'package:kumuly_pocket/entities/mnemonic_entity.dart';
 import 'package:kumuly_pocket/enums/mnemonic_language.dart';
 import 'package:kumuly_pocket/repositories/mnemonic_repository.dart';
 import 'package:kumuly_pocket/repositories/pin_repository.dart';
@@ -22,12 +23,11 @@ WalletService walletServiceImpl(WalletServiceImplRef ref) {
 }
 
 abstract class WalletService {
-  Future<void> generateWallet(
+  Future<List<String>> generateWallet(
     MnemonicLanguage language,
   );
-  Future<void> restoreWallet(
-    MnemonicLanguage language,
-    List<String> words,
+  Future<void> saveWallet(
+    MnemonicEntity mnemonic,
   );
   Future<bool> hasWallet();
   Future<void> setPin(String pin);
@@ -46,18 +46,17 @@ class WalletServiceImpl implements WalletService {
   final PinRepository _pinRepository;
 
   @override
-  Future<void> generateWallet(
+  Future<List<String>> generateWallet(
     MnemonicLanguage language,
   ) async {
-    await _mnemonicRepository.create(language);
+    return await _mnemonicRepository.generate(language);
   }
 
   @override
-  Future<void> restoreWallet(
-    MnemonicLanguage language,
-    List<String> words,
+  Future<void> saveWallet(
+    MnemonicEntity mnemonic,
   ) async {
-    await _mnemonicRepository.set(language, words);
+    await _mnemonicRepository.set(mnemonic);
   }
 
   @override

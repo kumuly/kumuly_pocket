@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
@@ -25,6 +26,7 @@ class LandingStoryScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final router = GoRouter.of(context);
     final TextTheme textTheme = Theme.of(context).textTheme;
     final copy = AppLocalizations.of(context)!;
     final pageController = ref.read(
@@ -33,7 +35,12 @@ class LandingStoryScreen extends ConsumerWidget {
       ).notifier,
     );
 
-    const storyPageCount = 4;
+    const totalPages = 4;
+    final currentPage = ref
+        .watch(pageViewControllerProvider(
+          kLandingFlowPageViewId,
+        ))
+        .currentPage;
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -56,7 +63,7 @@ class LandingStoryScreen extends ConsumerWidget {
                     child: Column(children: [
                       const PageViewLineIndicator(
                         pageViewId: kLandingFlowPageViewId,
-                        pageCount: storyPageCount,
+                        pageCount: totalPages,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -64,8 +71,7 @@ class LandingStoryScreen extends ConsumerWidget {
                           IconButton(
                             alignment: Alignment.centerRight,
                             padding: const EdgeInsets.all(0),
-                            onPressed: () =>
-                                pageController.jumpToPage(storyPageCount),
+                            onPressed: () => router.goNamed('onboarding'),
                             icon: Icon(
                               Icons.close,
                               color: Colors.white.withOpacity(0.3),
@@ -138,7 +144,9 @@ class LandingStoryScreen extends ConsumerWidget {
                     color: Colors.white,
                     size: 16,
                   ),
-                  onPressed: pageController.nextPage,
+                  onPressed: currentPage != totalPages - 1
+                      ? pageController.nextPage
+                      : () => router.goNamed('onboarding'),
                   color: Colors.white,
                 ),
               ],

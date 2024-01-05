@@ -3,8 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:kumuly_pocket/enums/mnemonic_language.dart';
 
 @immutable
-class SeedImportState extends Equatable {
-  const SeedImportState({
+class WalletRecoveryState extends Equatable {
+  const WalletRecoveryState({
     this.language = MnemonicLanguage.english,
     required this.words,
   });
@@ -12,11 +12,11 @@ class SeedImportState extends Equatable {
   final MnemonicLanguage language;
   final List<String> words;
 
-  SeedImportState copyWith({
+  WalletRecoveryState copyWith({
     MnemonicLanguage? language,
     List<String>? words,
   }) {
-    return SeedImportState(
+    return WalletRecoveryState(
       language: language ?? this.language,
       words: words ?? this.words,
     );

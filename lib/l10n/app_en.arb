@@ -13,6 +13,12 @@
   "createAccount": "Create account",
   "alreadyHaveAnAccount": "Already have an account?",
   "importAccount": "Import account",
+  "walletCreated": "Wallet created",
+  "pressContinueAfterWalletCreation": "Press continue to set up a PIN and start spending ⚡ sats right from your pocket.",
+  "seedImport": "Seed import",
+  "seedImportHelpText": "To import your seed, please enter the 12 words in the correct order.",
+  "walletRecovered": "Wallet recovered",
+  "pressContinueDescriptionAfterRecovery": "Press continue to set up a PIN and get back to spending ⚡ sats right from your pocket.",
   "oneMomentPlease": "One moment, please.",
   "pocketBalance": "Pocket balance",
   "totalSales": "Total sales",
@@ -216,7 +222,7 @@
   "yourSeedWords": "Your seed words",
   "writeDownAndNumberSeedWords": "Write down and number these words in order on a piece of paper",
   "inviteCode": "Invite code",
-  "inviteCodeDescription": "Currently, Kumuly Pocket is in beta and you need an invite code to create an account.",
+  "inviteCodeDescription": "Currently, Kumuly Pocket is in a testing phase and you need an invite code to create an account.",
   "enterInviteCodeHere": "Enter invite code here",
   "confirmInviteCode": "Confirm invite code"
 }

@@ -7,8 +7,10 @@ import 'package:kumuly_pocket/features/cashier_flow/cashier_flow.dart';
 import 'package:kumuly_pocket/features/chat/chat_screen.dart';
 import 'package:kumuly_pocket/features/contact_id/contact_id_screen.dart';
 import 'package:kumuly_pocket/features/landing/landing_flow.dart';
-import 'package:kumuly_pocket/features/landing/pages/landing_screen.dart';
-import 'package:kumuly_pocket/features/onboarding/onboarding_flow.dart';
+import 'package:kumuly_pocket/features/onboarding/new_wallet_flow/new_wallet_flow.dart';
+import 'package:kumuly_pocket/features/onboarding/onboarding_start_creen.dart';
+import 'package:kumuly_pocket/features/onboarding/pin_setup_flow/pin_setup_flow.dart';
+import 'package:kumuly_pocket/features/onboarding/wallet_recovery_flow/wallet_recovery_flow.dart';
 import 'package:kumuly_pocket/features/promo_flow/code/promo_code_screen.dart';
 import 'package:kumuly_pocket/features/promo_flow/promo_flow.dart';
 import 'package:kumuly_pocket/features/promo_validation_flow/promo_validation_flow.dart';
@@ -16,7 +18,6 @@ import 'package:kumuly_pocket/features/promos/promos_screen.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_flow.dart';
 import 'package:kumuly_pocket/features/root/root_screen.dart';
 import 'package:kumuly_pocket/features/seed_backup_flow/seed_backup_flow.dart';
-import 'package:kumuly_pocket/features/seed_import_flow/seed_import_flow.dart';
 import 'package:kumuly_pocket/features/send_sats_flow/errors/send_sats_expired_invoice_screen.dart';
 import 'package:kumuly_pocket/features/send_sats_flow/input/send_sats_scanner_screen.dart';
 import 'package:kumuly_pocket/features/send_sats_flow/send_sats_flow.dart';
@@ -53,13 +54,26 @@ GoRouter appRouter(AppRouterRef ref) {
       ),
       GoRoute(
         path: '/onboarding',
-        name: 'onboarding-flow',
-        builder: (context, state) => const OnboardingFlow(),
+        name: 'onboarding',
+        builder: (context, state) {
+          return const OnboardingStartScreen();
+        },
       ),
       GoRoute(
-        path: '/seed-recovery',
-        name: 'seed-recovery-flow',
-        builder: (context, state) => const SeedImportFlow(),
+        path: '/new-wallet',
+        name: 'new-wallet-flow',
+        builder: (context, state) => const NewWalletFlow(),
+      ),
+      GoRoute(
+        path: '/wallet-recovery',
+        name: 'wallet-recovery-flow',
+        builder: (context, state) => const WalletRecoveryFlow(),
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: '/pin-setup',
+        name: 'pin-setup-flow',
+        builder: (context, state) => const PinSetupFlow(),
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,

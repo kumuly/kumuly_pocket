@@ -1,17 +1,18 @@
 import 'package:kumuly_pocket/constants.dart';
-import 'package:kumuly_pocket/features/seed_import_flow/seed_import_state.dart';
+import 'package:kumuly_pocket/entities/mnemonic_entity.dart';
+import 'package:kumuly_pocket/features/onboarding/wallet_recovery_flow/wallet_recovery_state.dart';
 import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:kumuly_pocket/services/lightning_node_service.dart';
 import 'package:kumuly_pocket/services/wallet_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'seed_import_controller.g.dart';
+part 'wallet_recovery_controller.g.dart';
 
 @riverpod
-class SeedImportController extends _$SeedImportController {
+class WalletRecoveryController extends _$WalletRecoveryController {
   @override
-  SeedImportState build() {
-    return SeedImportState(
+  WalletRecoveryState build() {
+    return WalletRecoveryState(
       words: List<String>.filled(
         (24 * kSeedEntropyLength / kMaxSeedEntropyLength).round(),
         '',
@@ -33,9 +34,8 @@ class SeedImportController extends _$SeedImportController {
 
   Future<void> importSeed() async {
     try {
-      await ref.watch(walletServiceImplProvider).restoreWallet(
-            state.language,
-            state.words,
+      await ref.watch(walletServiceImplProvider).saveWallet(
+            MnemonicEntity(words: state.words, language: state.language),
           );
     } catch (e) {
       print(e);

@@ -8,7 +8,7 @@ import 'package:kumuly_pocket/widgets/screens/pin_input_screen.dart';
 class PinScreen extends ConsumerWidget {
   const PinScreen({required this.confirmHandler, super.key});
 
-  final void Function() confirmHandler;
+  final VoidCallback confirmHandler;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
