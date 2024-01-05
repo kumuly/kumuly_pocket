@@ -637,16 +637,16 @@ PODS:
   - BoringSSL-GRPC/Implementation (0.0.24):
     - BoringSSL-GRPC/Interface (= 0.0.24)
   - BoringSSL-GRPC/Interface (0.0.24)
-  - breez_sdk (0.2.10):
-    - breez_sdkFFI (= 0.2.10)
+  - breez_sdk (0.2.12):
+    - breez_sdkFFI (= 0.2.12)
     - Flutter
-  - breez_sdkFFI (0.2.10)
-  - cloud_firestore (4.13.3):
+  - breez_sdkFFI (0.2.12)
+  - cloud_firestore (4.13.6):
     - Firebase/Firestore (= 10.18.0)
     - firebase_core
     - Flutter
     - nanopb (< 2.30910.0, >= 2.30908.0)
-  - cloud_functions (4.5.6):
+  - cloud_functions (4.5.8):
     - Firebase/Functions (= 10.18.0)
     - firebase_core
     - Flutter
@@ -661,16 +661,16 @@ PODS:
   - Firebase/Functions (10.18.0):
     - Firebase/CoreOnly
     - FirebaseFunctions (~> 10.18.0)
-  - firebase_app_check (0.2.1-6):
+  - firebase_app_check (0.2.1-8):
     - Firebase/CoreOnly (~> 10.18.0)
     - firebase_core
     - FirebaseAppCheck (~> 10.18.0-beta)
     - Flutter
-  - firebase_auth (4.15.0):
+  - firebase_auth (4.15.3):
     - Firebase/Auth (= 10.18.0)
     - firebase_core
     - Flutter
-  - firebase_core (2.24.0):
+  - firebase_core (2.24.2):
     - Firebase/CoreOnly (= 10.18.0)
     - Flutter
   - FirebaseAppCheck (10.18.0):
@@ -963,14 +963,14 @@ SPEC CHECKSUMS:
   abseil: 926fb7a82dc6d2b8e1f2ed7f3a718bce691d1e46
   AppCheckCore: 4687c03428947d5b26a6bf9bb5566b39f5473bf1
   BoringSSL-GRPC: 3175b25143e648463a56daeaaa499c6cb86dad33
-  breez_sdk: 20a0d4f894371a0c75f9399784c6b42bd23d1c3d
-  breez_sdkFFI: bea35d8872751d7c07591b5e4be63df3e870801e
-  cloud_firestore: 9b25b77371a845d07a48e5146799f6d4552f5940
-  cloud_functions: 48b727dad9a2fffb8173e428f36a240139575c29
+  breez_sdk: 8c46b17b714fb4e0e801b727459ec5053ec66c2f
+  breez_sdkFFI: e4b1804c8acb2680de46dfdcf73d2a1daa0a76a1
+  cloud_firestore: c29d4c2e96fe31374d9dab458a99d7a488d3a735
+  cloud_functions: 8a6f73ee01574ce51bd4d027dbbce520c43a2996
   Firebase: 414ad272f8d02dfbf12662a9d43f4bba9bec2a06
-  firebase_app_check: 1b1986f696705c793cb6bac2f429f2cbe65f0fbc
-  firebase_auth: 02d1a6340f81020cc302fb8fea8518908c546cec
-  firebase_core: f802c5c1f6caff9b8d38b591a36e7b25f8878936
+  firebase_app_check: 375d2482bc2219ef06df67f2ad659c377b2c1075
+  firebase_auth: df44e14f8a93e8a9869d91695bd3f8e53d2c9f5a
+  firebase_core: 0af4a2b24f62071f9bf283691c0ee41556dcb3f5
   FirebaseAppCheck: f34226df40cf6057dc54916ab5a5d461bb51ee68
   FirebaseAppCheckInterop: 3cd914842ba46f4304050874cd284de82f154ffd
   FirebaseAuth: 12314b438fa76048540c8fb86d6cfc9e08595176
