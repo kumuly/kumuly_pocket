@@ -6,7 +6,11 @@ import 'package:kumuly_pocket/features/add_contact_flow/add_contact_scanner_scre
 import 'package:kumuly_pocket/features/cashier_flow/cashier_flow.dart';
 import 'package:kumuly_pocket/features/chat/chat_screen.dart';
 import 'package:kumuly_pocket/features/contact_id/contact_id_screen.dart';
-import 'package:kumuly_pocket/features/landing/landing_screen.dart';
+import 'package:kumuly_pocket/features/landing/landing_flow.dart';
+import 'package:kumuly_pocket/features/onboarding/new_wallet_flow/new_wallet_flow.dart';
+import 'package:kumuly_pocket/features/onboarding/onboarding_start_creen.dart';
+import 'package:kumuly_pocket/features/onboarding/pin_setup_flow/pin_setup_flow.dart';
+import 'package:kumuly_pocket/features/onboarding/wallet_recovery_flow/wallet_recovery_flow.dart';
 import 'package:kumuly_pocket/features/promo_flow/code/promo_code_screen.dart';
 import 'package:kumuly_pocket/features/promo_flow/promo_flow.dart';
 import 'package:kumuly_pocket/features/promo_validation_flow/promo_validation_flow.dart';
@@ -22,8 +26,6 @@ import 'package:kumuly_pocket/features/settings/local_currency_settings_screen.d
 import 'package:kumuly_pocket/features/settings/location_settings_screen.dart';
 import 'package:kumuly_pocket/router/merchant_mode_route.dart';
 import 'package:kumuly_pocket/router/pocket_mode_route.dart';
-import 'package:kumuly_pocket/router/sign_in_route.dart';
-import 'package:kumuly_pocket/router/sign_up_route.dart';
 import 'package:kumuly_pocket/view_models/promo.dart';
 import 'package:kumuly_pocket/features/pin/pin_screen.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -47,23 +49,31 @@ GoRouter appRouter(AppRouterRef ref) {
       ),
       GoRoute(
         path: '/landing',
-        name: 'landing',
-        builder: (context, state) => const LandingScreen(),
+        name: 'landing-flow',
+        builder: (context, state) => const LandingFlow(),
       ),
-      signUpRoute,
-      signInRoute,
       GoRoute(
-        path: '/import-account',
-        name: 'import-account-flow',
-        builder: (context, state) => Scaffold(
-          appBar: AppBar(
-            title: const Text('Import Account'),
-            centerTitle: true,
-          ),
-          body: const Center(
-            child: Text('>>> Insert seed phrase here <<<'),
-          ),
-        ),
+        path: '/onboarding',
+        name: 'onboarding',
+        builder: (context, state) {
+          return const OnboardingStartScreen();
+        },
+      ),
+      GoRoute(
+        path: '/new-wallet',
+        name: 'new-wallet-flow',
+        builder: (context, state) => const NewWalletFlow(),
+      ),
+      GoRoute(
+        path: '/wallet-recovery',
+        name: 'wallet-recovery-flow',
+        builder: (context, state) => const WalletRecoveryFlow(),
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: '/pin-setup',
+        name: 'pin-setup-flow',
+        builder: (context, state) => const PinSetupFlow(),
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,

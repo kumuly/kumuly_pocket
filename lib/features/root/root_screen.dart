@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:kumuly_pocket/entities/account_entity.dart';
 import 'package:kumuly_pocket/enums/app_network.dart';
-import 'package:kumuly_pocket/services/account_service.dart';
-import 'package:kumuly_pocket/services/authentication_service.dart';
+import 'package:kumuly_pocket/services/wallet_service.dart';
 import 'package:kumuly_pocket/services/lightning_node_service.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/dialogs/transition_dialog.dart';
@@ -19,8 +17,8 @@ class RootScreen extends ConsumerWidget {
     final copy = AppLocalizations.of(context)!;
 
     // Add providers to check for existing connection and accounts
-    final connectedAccount = ref.watch(connectedAccountProvider);
-    final savedAccounts = ref.watch(accountsProvider);
+    final fetchingHasWallet = ref.read(walletServiceImplProvider).hasWallet();
+    final fetchingHasPin = ref.read(walletServiceImplProvider).hasPin();
 
     // Schedule the dialog presentation after the current build phase.
     Future.microtask(() async {
@@ -30,53 +28,33 @@ class RootScreen extends ConsumerWidget {
       // Show the transition dialog for at least 1.5 seconds while checking
       // for accounts and connection.
       await Future.delayed(const Duration(milliseconds: 1500));
+      final hasWallet = await fetchingHasWallet;
 
       // If no accounts exist on the device yet, go to the landing screen.
-      if (savedAccounts.isEmpty) {
-        router.goNamed('landing');
-        return Container(color: Palette.russianViolet[100]);
+      if (!hasWallet) {
+        router.pop();
+        router.goNamed('landing-flow');
+        return Container(color: Palette.lilac[100]);
       } else {
-        // If accounts exist, check if one is still connected.
-        if (connectedAccount.isLoading) {
-          // Do not pop here to keep the loading dialog
-          return Container(color: Palette.russianViolet[100]);
-        }
+        // Wallet was created already, so can connect to node
+        await ref.read(breezeSdkLightningNodeServiceProvider).connect(
+              AppNetwork.bitcoin,
+            );
 
-        if (connectedAccount.hasError) {
+        // Check if a pin exists, else go to pin setup flow
+        final hasPin = await fetchingHasPin;
+        if (!hasPin) {
           router.pop();
-          // Todo: Show error dialog or return a widget with error message and instructions
-          // to try again later.
-          return Container(
-            color: Palette.error[100],
-            child: Text(
-              connectedAccount.error.toString(),
-            ),
-          );
-        }
-
-        // Not loading and no error,
-        //  so we have readable data and can check for a connected account
-        final isAccountConnected = connectedAccount.asData?.value != null
-            ? connectedAccount.value!.isNotEmpty
-            : false;
-
-        if (isAccountConnected) {
-          // Connect the node
-          AccountEntity account = connectedAccount.asData!.value;
-          await ref
-              .read(breezeSdkLightningNodeServiceProvider)
-              .existingNodeConnect(
-                account.nodeId,
-                account.workingDirPath,
-                AppNetwork.bitcoin,
-              );
-          router.goNamed('pocket');
+          router.goNamed('pin-setup-flow');
+          return Container(color: Palette.lilac[100]);
         } else {
-          router.goNamed('sign-in');
+          router.pop();
+          router.goNamed('pocket');
+          return Container(color: Palette.lilac[100]);
         }
       }
     });
 
-    return Container(color: Palette.russianViolet[100]);
+    return Container(color: Palette.lilac[100]);
   }
 }

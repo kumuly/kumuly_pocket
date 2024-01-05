@@ -4,18 +4,18 @@ import 'package:kumuly_pocket/providers/firebase_providers.dart';
 import 'package:kumuly_pocket/entities/sign_in_message_entity.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'lightning_message_repository.g.dart';
+part 'lightning_auth_repository.g.dart';
 
 @riverpod
-LightningMessageRepository firebaseLightningMessageRepository(
-    FirebaseLightningMessageRepositoryRef ref) {
+LightningAuthRepository firebaseLightningAuthRepository(
+    FirebaseLightningAuthRepositoryRef ref) {
   final functions = ref.watch(firebaseFunctionsProvider);
-  return FirebaseLightningMessageRepository(
+  return FirebaseLightningAuthRepository(
     functions: functions,
   );
 }
 
-abstract class LightningMessageRepository {
+abstract class LightningAuthRepository {
   Future<SignInMessageEntity> getSignInMessage();
   Future<String> getJwtForValidSignature(
     String signInMessageId,
@@ -24,8 +24,8 @@ abstract class LightningMessageRepository {
   );
 }
 
-class FirebaseLightningMessageRepository implements LightningMessageRepository {
-  FirebaseLightningMessageRepository({required this.functions});
+class FirebaseLightningAuthRepository implements LightningAuthRepository {
+  FirebaseLightningAuthRepository({required this.functions});
 
   final FirebaseFunctions functions;
 

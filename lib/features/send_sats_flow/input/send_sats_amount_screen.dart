@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kumuly_pocket/constants.dart';
-import 'package:kumuly_pocket/enums/payment_request_type.dart';
 import 'package:kumuly_pocket/features/send_sats_flow/send_sats_controller.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';

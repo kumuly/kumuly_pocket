@@ -4,6 +4,8 @@ import 'dart:typed_data';
 import 'package:convert/convert.dart';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:kumuly_pocket/constants.dart';
+import 'package:kumuly_pocket/entities/mnemonic_entity.dart';
 import 'package:kumuly_pocket/enums/mnemonic_language.dart';
 import 'package:kumuly_pocket/providers/local_storage_providers.dart';
 import 'package:bip39_mnemonic/bip39_mnemonic.dart' as bip39;
@@ -19,45 +21,102 @@ MnemonicRepository secureStorageMnemonicRepository(
 }
 
 abstract class MnemonicRepository {
-  List<String> newMnemonicWords(
+  Future<List<String>> generate(
     MnemonicLanguage language,
   );
-  Uint8List wordsToSeed(
-    List<String> mnemonicWords,
-    MnemonicLanguage language,
+  Future<void> set(MnemonicEntity mnemonic);
+  Future<List<String>> getWords();
+  Future<MnemonicLanguage> getLanguage();
+  Future<Uint8List> getSeed();
+  Uint8List mnemonicToSeed(
+    MnemonicEntity mnemonic,
   );
-  Future<void> saveWords(String id, List<String> words);
-  Future<List<String>> getWords(String id);
-  Future<void> deleteWords(String id);
 }
 
 class SecureStorageMnemonicRepository implements MnemonicRepository {
   const SecureStorageMnemonicRepository(this._secureStorage);
 
   final FlutterSecureStorage _secureStorage;
-  static const _mnemonicKeyPrefix = 'mnemonic_';
 
   @override
-  List<String> newMnemonicWords(
+  Future<List<String>> generate(
     MnemonicLanguage language,
-  ) {
+  ) async {
+    // Generate a new mnemonic
     final mnemonic = bip39.Mnemonic.generate(
       language.bip39Language,
+      entropyLength: kSeedEntropyLength,
     );
 
     return mnemonic.words;
   }
 
   @override
-  Uint8List wordsToSeed(
-    List<String> mnemonicWords,
-    MnemonicLanguage language,
-  ) {
-    final mnemonic = bip39.Mnemonic.fromSentence(
-      mnemonicWords.join(language.bip39Language.separator),
-      language.bip39Language,
+  Future<void> set(MnemonicEntity mnemonic) async {
+    try {
+      bip39.Mnemonic.fromSentence(
+        mnemonic.words.join(mnemonic.language.bip39Language.separator),
+        mnemonic.language.bip39Language,
+      );
+    } catch (e) {
+      print(e);
+      throw InvalidSeedException(e.toString());
+    }
+
+    final mnemonicWordsString = jsonEncode(mnemonic.words);
+
+    // Store the mnemonic and the language in secure storage.
+    // Todo: implement encryption with pin
+    await Future.wait([
+      _secureStorage.write(key: kMnemonicKey, value: mnemonicWordsString),
+      _secureStorage.write(
+        key: kMnemonicLanguageKey,
+        value: mnemonic.language.name,
+      ),
+    ]);
+  }
+
+  @override
+  Future<List<String>> getWords() async {
+    // Todo: implement decryption with pin
+    if (!(await _secureStorage.containsKey(key: kMnemonicKey))) {
+      throw Exception('Mnemonic does not exist');
+    }
+
+    final mnemonicWordsString = await _secureStorage.read(key: kMnemonicKey);
+    if (mnemonicWordsString == null || mnemonicWordsString.isEmpty) {
+      throw Exception('Mnemonic does not exist');
+    }
+    return List<String>.from(jsonDecode(mnemonicWordsString));
+  }
+
+  @override
+  Future<MnemonicLanguage> getLanguage() async {
+    final languageString = await _secureStorage.read(key: kMnemonicLanguageKey);
+    if (languageString == null) {
+      throw Exception('Mnemonic language does not exist');
+    }
+    return MnemonicLanguage.values.firstWhere(
+      (language) => language.name == languageString,
     );
-    final hexSeed = hex.encode(mnemonic.seed);
+  }
+
+  @override
+  Future<Uint8List> getSeed() async {
+    final words = await getWords();
+    final language = await getLanguage();
+    return mnemonicToSeed(MnemonicEntity(words: words, language: language));
+  }
+
+  @override
+  Uint8List mnemonicToSeed(
+    MnemonicEntity mnemonic,
+  ) {
+    final bip39Mnemonic = bip39.Mnemonic.fromSentence(
+      mnemonic.words.join(mnemonic.language.bip39Language.separator),
+      mnemonic.language.bip39Language,
+    );
+    final hexSeed = hex.encode(bip39Mnemonic.seed);
 
     final length = hexSeed.length;
     final bytes = Uint8List(length ~/ 2);
@@ -69,52 +128,10 @@ class SecureStorageMnemonicRepository implements MnemonicRepository {
 
     return bytes;
   }
+}
 
-  @override
-  Future<void> saveWords(String id, List<String> words) async {
-    final key = '$_mnemonicKeyPrefix$id';
-    final mnemonicWordsString = jsonEncode(words);
-    // Check if it already exists.
-    final existingMnemonic = await _secureStorage.containsKey(key: key);
-    if (existingMnemonic) {
-      final existingMnemonicWordsString = await _secureStorage.read(key: key);
-      if (existingMnemonicWordsString == mnemonicWordsString) {
-        // The mnemonic already exists, so we don't need to save it again.
-        return;
-      }
-      throw Exception('Another mnemonic already exists for id $id');
-    }
-    // Store the mnemonic in the secure storage.
-    await _secureStorage.write(key: key, value: mnemonicWordsString);
-  }
+class InvalidSeedException implements Exception {
+  InvalidSeedException(this.message);
 
-  @override
-  Future<List<String>> getWords(String id) async {
-    // Todo: implement decryption with pin
-    final key = '$_mnemonicKeyPrefix$id';
-    if (!(await _secureStorage.containsKey(key: key))) {
-      throw Exception('Mnemonic does not exist for id $id');
-    }
-
-    final mnemonicWordsString = await _secureStorage.read(key: key);
-    if (mnemonicWordsString == null) {
-      throw Exception('Mnemonic does not exist for id $id');
-    }
-    return List<String>.from(jsonDecode(mnemonicWordsString));
-  }
-
-  @override
-  Future<void> deleteWords(String id) async {
-    final key = '$_mnemonicKeyPrefix$id';
-
-    if (!(await _secureStorage.containsKey(key: key))) {
-      throw Exception('Mnemonic does not exist for id $id');
-    }
-
-    try {
-      await _secureStorage.delete(key: key);
-    } catch (e) {
-      throw Exception('Failed to delete mnemonic.');
-    }
-  }
+  final String message;
 }

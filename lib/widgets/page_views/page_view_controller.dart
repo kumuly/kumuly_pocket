@@ -39,4 +39,8 @@ class PageViewController extends _$PageViewController {
       curve: Curves.easeOutCubic,
     );
   }
+
+  void jumpToPage(int page) {
+    state.pageController.jumpToPage(page);
+  }
 }

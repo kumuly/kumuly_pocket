@@ -26,8 +26,8 @@ class AddContactNameScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+        leading: BackButton(
+          color: Palette.neutral[100],
           onPressed: pageController.previousPage,
         ),
         title: Text(

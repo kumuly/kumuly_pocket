@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/providers/local_storage_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -14,70 +15,80 @@ PinRepository secureStoragePinRepository(SecureStoragePinRepositoryRef ref) {
 }
 
 abstract class PinRepository {
-  Future<void> save(String id, String pin);
-  Future<bool> validate(String id, String pin);
-  Future<void> change(String id, String pin, String newPin);
-  Future<void> delete(String id, String pin);
+  Future<void> set(String pin);
+  Future<bool> hasPin();
+  Future<bool> validate(String pin);
+  Future<void> change(String pin, String newPin);
+  Future<void> delete(String pin);
 }
 
 class SecureStoragePinRepository implements PinRepository {
   const SecureStoragePinRepository(this._secureStorage);
 
   final FlutterSecureStorage _secureStorage;
-  static const _pinDigestKeyPrefix = 'pinDigest_';
-  static const _pinLength = 4;
 
   @override
-  Future<void> save(String id, String pin) async {
-    final key = '$_pinDigestKeyPrefix$id';
-
-    if (pin.length != _pinLength) {
+  Future<void> set(String pin) async {
+    if (pin.length != kPinLength) {
       throw Exception('PIN must be 4 digits');
     }
 
+    // Check if the PIN is already set.
+    if (await _secureStorage.containsKey(key: kPinDigestKey)) {
+      // Use the change method to change the PIN or delete it first.
+      throw Exception('PIN is already set');
+    }
+
     // Store the pin digest in the secure storage.
-    await _writePinDigest(key: key, pin: pin);
+    await _writePinDigest(pin);
   }
 
   @override
-  Future<bool> validate(String id, String pin) async {
-    final key = '$_pinDigestKeyPrefix$id';
-    if (!(await _secureStorage.containsKey(key: key))) {
+  Future<bool> hasPin() async {
+    if (await _secureStorage.containsKey(key: kPinDigestKey) &&
+        await _secureStorage.read(key: kPinDigestKey) != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> validate(String pin) async {
+    if (!(await _secureStorage.containsKey(key: kPinDigestKey))) {
       return false;
     }
 
-    if (pin.length != _pinLength) {
+    if (pin.length != kPinLength) {
       return false;
     }
 
-    final existingDigest = await _secureStorage.read(key: key);
+    final existingDigest = await _secureStorage.read(key: kPinDigestKey);
     final digest = _hashPin(pin);
 
     return existingDigest == digest;
   }
 
   @override
-  Future<void> change(String id, String pin, String newPin) async {
-    if (newPin.length != _pinLength) {
+  Future<void> change(String pin, String newPin) async {
+    if (newPin.length != kPinLength) {
       throw Exception('New PIN must be 4 digits');
     }
 
-    if (!(await validate(id, pin))) {
+    if (!(await validate(pin))) {
       throw Exception('Current PIN does not match');
     }
 
-    final key = '$_pinDigestKeyPrefix$id';
-    await _writePinDigest(key: key, pin: newPin);
+    await _writePinDigest(newPin);
   }
 
   @override
-  Future<void> delete(String id, String pin) async {
-    if (!(await validate(id, pin))) {
+  Future<void> delete(String pin) async {
+    if (!(await validate(pin))) {
       throw Exception('PIN does not match');
     }
 
-    final key = '$_pinDigestKeyPrefix$id';
-    await _secureStorage.delete(key: key);
+    await _secureStorage.delete(key: kPinDigestKey);
   }
 
   String _hashPin(String pin) {
@@ -86,9 +97,8 @@ class SecureStoragePinRepository implements PinRepository {
     return digest.toString();
   }
 
-  Future<void> _writePinDigest(
-      {required String key, required String pin}) async {
+  Future<void> _writePinDigest(String pin) async {
     final digest = _hashPin(pin);
-    await _secureStorage.write(key: key, value: digest);
+    await _secureStorage.write(key: kPinDigestKey, value: digest);
   }
 }

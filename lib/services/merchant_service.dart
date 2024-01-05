@@ -1,6 +1,5 @@
 import 'package:kumuly_pocket/entities/merchant_entity.dart';
 import 'package:kumuly_pocket/repositories/merchant_repository.dart';
-import 'package:kumuly_pocket/services/authentication_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'merchant_service.g.dart';
@@ -12,20 +11,6 @@ MerchantService firebaseMerchantService(FirebaseMerchantServiceRef ref) {
   return FirebaseMerchantService(
     merchantRepository: merchantRepository,
   );
-}
-
-@riverpod
-Stream<MerchantEntity?> connectedMerchant(ConnectedMerchantRef ref) {
-  final connectedAccount = ref.watch(connectedAccountProvider);
-
-  if (connectedAccount.asData?.value == null) {
-    return Stream.value(null);
-  }
-
-  final id = connectedAccount.asData!.value.nodeId;
-  final merchantService = ref.watch(firebaseMerchantServiceProvider);
-
-  return merchantService.getMerchantStream(id);
 }
 
 abstract class MerchantService {
