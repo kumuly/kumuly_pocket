@@ -13,7 +13,7 @@ BitcoinUnit bitcoinUnit(BitcoinUnitRef ref) {
       ref.watch(sharedPreferencesProvider).getString(kBitcoinUnitSettingsKey);
 
   if (bitcoinUnitSetting == null) {
-    return BitcoinUnit.btc;
+    return BitcoinUnit.sat;
   }
 
   return BitcoinUnit.values
