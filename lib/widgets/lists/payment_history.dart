@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/enums/payment_direction.dart';
 import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
 import 'package:kumuly_pocket/providers/settings_providers.dart';
@@ -65,9 +66,15 @@ class PaymentHistory extends StatelessWidget {
           hasMore: hasMore,
           isLoading: isLoading,
           isLoadingError: isLoadingError,
-          emptyIndicator: null, // TODO: implement emptyIndicator
-          errorIndicator: null, // TODO: implement errorIndicator
-          noMoreItemsIndicator: null, // TODO: implement noMoreItemsIndicator
+          emptyIndicator: const PaymentHistoryIndicatorText(
+            "You don't have any payments yet.",
+          ),
+          errorIndicator: const PaymentHistoryIndicatorText(
+            "An error occurred while loading your payments.\nPlease try to refresh.",
+          ),
+          noMoreItemsIndicator: const PaymentHistoryIndicatorText(
+            "You have seen all your payments 😊",
+          ),
         ),
       ],
     );
@@ -127,6 +134,32 @@ class PaymentHistoryItem extends ConsumerWidget {
               : Palette.neutral[70],
           FontWeight.w500,
         ),
+      ),
+    );
+  }
+}
+
+class PaymentHistoryIndicatorText extends StatelessWidget {
+  const PaymentHistoryIndicatorText(this.text, {super.key});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: kSpacing5,
+      ),
+      titleAlignment: ListTileTitleAlignment.center,
+      title: Text(
+        text,
+        style: textTheme.body3(
+          Palette.neutral[50],
+          FontWeight.w500,
+        ),
+        textAlign: TextAlign.center,
       ),
     );
   }

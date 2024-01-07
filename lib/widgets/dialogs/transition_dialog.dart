@@ -26,45 +26,37 @@ class TransitionDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      child: BackgroundContainer(
-        color: Colors.transparent,
-        assetName: 'assets/backgrounds/lilac_background.png',
-        child: Stack(
-          alignment: AlignmentDirectional.topCenter,
-          children: [
-            Positioned(
-                top: 200.0,
-                child: Image.asset(
-                  'assets/logos/no_text_logo.png',
-                  height: 72.0,
-                  width: 72.0,
-                )),
-            Positioned(
-              bottom: 144.0,
-              child: Column(
-                children: [
-                  Text(
-                    caption,
-                    style: textTheme.body2(
-                      Colors.white,
-                      FontWeight.normal,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 12.0),
-                  LottieBuilder.asset(
-                    'assets/lottie/loading_animation.json',
-                    width: 96.0,
-                    height: 24.0,
-                  ),
-                ],
+    return BackgroundContainer(
+      color: Palette.lilac[100],
+      assetName: 'assets/backgrounds/lilac_background.png',
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Image.asset(
+            'assets/logos/no_text_logo.png',
+            height: 72.0,
+            width: 72.0,
+          ),
+          Column(
+            children: [
+              Text(
+                caption,
+                style: textTheme.body2(
+                  Colors.white,
+                  FontWeight.normal,
+                ),
+                textAlign: TextAlign.center,
               ),
-            )
-          ],
-        ),
+              const SizedBox(height: 12.0),
+              LottieBuilder.asset(
+                'assets/lottie/loading_animation.json',
+                width: 96.0,
+                height: 24.0,
+              ),
+            ],
+          )
+        ],
       ),
     );
   }

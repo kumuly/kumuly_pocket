@@ -1,6 +1,7 @@
 import 'package:breez_sdk/breez_sdk.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/providers/breez_sdk_providers.dart';
@@ -16,6 +17,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown, // Only allow portrait mode
+  ]);
 
   // Since shared preferences is not async, we need to initialize it before the
   //  provider scope is created and then override the provider with the
