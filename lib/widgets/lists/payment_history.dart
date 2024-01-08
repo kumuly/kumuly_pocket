@@ -33,6 +33,7 @@ class PaymentHistory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final copy = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
 
     return Column(
@@ -66,14 +67,14 @@ class PaymentHistory extends StatelessWidget {
           hasMore: hasMore,
           isLoading: isLoading,
           isLoadingError: isLoadingError,
-          emptyIndicator: const PaymentHistoryIndicatorText(
-            "You don't have any payments yet.",
+          emptyIndicator: PaymentHistoryIndicatorText(
+            copy.noPaymentsYet,
           ),
-          errorIndicator: const PaymentHistoryIndicatorText(
-            "An error occurred while loading your payments.\nPlease try to refresh.",
+          errorIndicator: PaymentHistoryIndicatorText(
+            copy.errorWhileLoadingPayments,
           ),
-          noMoreItemsIndicator: const PaymentHistoryIndicatorText(
-            "You have seen all your payments 😊",
+          noMoreItemsIndicator: PaymentHistoryIndicatorText(
+            copy.endOfPayments,
           ),
         ),
       ],

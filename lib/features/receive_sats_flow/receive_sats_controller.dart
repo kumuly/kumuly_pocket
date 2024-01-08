@@ -1,24 +1,23 @@
 import 'package:kumuly_pocket/enums/bitcoin_unit.dart';
-import 'package:kumuly_pocket/features/receive_sats_flow/generation/receive_sats_generation_state.dart';
+import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_state.dart';
 import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
 import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:kumuly_pocket/services/lightning_node_service.dart';
 import 'package:kumuly_pocket/view_models/invoice.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'receive_sats_generation_controller.g.dart';
+part 'receive_sats_controller.g.dart';
 
 @riverpod
-class ReceiveSatsGenerationController
-    extends _$ReceiveSatsGenerationController {
+class ReceiveSatsController extends _$ReceiveSatsController {
   @override
-  ReceiveSatsGenerationState build() {
-    return const ReceiveSatsGenerationState();
+  ReceiveSatsState build() {
+    return const ReceiveSatsState();
   }
 
   void amountChangeHandler(String? amount) {
     if (amount == null || amount.isEmpty) {
-      state = const ReceiveSatsGenerationState();
+      state = const ReceiveSatsState();
     } else {
       final amountSat = ref.watch(bitcoinUnitProvider) == BitcoinUnit.sat
           ? int.parse(amount)
@@ -29,16 +28,20 @@ class ReceiveSatsGenerationController
     }
   }
 
-  Future<void> fetchSwapInfo() async {
+  Future<void> fetchFeeInfo() async {
     try {
+      state = state.copyWith(isFetchingFeeInfo: true);
+
       final swapInInfo = await ref
           .read(breezeSdkLightningNodeServiceProvider)
           .getSwapInInfo(state.amountSat!);
+
       state = state.copyWith(
+        isFetchingFeeInfo: false,
         onChainAddress: swapInInfo.bitcoinAddress,
         onChainMaxAmount: swapInInfo.maxAmount,
         onChainMinAmount: swapInInfo.minAmount,
-        swapFeeEstimate: swapInInfo.feeEstimate,
+        onChainFeeEstimate: swapInInfo.feeEstimate,
         isSwapAvailable: true,
       );
 
@@ -49,22 +52,35 @@ class ReceiveSatsGenerationController
     } catch (e) {
       print(e);
       state = state.copyWith(
+        isFetchingFeeInfo: false,
         isSwapAvailable: false,
       );
     }
   }
 
-  Future<void> createInvoice() async {
-    final invoice =
-        await ref.read(breezeSdkLightningNodeServiceProvider).createInvoice(
-              state.amountSat!,
-              state.description,
-            );
-
-    if (invoice.bolt11.isEmpty) {
-      throw Exception('Invoice creation failed'); // Todo: create a custom error
-    }
-
-    state = state.copyWith(invoice: Invoice.fromInvoiceEntity(invoice));
+  void assumeFeeChangeHandler(bool value) {
+    state = state.copyWith(assumeFees: value);
   }
+
+  Future<void> createInvoice() async {
+    try {
+      final invoice =
+          await ref.read(breezeSdkLightningNodeServiceProvider).createInvoice(
+                state.amountSat!,
+                state.description,
+              );
+
+      state = state.copyWith(invoice: Invoice.fromInvoiceEntity(invoice));
+    } catch (e) {
+      print(e);
+      // Todo: set error in state
+      throw const InvoiceCreationException('Failed to create invoice');
+    }
+  }
+}
+
+class InvoiceCreationException implements Exception {
+  const InvoiceCreationException(this.message);
+
+  final String message;
 }

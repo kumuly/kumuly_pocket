@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
-import 'package:kumuly_pocket/features/receive_sats_flow/generation/receive_sats_generation_controller.dart';
-import 'package:kumuly_pocket/features/receive_sats_flow/reception/receive_sats_reception_controller.dart';
+import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_controller.dart';
+import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_reception_controller.dart';
 import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
 import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
@@ -19,12 +19,11 @@ class ReceiveSatsCompletedScreen extends ConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
     final copy = AppLocalizations.of(context)!;
     final router = GoRouter.of(context);
-    final generationProvider =
-        ref.watch(receiveSatsGenerationControllerProvider);
-    final receptionProvider = ref.watch(receiveSatsReceptionControllerProvider);
+    final state = ref.watch(receiveSatsControllerProvider);
+    final receptionState = ref.watch(receiveSatsReceptionControllerProvider);
 
-    final amountSat = generationProvider.amountSat;
-    final isPaid = receptionProvider.isPaid;
+    final amountSat = 0;
+    final isPaid = receptionState.isPaid;
     final amount = ref.watch(displayBitcoinAmountProvider(amountSat));
     final unit = ref.watch(bitcoinUnitProvider);
 
@@ -40,7 +39,8 @@ class ReceiveSatsCompletedScreen extends ConsumerWidget {
                 Icons.close,
                 color: Palette.neutral[100]!,
               ),
-              onPressed: () => router.goNamed('pocket'),
+              onPressed: () =>
+                  router.goNamed('pocket'), // TODO: change to pop and test
             ),
           ),
         ],

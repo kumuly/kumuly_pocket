@@ -1,21 +1,21 @@
 import 'package:kumuly_pocket/constants.dart';
-import 'package:kumuly_pocket/features/receive_sats_flow/generation/receive_sats_generation_controller.dart';
-import 'package:kumuly_pocket/features/receive_sats_flow/reception/receive_sats_reception_state.dart';
+import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_controller.dart';
+import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_reception_state.dart';
 import 'package:kumuly_pocket/services/lightning_node_service.dart';
 import 'package:kumuly_pocket/widgets/page_views/page_view_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'receive_sats_reception_controller.g.dart';
+part 'reception/receive_sats_reception_controller.g.dart';
 
 @riverpod
 class ReceiveSatsReceptionController extends _$ReceiveSatsReceptionController {
   @override
   ReceiveSatsReceptionState build() {
-    final invoice = ref.watch(receiveSatsGenerationControllerProvider).invoice;
+    final invoice = ref.watch(receiveSatsControllerProvider).invoice;
     final swapAvailable =
-        ref.watch(receiveSatsGenerationControllerProvider).isSwapAvailable;
+        ref.watch(receiveSatsControllerProvider).isSwapAvailable;
     final bitcoinAddress =
-        ref.watch(receiveSatsGenerationControllerProvider).onChainAddress;
+        ref.watch(receiveSatsControllerProvider).onChainAddress;
 
     if (invoice != null) {
       // Start listening for Lightning payment
@@ -37,9 +37,7 @@ class ReceiveSatsReceptionController extends _$ReceiveSatsReceptionController {
             .inProgressSwapPolling(const Duration(seconds: 5))
             .firstWhere(
               (bitcoinAddress) =>
-                  ref
-                      .watch(receiveSatsGenerationControllerProvider)
-                      .onChainAddress ==
+                  ref.watch(receiveSatsControllerProvider).onChainAddress ==
                   bitcoinAddress,
             )
             .then((value) => onSwapInProgress());
@@ -50,6 +48,7 @@ class ReceiveSatsReceptionController extends _$ReceiveSatsReceptionController {
   }
 
   void onPaymentReceived() async {
+    // Todo: get received amount from invoice
     state = state.copyWith(
       isPaid: true,
     );
@@ -59,6 +58,7 @@ class ReceiveSatsReceptionController extends _$ReceiveSatsReceptionController {
   }
 
   void onSwapInProgress() {
+    // Todo: get received amount from swap
     state = state.copyWith(
       isSwapInProgress: true,
     );

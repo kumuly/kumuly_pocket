@@ -4,7 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/enums/bitcoin_unit.dart';
 import 'package:kumuly_pocket/enums/local_currency.dart';
-import 'package:kumuly_pocket/features/receive_sats_flow/generation/receive_sats_generation_controller.dart';
+import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_controller.dart';
+import 'package:kumuly_pocket/features/receive_sats_flow/pages/receive_sats_fees_bottom_sheet_modal.dart';
 import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
 import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:kumuly_pocket/widgets/buttons/primary_filled_button.dart';
@@ -26,7 +27,9 @@ class ReceiveSatsAmountScreen extends ConsumerWidget {
     final copy = AppLocalizations.of(context)!;
     final TextTheme textTheme = Theme.of(context).textTheme;
 
-    final state = ref.watch(receiveSatsGenerationControllerProvider);
+    final state = ref.watch(receiveSatsControllerProvider);
+    final notifier = ref.read(receiveSatsControllerProvider.notifier);
+
     final unit = ref.watch(bitcoinUnitProvider);
     final amount = ref.watch(
       displayBitcoinAmountProvider(
@@ -39,6 +42,7 @@ class ReceiveSatsAmountScreen extends ConsumerWidget {
         ref.watch(satToLocalProvider(state.amountSat)).asData?.value ?? 0;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
           copy.receiveBitcoin,
@@ -97,10 +101,7 @@ class ReceiveSatsAmountScreen extends ConsumerWidget {
                                 hintStyle: textTheme.display7(
                                     Palette.neutral[60], FontWeight.w600),
                               ),
-                              onChanged: ref
-                                  .read(receiveSatsGenerationControllerProvider
-                                      .notifier)
-                                  .amountChangeHandler,
+                              onChanged: notifier.amountChangeHandler,
                             ),
                           ),
                           const SizedBox(
@@ -129,18 +130,17 @@ class ReceiveSatsAmountScreen extends ConsumerWidget {
           ),
           RectangularBorderButton(
             text: copy.confirmAmount,
-            onPressed: amount == null || amount == 0
+            onPressed: amount == null || int.parse(amount) == 0
                 ? null
                 : () {
-                    ref
-                        .read(receiveSatsGenerationControllerProvider.notifier)
-                        .fetchSwapInfo();
+                    notifier.fetchFeeInfo();
                     showModalBottomSheet(
                       isScrollControlled: true,
                       backgroundColor: Colors.white,
                       context: context,
                       elevation: 0,
-                      builder: (context) => const ReceiveSatsBottomSheetModal(),
+                      builder: (context) =>
+                          const ReceiveSatsFeesBottomSheetModal(),
                     );
                     return;
                   },
@@ -151,8 +151,8 @@ class ReceiveSatsAmountScreen extends ConsumerWidget {
   }
 }
 
-class ReceiveSatsBottomSheetModal extends ConsumerWidget {
-  const ReceiveSatsBottomSheetModal({
+class ReceiveSatsBottomSheetModalOld extends ConsumerWidget {
+  const ReceiveSatsBottomSheetModalOld({
     super.key,
   });
 
@@ -162,15 +162,15 @@ class ReceiveSatsBottomSheetModal extends ConsumerWidget {
     final copy = AppLocalizations.of(context)!;
     final TextTheme textTheme = Theme.of(context).textTheme;
 
-    final state = ref.watch(receiveSatsGenerationControllerProvider);
+    final state = ref.watch(receiveSatsControllerProvider);
+    final notifier = ref.read(receiveSatsControllerProvider.notifier);
+
     final unit = ref.watch(bitcoinUnitProvider);
     final amount = ref.watch(
       displayBitcoinAmountProvider(
         state.amountSat,
       ),
     );
-    final onChainFeeEstimate =
-        ref.watch(receiveSatsGenerationControllerProvider).swapFeeEstimate;
 
     final localCurrency = ref.watch(localCurrencyProvider);
     final localCurrencyBalance =
@@ -241,10 +241,7 @@ class ReceiveSatsBottomSheetModal extends ConsumerWidget {
                     Expanded(
                       child: Column(
                         children: [
-                          !ref
-                                  .watch(
-                                      receiveSatsGenerationControllerProvider)
-                                  .isSwapAvailable
+                          !state.isSwapAvailable
                               ? Text(
                                   copy.unavailable,
                                   style: textTheme.display2(
@@ -252,10 +249,10 @@ class ReceiveSatsBottomSheetModal extends ConsumerWidget {
                                     FontWeight.w500,
                                   ),
                                 )
-                              : onChainFeeEstimate == null
+                              : state.onChainFeeEstimate == null
                                   ? const CircularProgressIndicator()
                                   : Text(
-                                      '$onChainFeeEstimate ${BitcoinUnit.sat.name.toUpperCase()}',
+                                      '${state.onChainFeeEstimate} ${BitcoinUnit.sat.name.toUpperCase()}',
                                       style: textTheme.display2(
                                         Palette.neutral[80],
                                         FontWeight.w500,
@@ -377,19 +374,66 @@ class ReceiveSatsBottomSheetModal extends ConsumerWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: kSpacing8),
+              const SizedBox(height: kSpacing4),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: kSpacing7),
-                child: Text(
-                  copy.unifiedQRExplanation,
-                  style: textTheme.body3(
-                    Palette.neutral[60],
-                    FontWeight.normal,
-                  ),
-                  textAlign: TextAlign.center,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: kSpacing7,
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Switch(
+                          value: state.assumeFees,
+                          onChanged: notifier.assumeFeeChangeHandler,
+                        ),
+                        const SizedBox(
+                          width: kSpacing1,
+                        ),
+                        Expanded(
+                          child: Text(
+                            state.assumeFees
+                                ? 'I assume the fee and sender pays the amount of:'
+                                : 'The sender assumes the fee and pays a total amount of:',
+                            style: textTheme.body3(
+                              Palette.neutral[60],
+                              FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: kSpacing2,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          '502000',
+                          style: textTheme.display3(
+                            Palette.neutral[80],
+                            FontWeight.w400,
+                          ),
+                        ),
+                        const SizedBox(
+                          width: kSpacing1 / 2,
+                        ),
+                        Text(
+                          unit.code.toUpperCase(),
+                          style: textTheme.caption1(
+                            Palette.neutral[60],
+                            FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: kSpacing2),
+              const SizedBox(height: kSpacing8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
@@ -400,10 +444,7 @@ class ReceiveSatsBottomSheetModal extends ConsumerWidget {
                     textColor: Colors.white,
                     onPressed: () async {
                       try {
-                        final invoiceCreation = ref
-                            .read(receiveSatsGenerationControllerProvider
-                                .notifier)
-                            .createInvoice();
+                        final invoiceCreation = notifier.createInvoice();
                         // Show loading dialog
                         showTransitionDialog(context, copy.oneMomentPlease);
                         // Remove the keyboard from inputting the amount

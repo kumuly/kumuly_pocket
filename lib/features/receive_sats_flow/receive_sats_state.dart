@@ -3,52 +3,66 @@ import 'package:flutter/foundation.dart';
 import 'package:kumuly_pocket/view_models/invoice.dart';
 
 @immutable
-class ReceiveSatsGenerationState extends Equatable {
-  const ReceiveSatsGenerationState({
+class ReceiveSatsState extends Equatable {
+  const ReceiveSatsState({
     this.amountSat,
     this.description,
-    this.invoice,
-    this.onChainAddress,
+    this.isFetchingFeeInfo = false,
+    this.lightningFeeEstimate,
+    this.onChainFeeEstimate,
     this.onChainMaxAmount,
     this.onChainMinAmount,
-    this.swapFeeEstimate,
     this.isSwapAvailable = true,
+    this.assumeFees = false,
+    this.invoice,
+    this.onChainAddress,
   });
 
   final int? amountSat;
   final String? description;
-  final Invoice? invoice;
-  final String? onChainAddress;
+  final bool isFetchingFeeInfo;
+  final int? lightningFeeEstimate;
+  final int? onChainFeeEstimate;
   final int? onChainMaxAmount;
   final int? onChainMinAmount;
-  final int? swapFeeEstimate;
-  final bool
-      isSwapAvailable; // Todo: use the state bools to improve the screens
+  final bool isSwapAvailable;
+  final bool assumeFees;
+  final Invoice? invoice;
+  final String? onChainAddress;
 
-  ReceiveSatsGenerationState copyWith({
+  ReceiveSatsState copyWith({
     int? amountSat,
     String? description,
-    Invoice? invoice,
-    String? onChainAddress,
+    bool? isFetchingFeeInfo,
+    int? lightningFeeEstimate,
+    int? onChainFeeEstimate,
     int? onChainMaxAmount,
     int? onChainMinAmount,
-    int? swapFeeEstimate,
     bool? isSwapAvailable,
+    bool? assumeFees,
+    Invoice? invoice,
+    String? onChainAddress,
   }) {
-    return ReceiveSatsGenerationState(
+    return ReceiveSatsState(
       amountSat: amountSat ?? this.amountSat,
       description: description ?? this.description,
-      invoice: invoice ?? this.invoice,
-      onChainAddress: onChainAddress ?? this.onChainAddress,
+      isFetchingFeeInfo: isFetchingFeeInfo ?? this.isFetchingFeeInfo,
+      lightningFeeEstimate: lightningFeeEstimate ?? this.lightningFeeEstimate,
+      onChainFeeEstimate: onChainFeeEstimate ?? this.onChainFeeEstimate,
       onChainMaxAmount: onChainMaxAmount ?? this.onChainMaxAmount,
       onChainMinAmount: onChainMinAmount ?? this.onChainMinAmount,
-      swapFeeEstimate: swapFeeEstimate ?? this.swapFeeEstimate,
       isSwapAvailable: isSwapAvailable ?? this.isSwapAvailable,
+      assumeFees: assumeFees ?? this.assumeFees,
+      invoice: invoice ?? this.invoice,
+      onChainAddress: onChainAddress ?? this.onChainAddress,
     );
   }
 
-  double get amountToSendOnChain =>
-      (amountSat! + (swapFeeEstimate ?? 0)) / 100000000;
+  int? get amountToReceiveSat => 0;
+
+  int? get invoiceAmountSat => 0;
+
+  int? get onChainAmountSat => 0;
 
   String? get partialOnChainAddress => onChainAddress == null ||
           onChainAddress!.isEmpty
@@ -60,29 +74,29 @@ class ReceiveSatsGenerationState extends Equatable {
       : '${invoice!.bolt11.substring(0, 8)}...${invoice!.bolt11.substring(invoice!.bolt11.length - 8)}';
 
   String? get bip21Uri {
-    if (amountSat == null) {
+    if (invoice == null || invoice!.bolt11.isEmpty) {
       return null;
     }
 
-    if (onChainAddress == null ||
-        onChainAddress!.isEmpty ||
-        amountSat! > onChainMaxAmount! ||
-        amountSat! < onChainMinAmount!) {
+    if (onChainAddress == null || onChainAddress!.isEmpty) {
       return invoice!.bolt11;
     }
 
-    return 'bitcoin:$onChainAddress?amount=$amountToSendOnChain&lightning=${invoice!.bolt11}';
+    return 'bitcoin:$onChainAddress?amount=$onChainAmountSat&lightning=${invoice!.bolt11}';
   }
 
   @override
   List<Object?> get props => [
         amountSat,
         description,
-        invoice,
-        onChainAddress,
+        isFetchingFeeInfo,
+        lightningFeeEstimate,
+        onChainFeeEstimate,
         onChainMaxAmount,
         onChainMinAmount,
-        swapFeeEstimate,
         isSwapAvailable,
+        assumeFees,
+        invoice,
+        onChainAddress,
       ];
 }
