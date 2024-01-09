@@ -12,8 +12,6 @@ class ReceiveSatsReceptionController extends _$ReceiveSatsReceptionController {
   @override
   ReceiveSatsReceptionState build() {
     final invoice = ref.watch(receiveSatsControllerProvider).invoice;
-    final swapAvailable =
-        ref.watch(receiveSatsControllerProvider).isSwapAvailable;
     final bitcoinAddress =
         ref.watch(receiveSatsControllerProvider).onChainAddress;
 
@@ -30,7 +28,7 @@ class ReceiveSatsReceptionController extends _$ReceiveSatsReceptionController {
           )
           .then((value) => onPaymentReceived());
 
-      if (swapAvailable && bitcoinAddress != null) {
+      if (bitcoinAddress != null) {
         // Start listening for a swap from an on-chain transaction
         ref
             .read(breezeSdkLightningNodeServiceProvider)

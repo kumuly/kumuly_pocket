@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:kumuly_pocket/view_models/invoice.dart';
 
@@ -9,27 +8,25 @@ class ReceiveSatsState extends Equatable {
     required this.amountController,
     this.amountSat,
     this.description,
-    this.isFetchingFeeInfo = false,
-    this.lightningFeeEstimate,
-    this.onChainFeeEstimate,
+    this.expiry,
+    this.isFetchingFee = false,
+    this.feeEstimate,
     this.onChainMaxAmount,
     this.onChainMinAmount,
-    this.isSwapAvailable = true,
-    this.assumeFees = false,
+    this.assumeFee = false,
     this.invoice,
     this.onChainAddress,
   });
 
   final TextEditingController amountController;
   final int? amountSat;
+  final int? expiry;
   final String? description;
-  final bool isFetchingFeeInfo;
-  final int? lightningFeeEstimate;
-  final int? onChainFeeEstimate;
+  final bool isFetchingFee;
+  final int? feeEstimate;
   final int? onChainMaxAmount;
   final int? onChainMinAmount;
-  final bool isSwapAvailable;
-  final bool assumeFees;
+  final bool assumeFee;
   final Invoice? invoice;
   final String? onChainAddress;
 
@@ -37,13 +34,12 @@ class ReceiveSatsState extends Equatable {
     TextEditingController? amountController,
     int? amountSat,
     String? description,
-    bool? isFetchingFeeInfo,
-    int? lightningFeeEstimate,
-    int? onChainFeeEstimate,
+    int? expiry,
+    bool? isFetchingFee,
+    int? feeEstimate,
     int? onChainMaxAmount,
     int? onChainMinAmount,
-    bool? isSwapAvailable,
-    bool? assumeFees,
+    bool? assumeFee,
     Invoice? invoice,
     String? onChainAddress,
   }) {
@@ -51,23 +47,40 @@ class ReceiveSatsState extends Equatable {
       amountController: amountController ?? this.amountController,
       amountSat: amountSat ?? this.amountSat,
       description: description ?? this.description,
-      isFetchingFeeInfo: isFetchingFeeInfo ?? this.isFetchingFeeInfo,
-      lightningFeeEstimate: lightningFeeEstimate ?? this.lightningFeeEstimate,
-      onChainFeeEstimate: onChainFeeEstimate ?? this.onChainFeeEstimate,
+      expiry: expiry ?? this.expiry,
+      isFetchingFee: isFetchingFee ?? this.isFetchingFee,
+      feeEstimate: feeEstimate ?? this.feeEstimate,
       onChainMaxAmount: onChainMaxAmount ?? this.onChainMaxAmount,
       onChainMinAmount: onChainMinAmount ?? this.onChainMinAmount,
-      isSwapAvailable: isSwapAvailable ?? this.isSwapAvailable,
-      assumeFees: assumeFees ?? this.assumeFees,
+      assumeFee: assumeFee ?? this.assumeFee,
       invoice: invoice ?? this.invoice,
       onChainAddress: onChainAddress ?? this.onChainAddress,
     );
   }
 
-  int? get amountToReceiveSat => 0;
+  int? get amountToReceiveSat {
+    if (amountSat == null || feeEstimate == null) {
+      return null;
+    }
 
-  int? get invoiceAmountSat => 0;
+    if (assumeFee) {
+      return amountSat! - feeEstimate!;
+    } else {
+      return amountSat;
+    }
+  }
 
-  int? get onChainAmountSat => 0;
+  int? get amountToPaySat {
+    if (amountSat == null || feeEstimate == null) {
+      return null;
+    }
+
+    if (assumeFee) {
+      return amountSat;
+    } else {
+      return amountSat! + feeEstimate!;
+    }
+  }
 
   String? get partialOnChainAddress => onChainAddress == null ||
           onChainAddress!.isEmpty
@@ -87,7 +100,7 @@ class ReceiveSatsState extends Equatable {
       return invoice!.bolt11;
     }
 
-    return 'bitcoin:$onChainAddress?amount=$onChainAmountSat&lightning=${invoice!.bolt11}';
+    return 'bitcoin:$onChainAddress?amount=$amountToPaySat&lightning=${invoice!.bolt11}';
   }
 
   @override
@@ -95,13 +108,12 @@ class ReceiveSatsState extends Equatable {
         amountController,
         amountSat,
         description,
-        isFetchingFeeInfo,
-        lightningFeeEstimate,
-        onChainFeeEstimate,
+        expiry,
+        isFetchingFee,
+        feeEstimate,
         onChainMaxAmount,
         onChainMinAmount,
-        isSwapAvailable,
-        assumeFees,
+        assumeFee,
         invoice,
         onChainAddress,
       ];

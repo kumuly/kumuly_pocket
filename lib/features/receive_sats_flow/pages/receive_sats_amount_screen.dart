@@ -129,7 +129,7 @@ class ReceiveSatsAmountScreen extends ConsumerWidget {
             onPressed: amount == null || int.parse(amount) == 0
                 ? null
                 : () {
-                    notifier.fetchFeeInfo();
+                    notifier.fetchFee();
                     showModalBottomSheet(
                       isScrollControlled: true,
                       backgroundColor: Colors.white,

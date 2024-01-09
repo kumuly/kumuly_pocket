@@ -13,7 +13,6 @@ import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/buttons/primary_filled_button.dart';
 import 'package:kumuly_pocket/widgets/dialogs/transition_dialog.dart';
-import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 import 'package:kumuly_pocket/widgets/page_views/page_view_controller.dart';
 import 'package:lottie/lottie.dart';
 
@@ -27,11 +26,10 @@ class ReceiveSatsFeesBottomSheetModal extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(receiveSatsControllerProvider);
-    final textTheme = Theme.of(context).textTheme;
 
     return SizedBox(
       width: double.infinity,
-      child: state.isFetchingFeeInfo
+      child: state.isFetchingFee
           ? Center(
               heightFactor: 10,
               child: LottieBuilder.asset(
@@ -56,8 +54,8 @@ class ReceiveSatsFeesBottomSheetModal extends ConsumerWidget {
                   SizedBox(height: kSpacing3),
                   ReceiveSatsFeesBottomSheetModalAmountHeader(),
                   SizedBox(height: kSpacing8),
-                  ReceiveSatsFeesBottomSheetModalFeesSection(),
-                  SizedBox(height: kSpacing2),
+                  ReceiveSatsFeeBottomSheetModalFeeSection(),
+                  SizedBox(height: kSpacing9),
                   ReceiveSatsFeeBottomSheetModalGenerateInvoiceButton(),
                   SizedBox(height: kSpacing5),
                 ],
@@ -78,16 +76,17 @@ class ReceiveSatsFeesBottomSheetModalAmountHeader extends ConsumerWidget {
 
     final state = ref.watch(receiveSatsControllerProvider);
 
-    final unit = ref.watch(bitcoinUnitProvider);
-    final amount = ref.watch(
+    final amountToReceive = ref.watch(
       displayBitcoinAmountProvider(
-        state.amountSat,
+        state.amountToReceiveSat,
       ),
     );
+    final unit = ref.watch(bitcoinUnitProvider);
 
     final localCurrency = ref.watch(localCurrencyProvider);
-    final localCurrencyBalance =
-        ref.watch(satToLocalProvider(state.amountSat)).asData?.value ?? 0;
+    final localCurrencyAmountToReceive =
+        ref.watch(satToLocalProvider(state.amountToReceiveSat)).asData?.value ??
+            0;
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -124,7 +123,7 @@ class ReceiveSatsFeesBottomSheetModalAmountHeader extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
-              '$amount ${unit.name.toUpperCase()}',
+              '$amountToReceive ${unit.name.toUpperCase()}',
               style: textTheme.display5(
                 Palette.neutral[80]!,
                 FontWeight.w500,
@@ -132,7 +131,7 @@ class ReceiveSatsFeesBottomSheetModalAmountHeader extends ConsumerWidget {
               textAlign: TextAlign.center,
             ),
             Text(
-              '≈ ${localCurrencyBalance.toStringAsFixed(localCurrency.decimals)} ${localCurrency.code.toUpperCase()}',
+              '≈ ${localCurrencyAmountToReceive.toStringAsFixed(localCurrency.decimals)} ${localCurrency.code.toUpperCase()}',
               style: textTheme.display3(
                 Palette.neutral[50],
                 FontWeight.w500,
@@ -152,202 +151,145 @@ class ReceiveSatsFeesBottomSheetModalAmountHeader extends ConsumerWidget {
   }
 }
 
-class ReceiveSatsFeesBottomSheetModalFeesSection extends ConsumerWidget {
-  const ReceiveSatsFeesBottomSheetModalFeesSection({super.key});
+class ReceiveSatsFeeBottomSheetModalFeeSection extends ConsumerWidget {
+  const ReceiveSatsFeeBottomSheetModalFeeSection({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final copy = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
+    final copy = AppLocalizations.of(context)!;
 
     final state = ref.watch(receiveSatsControllerProvider);
     final notifier = ref.read(receiveSatsControllerProvider.notifier);
 
+    final feeAmount = ref.watch(
+      displayBitcoinAmountProvider(
+        state.feeEstimate,
+      ),
+    );
+    final amountToPay = ref.watch(
+      displayBitcoinAmountProvider(
+        state.amountToPaySat,
+      ),
+    );
+    final unit = ref.watch(bitcoinUnitProvider);
+    final localCurrency = ref.watch(localCurrencyProvider);
+    final localCurrencyFeeAmount =
+        ref.watch(satToLocalProvider(state.feeEstimate)).asData?.value ?? 0;
+
+    final localCurrencyAmountToPay =
+        ref.watch(satToLocalProvider(state.amountToPaySat)).asData?.value ?? 0;
+
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        IntrinsicHeight(
-          child: Row(
+        ListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: kSpacing4,
+          ),
+          title: Text(
+            'Estimated fee',
+            style: textTheme.display2(
+              Palette.neutral[80],
+              FontWeight.w500,
+            ),
+          ),
+          subtitle: Text(
+            'Lightning channel opening fee',
+            style: textTheme.caption1(
+              Palette.neutral[50],
+              FontWeight.w400,
+            ),
+          ),
+          trailing: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Expanded(
-                child: state.isSwapAvailable
-                    ? ReceiveSatsFeesBottomSheetModalFeesSectionColumn(
-                        feeAmount: state.onChainFeeEstimate!,
-                        iconAssetName: 'assets/icons/bitcoin_b_angle.svg',
-                        networkName: copy.theBitcoinNetwork,
-                        processingTimeInfo: copy.bitcoinProcessingTime,
-                      )
-                    : const ReceiveSatsFeesBottomSheetModalFeesSectionUnavailableColumn(),
+              Text(
+                '$feeAmount ${unit.code.toUpperCase()}',
+                style: textTheme.display2(
+                  Palette.neutral[80],
+                  FontWeight.w500,
+                ),
               ),
-              VerticalDivider(
-                width: 1,
-                color: Palette.neutral[50]!,
-                thickness: 1,
-              ),
-              Expanded(
-                child: ReceiveSatsFeesBottomSheetModalFeesSectionColumn(
-                  feeAmount: state.lightningFeeEstimate!,
-                  iconAssetName: 'assets/icons/lightning_strike.svg',
-                  networkName: copy.theLightningNetwork,
-                  processingTimeInfo: copy.lightningProcessingTime,
+              Text(
+                '≈ ${localCurrencyFeeAmount.toStringAsFixed(localCurrency.decimals)} ${localCurrency.code.toUpperCase()}',
+                style: textTheme.display1(
+                  Palette.neutral[50],
+                  FontWeight.w500,
                 ),
               ),
             ],
           ),
         ),
-        const SizedBox(height: kSpacing9),
-        Row(
-          children: [
-            Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Switch(
-                    value: !state.assumeFees,
-                    inactiveTrackColor: Palette.neutral[40],
-                    inactiveThumbColor: Palette.neutral[60],
-                    trackOutlineColor:
-                        MaterialStateProperty.all(Colors.transparent),
-                    activeColor: Palette.russianViolet[100],
-                    onChanged: notifier.passFeesToPayerChangeHandler,
-                  ),
-                  const SizedBox(
-                    width: kSpacing2,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Pass fees on to payer',
-                        style: textTheme.body3(
-                          Palette.neutral[80],
-                          FontWeight.w400,
-                        ),
-                      ),
-                      Text(
-                        'Switch off to bear the fees.',
-                        style: textTheme.caption1(
-                          Palette.neutral[50],
-                          FontWeight.w400,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+        SwitchListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: kSpacing4,
+          ),
+          title: Text(
+            'Pass fees on to payer',
+            style: textTheme.body3(
+              Palette.neutral[80],
+              FontWeight.w400,
             ),
-          ],
+          ),
+          subtitle: Text(
+            'Switch off to bear the fees.',
+            style: textTheme.caption1(
+              Palette.neutral[50],
+              FontWeight.w400,
+            ),
+          ),
+          value: !state.assumeFee,
+          inactiveTrackColor: Palette.neutral[40],
+          inactiveThumbColor: Palette.neutral[60],
+          trackOutlineColor: MaterialStateProperty.all(Colors.transparent),
+          activeColor: Palette.russianViolet[100],
+          onChanged: notifier.passFeesToPayerChangeHandler,
         ),
-      ],
-    );
-  }
-}
-
-class ReceiveSatsFeesBottomSheetModalFeesSectionColumn extends ConsumerWidget {
-  const ReceiveSatsFeesBottomSheetModalFeesSectionColumn({
-    required this.feeAmount,
-    required this.iconAssetName,
-    required this.networkName,
-    required this.processingTimeInfo,
-    super.key,
-  });
-
-  final int feeAmount;
-  final String iconAssetName;
-  final String networkName;
-  final String processingTimeInfo;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final copy = AppLocalizations.of(context)!;
-    final textTheme = Theme.of(context).textTheme;
-
-    final state = ref.watch(receiveSatsControllerProvider);
-    final notifier = ref.read(receiveSatsControllerProvider.notifier);
-
-    return Column(
-      children: [
-        Text(
-          '$feeAmount ${BitcoinUnit.sat.name.toUpperCase()}',
-          style: textTheme.display2(
-            Palette.neutral[80],
-            FontWeight.w500,
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: kSpacing4,
+          ),
+          child: Divider(
+            height: 1,
+            color: Palette.neutral[40]!,
+            thickness: 1,
           ),
         ),
-        const SizedBox(height: kSpacing1 / 4),
-        Text(
-          copy.estimatedFee.toUpperCase(),
-          style: textTheme.caption1(
-            Palette.neutral[50],
-            FontWeight.w500,
+        ListTile(
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: kSpacing4,
           ),
-        ),
-        const SizedBox(
-          height: kSpacing3,
-        ),
-        Container(
-          height: 32,
-          width: 32,
-          padding: const EdgeInsets.all(kSpacing1 / 2),
-          decoration: BoxDecoration(
-            color: Palette.neutral[20],
-            borderRadius: BorderRadius.circular(8),
+          title: Text(
+            'Total to pay',
+            style: textTheme.display2(
+              Palette.success[50],
+              FontWeight.w700,
+            ),
           ),
-          child: DynamicIcon(
-            icon: iconAssetName,
-            color: Palette.neutral[50],
-            size: 24,
-          ),
-        ),
-        const SizedBox(
-          height: kSpacing2,
-        ),
-        Text(
-          copy.ifPaidFrom,
-          style: textTheme.display2(
-            Palette.neutral[50],
-            FontWeight.w500,
-          ),
-        ),
-        const SizedBox(height: kSpacing1 / 2),
-        Text(
-          networkName.toUpperCase(),
-          style: textTheme.caption1(
-            Palette.neutral[70],
-            FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: kSpacing1 / 2),
-        Text(
-          processingTimeInfo.toUpperCase(),
-          style: textTheme.caption1(
-            Palette.neutral[50],
-            FontWeight.bold,
+          titleAlignment: ListTileTitleAlignment.top,
+          trailing: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                '$amountToPay ${unit.code.toUpperCase()}',
+                style: textTheme.display2(
+                  Palette.success[50],
+                  FontWeight.w700,
+                ),
+              ),
+              Text(
+                '≈ ${localCurrencyAmountToPay.toStringAsFixed(localCurrency.decimals)} ${localCurrency.code.toUpperCase()}',
+                style: textTheme.display1(
+                  Palette.neutral[50],
+                  FontWeight.w500,
+                ),
+              ),
+            ],
           ),
         ),
       ],
-    );
-  }
-}
-
-class ReceiveSatsFeesBottomSheetModalFeesSectionUnavailableColumn
-    extends ConsumerWidget {
-  const ReceiveSatsFeesBottomSheetModalFeesSectionUnavailableColumn(
-      {this.minAmount, this.maxAmount, super.key});
-
-  final int? minAmount;
-  final int? maxAmount;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final copy = AppLocalizations.of(context)!;
-    final textTheme = Theme.of(context).textTheme;
-
-    final state = ref.watch(receiveSatsControllerProvider);
-    final notifier = ref.read(receiveSatsControllerProvider.notifier);
-
-    return Column(
-      children: [],
     );
   }
 }

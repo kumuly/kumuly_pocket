@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:kumuly_pocket/entities/swap_in_info_entity.dart';
 import 'package:kumuly_pocket/enums/bitcoin_unit.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_state.dart';
 import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
@@ -31,48 +30,45 @@ class ReceiveSatsController extends _$ReceiveSatsController {
     }
   }
 
-  Future<void> fetchFeeInfo() async {
+  Future<void> fetchFee() async {
     final nodeServiceNotifier = ref.read(breezeSdkLightningNodeServiceProvider);
-    state = state.copyWith(isFetchingFeeInfo: true);
-
-    // Obtain the swap in info from the node service
-    try {
-      final swapInInfo =
-          await nodeServiceNotifier.getSwapInInfo(state.amountSat!);
-
-      state = state.copyWith(
-        onChainFeeEstimate: swapInInfo.feeEstimate,
-        onChainAddress: swapInInfo.bitcoinAddress,
-        onChainMaxAmount: swapInInfo.maxAmount,
-        onChainMinAmount: swapInInfo.minAmount,
-        isSwapAvailable: true,
-      );
-
-      print('bitcoin address: ${swapInInfo.bitcoinAddress}');
-      print('max amount: ${swapInInfo.maxAmount}');
-      print('min amount: ${swapInInfo.minAmount}');
-      print('fee estimate: ${swapInInfo.feeEstimate}');
-    } catch (e) {
-      print(e);
-      state = state.copyWith(
-        isSwapAvailable: false,
-      );
-    }
+    state = state.copyWith(isFetchingFee: true);
 
     // Obtain the channel opening fee estimate from the node service
     final channelOpeningFeeEstimate = await nodeServiceNotifier
         .getChannelOpeningFeeEstimate(state.amountSat!);
 
     state = state.copyWith(
-      lightningFeeEstimate: channelOpeningFeeEstimate,
-      isFetchingFeeInfo: false,
+      feeEstimate: channelOpeningFeeEstimate,
+      isFetchingFee: false,
     );
 
     print('channel opening fee estimate: $channelOpeningFeeEstimate');
   }
 
   void passFeesToPayerChangeHandler(bool value) {
-    state = state.copyWith(assumeFees: !value);
+    state = state.copyWith(assumeFee: !value);
+  }
+
+  Future<void> createOnChainAddress() async {
+    try {
+      final nodeServiceNotifier =
+          ref.read(breezeSdkLightningNodeServiceProvider);
+      final swapInInfo =
+          await nodeServiceNotifier.getSwapInInfo(state.amountSat!);
+
+      state = state.copyWith(
+        onChainAddress: swapInInfo.bitcoinAddress,
+        onChainMaxAmount: swapInInfo.maxAmount,
+        onChainMinAmount: swapInInfo.minAmount,
+      );
+
+      print('bitcoin address: ${swapInInfo.bitcoinAddress}');
+      print('max amount: ${swapInInfo.maxAmount}');
+      print('min amount: ${swapInInfo.minAmount}');
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<void> createInvoice() async {
