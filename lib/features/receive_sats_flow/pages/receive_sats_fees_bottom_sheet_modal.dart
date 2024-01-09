@@ -29,7 +29,7 @@ class ReceiveSatsFeesBottomSheetModal extends ConsumerWidget {
 
     return SizedBox(
       width: double.infinity,
-      child: state.isFetchingFee
+      child: state.feeEstimate == null
           ? Center(
               heightFactor: 10,
               child: LottieBuilder.asset(

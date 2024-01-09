@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/enums/bitcoin_unit.dart';
 import 'package:kumuly_pocket/enums/local_currency.dart';
@@ -21,6 +22,7 @@ class ReceiveSatsAmountScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final copy = AppLocalizations.of(context)!;
     final TextTheme textTheme = Theme.of(context).textTheme;
+    final router = GoRouter.of(context);
 
     final state = ref.watch(receiveSatsControllerProvider);
     final notifier = ref.read(receiveSatsControllerProvider.notifier);
@@ -33,7 +35,7 @@ class ReceiveSatsAmountScreen extends ConsumerWidget {
     );
 
     final localCurrency = ref.watch(localCurrencyProvider);
-    final localCurrencyBalance =
+    final localCurrencyAmount =
         ref.watch(satToLocalProvider(state.amountSat)).asData?.value ?? 0;
 
     return Scaffold(
@@ -112,7 +114,7 @@ class ReceiveSatsAmountScreen extends ConsumerWidget {
                         ],
                       ),
                       Text(
-                        '≈ ${localCurrencyBalance.toStringAsFixed(localCurrency.decimals)} ${localCurrency.code.toUpperCase()}',
+                        '≈ ${localCurrencyAmount.toStringAsFixed(localCurrency.decimals)} ${localCurrency.code.toUpperCase()}',
                         style: textTheme.display2(
                           Palette.neutral[70],
                           FontWeight.normal,
@@ -126,19 +128,24 @@ class ReceiveSatsAmountScreen extends ConsumerWidget {
           ),
           RectangularBorderButton(
             text: copy.confirmAmount,
-            onPressed: amount == null || int.parse(amount) == 0
+            onPressed: amount == null || double.parse(amount) == 0
                 ? null
-                : () {
-                    notifier.fetchFee();
-                    showModalBottomSheet(
-                      isScrollControlled: true,
-                      backgroundColor: Colors.white,
-                      context: context,
-                      elevation: 0,
-                      builder: (context) =>
-                          const ReceiveSatsFeesBottomSheetModal(),
-                    );
-                    return;
+                : () async {
+                    try {
+                      final fetchingFee = notifier.fetchFee();
+                      showModalBottomSheet(
+                        isScrollControlled: true,
+                        backgroundColor: Colors.white,
+                        context: context,
+                        elevation: 0,
+                        builder: (context) =>
+                            const ReceiveSatsFeesBottomSheetModal(),
+                      );
+                      await fetchingFee;
+                    } catch (e) {
+                      print(e);
+                      router.pop();
+                    }
                   },
           ),
         ],

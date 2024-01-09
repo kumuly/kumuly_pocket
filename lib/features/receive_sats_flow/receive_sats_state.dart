@@ -9,7 +9,6 @@ class ReceiveSatsState extends Equatable {
     this.amountSat,
     this.description,
     this.expiry,
-    this.isFetchingFee = false,
     this.feeEstimate,
     this.onChainMaxAmount,
     this.onChainMinAmount,
@@ -22,7 +21,6 @@ class ReceiveSatsState extends Equatable {
   final int? amountSat;
   final int? expiry;
   final String? description;
-  final bool isFetchingFee;
   final int? feeEstimate;
   final int? onChainMaxAmount;
   final int? onChainMinAmount;
@@ -35,7 +33,6 @@ class ReceiveSatsState extends Equatable {
     int? amountSat,
     String? description,
     int? expiry,
-    bool? isFetchingFee,
     int? feeEstimate,
     int? onChainMaxAmount,
     int? onChainMinAmount,
@@ -48,7 +45,6 @@ class ReceiveSatsState extends Equatable {
       amountSat: amountSat ?? this.amountSat,
       description: description ?? this.description,
       expiry: expiry ?? this.expiry,
-      isFetchingFee: isFetchingFee ?? this.isFetchingFee,
       feeEstimate: feeEstimate ?? this.feeEstimate,
       onChainMaxAmount: onChainMaxAmount ?? this.onChainMaxAmount,
       onChainMinAmount: onChainMinAmount ?? this.onChainMinAmount,
@@ -109,7 +105,6 @@ class ReceiveSatsState extends Equatable {
         amountSat,
         description,
         expiry,
-        isFetchingFee,
         feeEstimate,
         onChainMaxAmount,
         onChainMinAmount,

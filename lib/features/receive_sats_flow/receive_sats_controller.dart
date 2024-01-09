@@ -21,18 +21,26 @@ class ReceiveSatsController extends _$ReceiveSatsController {
     if (amount == null || amount.isEmpty) {
       state = ReceiveSatsState(amountController: state.amountController);
     } else {
-      final amountSat = ref.watch(bitcoinUnitProvider) == BitcoinUnit.sat
-          ? int.parse(amount)
-          : ref.watch(btcToSatProvider(double.parse(amount)));
+      try {
+        final amountSat = ref.watch(bitcoinUnitProvider) == BitcoinUnit.sat
+            ? int.parse(amount)
+            : ref.watch(btcToSatProvider(double.parse(amount)));
 
-      state = state.copyWith(amountSat: amountSat);
-      print('amount sat: $amountSat');
+        state = state.copyWith(amountSat: amountSat);
+      } catch (e) {
+        state = ReceiveSatsState(amountController: state.amountController);
+      }
     }
   }
 
   Future<void> fetchFee() async {
+    // Reset the fee estimate by creating a new state with only the amount controller and amount sat
+    state = ReceiveSatsState(
+      amountController: state.amountController,
+      amountSat: state.amountSat,
+    );
+
     final nodeServiceNotifier = ref.read(breezeSdkLightningNodeServiceProvider);
-    state = state.copyWith(isFetchingFee: true);
 
     // Obtain the channel opening fee estimate from the node service
     final channelOpeningFeeEstimate = await nodeServiceNotifier
@@ -40,7 +48,6 @@ class ReceiveSatsController extends _$ReceiveSatsController {
 
     state = state.copyWith(
       feeEstimate: channelOpeningFeeEstimate,
-      isFetchingFee: false,
     );
 
     print('channel opening fee estimate: $channelOpeningFeeEstimate');
@@ -55,7 +62,7 @@ class ReceiveSatsController extends _$ReceiveSatsController {
       final nodeServiceNotifier =
           ref.read(breezeSdkLightningNodeServiceProvider);
       final swapInInfo =
-          await nodeServiceNotifier.getSwapInInfo(state.amountSat!);
+          await nodeServiceNotifier.getSwapInInfo(state.amountToPaySat!);
 
       state = state.copyWith(
         onChainAddress: swapInInfo.bitcoinAddress,
@@ -75,7 +82,7 @@ class ReceiveSatsController extends _$ReceiveSatsController {
     try {
       final invoice =
           await ref.read(breezeSdkLightningNodeServiceProvider).createInvoice(
-                state.amountSat!,
+                state.amountToPaySat!,
                 state.description,
               );
 
