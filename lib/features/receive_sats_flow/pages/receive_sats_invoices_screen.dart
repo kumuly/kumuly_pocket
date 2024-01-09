@@ -31,7 +31,7 @@ class ReceiveSatsInvoicesScreen extends ConsumerWidget {
       canPop: false,
       onPopInvoked: (canPop) => ref
           .read(pageViewControllerProvider(kReceiveSatsFlowPageViewId).notifier)
-          .previousPage,
+          .previousPage(),
       child: Scaffold(
         backgroundColor: Palette.neutral[20],
         appBar: AppBar(

@@ -387,25 +387,35 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
 
   @override
   Future<int> estimateChannelOpeningFeeMsat(int amountSat) async {
-    /* final response = await _breezSdk.openChannelFee(
+    try {
+      final req = OpenChannelFeeRequest(
         amountMsat: amountSat * 1000,
-    );
-    return response.feeMsat;*/
-    return 0;
+      );
+      final response = await _breezSdk.openChannelFee(req: req);
+      return response.feeMsat;
+    } catch (e) {
+      print(e);
+      throw EstimateChannelOpeningFeeException(e.toString());
+    }
   }
 
   @override
   Future<SwapInfoEntity> swapIn() async {
-    final swapInfo =
-        await _breezSdk.receiveOnchain(req: const ReceiveOnchainRequest());
+    try {
+      final swapInfo =
+          await _breezSdk.receiveOnchain(req: const ReceiveOnchainRequest());
 
-    return SwapInfoEntity(
-      swapInfo.bitcoinAddress,
-      swapInfo.maxAllowedDeposit,
-      swapInfo.minAllowedDeposit,
-      swapInfo.channelOpeningFees?.proportional,
-      swapInfo.channelOpeningFees?.validUntil,
-    );
+      return SwapInfoEntity(
+        swapInfo.bitcoinAddress,
+        swapInfo.maxAllowedDeposit,
+        swapInfo.minAllowedDeposit,
+        swapInfo.channelOpeningFees?.proportional,
+        swapInfo.channelOpeningFees?.validUntil,
+      );
+    } catch (e) {
+      print(e);
+      throw SwapInException(e.toString());
+    }
   }
 
   @override
@@ -613,6 +623,18 @@ class LnUrlPayMaxAmount implements Exception {
 /// The error message is the reason for the failure.
 class LnUrlPayFailure implements Exception {
   LnUrlPayFailure(this.message);
+
+  final String message;
+}
+
+class SwapInException implements Exception {
+  SwapInException(this.message);
+
+  final String message;
+}
+
+class EstimateChannelOpeningFeeException implements Exception {
+  EstimateChannelOpeningFeeException(this.message);
 
   final String message;
 }

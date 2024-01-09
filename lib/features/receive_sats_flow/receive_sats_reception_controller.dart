@@ -5,7 +5,7 @@ import 'package:kumuly_pocket/services/lightning_node_service.dart';
 import 'package:kumuly_pocket/widgets/page_views/page_view_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'reception/receive_sats_reception_controller.g.dart';
+part 'receive_sats_reception_controller.g.dart';
 
 @riverpod
 class ReceiveSatsReceptionController extends _$ReceiveSatsReceptionController {

@@ -13,6 +13,7 @@ import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/buttons/primary_filled_button.dart';
 import 'package:kumuly_pocket/widgets/dialogs/transition_dialog.dart';
+import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 import 'package:kumuly_pocket/widgets/page_views/page_view_controller.dart';
 import 'package:lottie/lottie.dart';
 
@@ -21,9 +22,12 @@ class ReceiveSatsFeesBottomSheetModal extends ConsumerWidget {
     super.key,
   });
 
+  get textTheme => null;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(receiveSatsControllerProvider);
+    final textTheme = Theme.of(context).textTheme;
 
     return SizedBox(
       width: double.infinity,
@@ -44,17 +48,20 @@ class ReceiveSatsFeesBottomSheetModal extends ConsumerWidget {
                 ),
               ),
             )
-          : const Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(height: kSpacing3),
-                ReceiveSatsFeesBottomSheetModalAmountHeader(),
-                SizedBox(height: kSpacing8),
-                ReceiveSatsFeesBottomSheetModalFeesSection(),
-                SizedBox(height: kSpacing9),
-                ReceiveSatsFeeBottomSheetModalGenerateInvoiceButton(),
-                SizedBox(height: kSpacing5),
-              ],
+          : const SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(height: kSpacing3),
+                  ReceiveSatsFeesBottomSheetModalAmountHeader(),
+                  SizedBox(height: kSpacing8),
+                  ReceiveSatsFeesBottomSheetModalFeesSection(),
+                  SizedBox(height: kSpacing2),
+                  ReceiveSatsFeeBottomSheetModalGenerateInvoiceButton(),
+                  SizedBox(height: kSpacing5),
+                ],
+              ),
             ),
     );
   }
@@ -157,6 +164,7 @@ class ReceiveSatsFeesBottomSheetModalFeesSection extends ConsumerWidget {
     final notifier = ref.read(receiveSatsControllerProvider.notifier);
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         IntrinsicHeight(
           child: Row(
@@ -164,7 +172,10 @@ class ReceiveSatsFeesBottomSheetModalFeesSection extends ConsumerWidget {
               Expanded(
                 child: state.isSwapAvailable
                     ? ReceiveSatsFeesBottomSheetModalFeesSectionColumn(
-                        feeAmount: state.onChainFeeEstimate,
+                        feeAmount: state.onChainFeeEstimate!,
+                        iconAssetName: 'assets/icons/bitcoin_b_angle.svg',
+                        networkName: copy.theBitcoinNetwork,
+                        processingTimeInfo: copy.bitcoinProcessingTime,
                       )
                     : const ReceiveSatsFeesBottomSheetModalFeesSectionUnavailableColumn(),
               ),
@@ -173,11 +184,59 @@ class ReceiveSatsFeesBottomSheetModalFeesSection extends ConsumerWidget {
                 color: Palette.neutral[50]!,
                 thickness: 1,
               ),
-              const Expanded(
-                child: ReceiveSatsFeesBottomSheetModalFeesSectionColumn(),
+              Expanded(
+                child: ReceiveSatsFeesBottomSheetModalFeesSectionColumn(
+                  feeAmount: state.lightningFeeEstimate!,
+                  iconAssetName: 'assets/icons/lightning_strike.svg',
+                  networkName: copy.theLightningNetwork,
+                  processingTimeInfo: copy.lightningProcessingTime,
+                ),
               ),
             ],
           ),
+        ),
+        const SizedBox(height: kSpacing9),
+        Row(
+          children: [
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Switch(
+                    value: !state.assumeFees,
+                    inactiveTrackColor: Palette.neutral[40],
+                    inactiveThumbColor: Palette.neutral[60],
+                    trackOutlineColor:
+                        MaterialStateProperty.all(Colors.transparent),
+                    activeColor: Palette.russianViolet[100],
+                    onChanged: notifier.passFeesToPayerChangeHandler,
+                  ),
+                  const SizedBox(
+                    width: kSpacing2,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Pass fees on to payer',
+                        style: textTheme.body3(
+                          Palette.neutral[80],
+                          FontWeight.w400,
+                        ),
+                      ),
+                      Text(
+                        'Switch off to bear the fees.',
+                        style: textTheme.caption1(
+                          Palette.neutral[50],
+                          FontWeight.w400,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -185,10 +244,18 @@ class ReceiveSatsFeesBottomSheetModalFeesSection extends ConsumerWidget {
 }
 
 class ReceiveSatsFeesBottomSheetModalFeesSectionColumn extends ConsumerWidget {
-  const ReceiveSatsFeesBottomSheetModalFeesSectionColumn(
-      {this.feeAmount, super.key});
+  const ReceiveSatsFeesBottomSheetModalFeesSectionColumn({
+    required this.feeAmount,
+    required this.iconAssetName,
+    required this.networkName,
+    required this.processingTimeInfo,
+    super.key,
+  });
 
-  final int? feeAmount;
+  final int feeAmount;
+  final String iconAssetName;
+  final String networkName;
+  final String processingTimeInfo;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -207,6 +274,7 @@ class ReceiveSatsFeesBottomSheetModalFeesSectionColumn extends ConsumerWidget {
             FontWeight.w500,
           ),
         ),
+        const SizedBox(height: kSpacing1 / 4),
         Text(
           copy.estimatedFee.toUpperCase(),
           style: textTheme.caption1(
@@ -217,8 +285,45 @@ class ReceiveSatsFeesBottomSheetModalFeesSectionColumn extends ConsumerWidget {
         const SizedBox(
           height: kSpacing3,
         ),
+        Container(
+          height: 32,
+          width: 32,
+          padding: const EdgeInsets.all(kSpacing1 / 2),
+          decoration: BoxDecoration(
+            color: Palette.neutral[20],
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: DynamicIcon(
+            icon: iconAssetName,
+            color: Palette.neutral[50],
+            size: 24,
+          ),
+        ),
         const SizedBox(
           height: kSpacing2,
+        ),
+        Text(
+          copy.ifPaidFrom,
+          style: textTheme.display2(
+            Palette.neutral[50],
+            FontWeight.w500,
+          ),
+        ),
+        const SizedBox(height: kSpacing1 / 2),
+        Text(
+          networkName.toUpperCase(),
+          style: textTheme.caption1(
+            Palette.neutral[70],
+            FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: kSpacing1 / 2),
+        Text(
+          processingTimeInfo.toUpperCase(),
+          style: textTheme.caption1(
+            Palette.neutral[50],
+            FontWeight.bold,
+          ),
         ),
       ],
     );
@@ -228,7 +333,10 @@ class ReceiveSatsFeesBottomSheetModalFeesSectionColumn extends ConsumerWidget {
 class ReceiveSatsFeesBottomSheetModalFeesSectionUnavailableColumn
     extends ConsumerWidget {
   const ReceiveSatsFeesBottomSheetModalFeesSectionUnavailableColumn(
-      {super.key});
+      {this.minAmount, this.maxAmount, super.key});
+
+  final int? minAmount;
+  final int? maxAmount;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -282,7 +390,6 @@ class ReceiveSatsFeeBottomSheetModalGenerateInvoiceButton
                   .nextPage();
             } catch (e) {
               print(e);
-              // Set an error message to the state and show it
               // Pop  the transition dialog
               router.pop();
             }

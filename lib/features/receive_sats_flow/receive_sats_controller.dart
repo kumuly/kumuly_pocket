@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:kumuly_pocket/entities/swap_in_info_entity.dart';
 import 'package:kumuly_pocket/enums/bitcoin_unit.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_state.dart';
 import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
@@ -12,12 +14,13 @@ part 'receive_sats_controller.g.dart';
 class ReceiveSatsController extends _$ReceiveSatsController {
   @override
   ReceiveSatsState build() {
-    return const ReceiveSatsState();
+    final amountTextController = TextEditingController();
+    return ReceiveSatsState(amountController: amountTextController);
   }
 
   void amountChangeHandler(String? amount) {
     if (amount == null || amount.isEmpty) {
-      state = const ReceiveSatsState();
+      state = ReceiveSatsState(amountController: state.amountController);
     } else {
       final amountSat = ref.watch(bitcoinUnitProvider) == BitcoinUnit.sat
           ? int.parse(amount)
@@ -29,19 +32,19 @@ class ReceiveSatsController extends _$ReceiveSatsController {
   }
 
   Future<void> fetchFeeInfo() async {
-    try {
-      state = state.copyWith(isFetchingFeeInfo: true);
+    final nodeServiceNotifier = ref.read(breezeSdkLightningNodeServiceProvider);
+    state = state.copyWith(isFetchingFeeInfo: true);
 
-      final swapInInfo = await ref
-          .read(breezeSdkLightningNodeServiceProvider)
-          .getSwapInInfo(state.amountSat!);
+    // Obtain the swap in info from the node service
+    try {
+      final swapInInfo =
+          await nodeServiceNotifier.getSwapInInfo(state.amountSat!);
 
       state = state.copyWith(
-        isFetchingFeeInfo: false,
+        onChainFeeEstimate: swapInInfo.feeEstimate,
         onChainAddress: swapInInfo.bitcoinAddress,
         onChainMaxAmount: swapInInfo.maxAmount,
         onChainMinAmount: swapInInfo.minAmount,
-        onChainFeeEstimate: swapInInfo.feeEstimate,
         isSwapAvailable: true,
       );
 
@@ -52,14 +55,24 @@ class ReceiveSatsController extends _$ReceiveSatsController {
     } catch (e) {
       print(e);
       state = state.copyWith(
-        isFetchingFeeInfo: false,
         isSwapAvailable: false,
       );
     }
+
+    // Obtain the channel opening fee estimate from the node service
+    final channelOpeningFeeEstimate = await nodeServiceNotifier
+        .getChannelOpeningFeeEstimate(state.amountSat!);
+
+    state = state.copyWith(
+      lightningFeeEstimate: channelOpeningFeeEstimate,
+      isFetchingFeeInfo: false,
+    );
+
+    print('channel opening fee estimate: $channelOpeningFeeEstimate');
   }
 
-  void assumeFeeChangeHandler(bool value) {
-    state = state.copyWith(assumeFees: value);
+  void passFeesToPayerChangeHandler(bool value) {
+    state = state.copyWith(assumeFees: !value);
   }
 
   Future<void> createInvoice() async {
@@ -74,13 +87,7 @@ class ReceiveSatsController extends _$ReceiveSatsController {
     } catch (e) {
       print(e);
       // Todo: set error in state
-      throw const InvoiceCreationException('Failed to create invoice');
+      rethrow;
     }
   }
-}
-
-class InvoiceCreationException implements Exception {
-  const InvoiceCreationException(this.message);
-
-  final String message;
 }

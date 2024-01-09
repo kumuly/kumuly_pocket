@@ -153,35 +153,50 @@ class BreezSdkLightningNodeService implements LightningNodeService {
 
   @override
   Future<int> getChannelOpeningFeeEstimate(int amountSat) async {
-    final inbound = await _lightningNodeRepository.inboundLiquidityMsat ~/ 1000;
-    int feeMsat = 0;
-    if (inbound <= amountSat) {
-      feeMsat = await _lightningNodeRepository
-              .estimateChannelOpeningFeeMsat(amountSat) ~/
-          1000;
-    }
+    try {
+      final inbound =
+          await _lightningNodeRepository.inboundLiquidityMsat ~/ 1000;
 
-    return feeMsat;
+      print('inbound: $inbound');
+
+      if (inbound <= amountSat) {
+        return (await _lightningNodeRepository
+                .estimateChannelOpeningFeeMsat(amountSat)) ~/
+            1000;
+      }
+
+      return 0;
+    } catch (e) {
+      print(e);
+      throw GetChannelOpeningFeeEstimateException(e.toString());
+    }
   }
 
   @override
   Future<SwapInInfoEntity> getSwapInInfo(int amountSat) async {
-    final swapInfoEntity = await _lightningNodeRepository.swapIn();
-    final feeEstimate = swapInfoEntity.proportionalChannelOpeningFee == null
-        ? null
-        : swapInfoEntity.proportionalChannelOpeningFee! * amountSat ~/ 1000000;
-    final feeExpiryTimestamp = swapInfoEntity.feeExpiry == null
-        ? null
-        : DateTime.parse(swapInfoEntity.feeExpiry!).millisecondsSinceEpoch ~/
-            1000;
+    try {
+      final swapInfoEntity = await _lightningNodeRepository.swapIn();
+      final feeEstimate = swapInfoEntity.proportionalChannelOpeningFee == null
+          ? null
+          : swapInfoEntity.proportionalChannelOpeningFee! *
+              amountSat ~/
+              1000000;
+      final feeExpiryTimestamp = swapInfoEntity.feeExpiry == null
+          ? null
+          : DateTime.parse(swapInfoEntity.feeExpiry!).millisecondsSinceEpoch ~/
+              1000;
 
-    return SwapInInfoEntity(
-      swapInfoEntity.bitcoinAddress,
-      swapInfoEntity.maxAmount,
-      swapInfoEntity.minAmount,
-      feeEstimate,
-      feeExpiryTimestamp,
-    );
+      return SwapInInfoEntity(
+        swapInfoEntity.bitcoinAddress,
+        swapInfoEntity.maxAmount,
+        swapInfoEntity.minAmount,
+        feeEstimate,
+        feeExpiryTimestamp,
+      );
+    } catch (e) {
+      print(e);
+      throw GetSwapInInfoException(e.toString());
+    }
   }
 
   @override
@@ -302,4 +317,16 @@ class BreezSdkLightningNodeService implements LightningNodeService {
   Future<KeysendPaymentDetailsEntity> keysend(String nodeId, int amountSat) {
     return _lightningNodeRepository.keysend(nodeId, amountSat * 1000);
   }
+}
+
+class GetSwapInInfoException implements Exception {
+  GetSwapInInfoException(this.message);
+
+  final String message;
+}
+
+class GetChannelOpeningFeeEstimateException implements Exception {
+  GetChannelOpeningFeeEstimateException(this.message);
+
+  final String message;
 }

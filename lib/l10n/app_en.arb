@@ -96,7 +96,7 @@
   "confirmAmount": "Confirm amount",
   "amountToReceive": "Amount to receive",
   "estimatedFee": "Estimated fee",
-  "ifYouReceiveFrom": "If you receive from",
+  "ifPaidFrom": "If paid from",
   "theBitcoinNetwork": "the Bitcoin network",
   "bitcoinProcessingTime": "min. 10 minutes",
   "inFees": "in fees",

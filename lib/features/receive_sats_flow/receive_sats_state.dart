@@ -1,10 +1,12 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:kumuly_pocket/view_models/invoice.dart';
 
 @immutable
 class ReceiveSatsState extends Equatable {
   const ReceiveSatsState({
+    required this.amountController,
     this.amountSat,
     this.description,
     this.isFetchingFeeInfo = false,
@@ -18,6 +20,7 @@ class ReceiveSatsState extends Equatable {
     this.onChainAddress,
   });
 
+  final TextEditingController amountController;
   final int? amountSat;
   final String? description;
   final bool isFetchingFeeInfo;
@@ -31,6 +34,7 @@ class ReceiveSatsState extends Equatable {
   final String? onChainAddress;
 
   ReceiveSatsState copyWith({
+    TextEditingController? amountController,
     int? amountSat,
     String? description,
     bool? isFetchingFeeInfo,
@@ -44,6 +48,7 @@ class ReceiveSatsState extends Equatable {
     String? onChainAddress,
   }) {
     return ReceiveSatsState(
+      amountController: amountController ?? this.amountController,
       amountSat: amountSat ?? this.amountSat,
       description: description ?? this.description,
       isFetchingFeeInfo: isFetchingFeeInfo ?? this.isFetchingFeeInfo,
@@ -87,6 +92,7 @@ class ReceiveSatsState extends Equatable {
 
   @override
   List<Object?> get props => [
+        amountController,
         amountSat,
         description,
         isFetchingFeeInfo,
