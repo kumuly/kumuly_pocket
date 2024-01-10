@@ -1,4 +1,4 @@
-import 'package:kumuly_pocket/features/pocket/pocket_payments_history_state.dart';
+import 'package:kumuly_pocket/features/pocket/payments_history/pocket_payments_history_state.dart';
 import 'package:kumuly_pocket/services/lightning_node_service.dart';
 import 'package:kumuly_pocket/view_models/payment.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

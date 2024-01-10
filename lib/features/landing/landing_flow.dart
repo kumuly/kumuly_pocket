@@ -56,7 +56,7 @@ class LandingFlow extends ConsumerWidget {
         LandingStoryScreen(
           coverImageAssetPath: 'assets/images/mock_up_promo.png',
           icon: const Text(
-            '🏪',
+            '📍',
             style: TextStyle(
               fontSize: 24,
             ),

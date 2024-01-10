@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:kumuly_pocket/theme/palette.dart';
+import 'package:lottie/lottie.dart';
 
 class LazyList extends StatelessWidget {
   const LazyList({
@@ -9,6 +11,7 @@ class LazyList extends StatelessWidget {
     this.hasMore = true,
     this.isLoading = false,
     this.isLoadingError = false,
+    this.loadingIndicator,
     this.emptyIndicator,
     this.errorIndicator,
     this.noMoreItemsIndicator,
@@ -24,6 +27,7 @@ class LazyList extends StatelessWidget {
   final bool hasMore;
   final bool isLoading;
   final bool isLoadingError;
+  final Widget? loadingIndicator;
   final Widget? emptyIndicator;
   final Widget? errorIndicator;
   final Widget? noMoreItemsIndicator;
@@ -34,55 +38,50 @@ class LazyList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      controller: scrollController,
-      scrollDirection: scrollDirection,
-      reverse: reverse,
-      padding: EdgeInsets.zero,
-      shrinkWrap: true,
-      physics: neverScrollable ? const NeverScrollableScrollPhysics() : null,
-      itemCount: items.length +
-          (isLoading ||
-                  isLoadingError && errorIndicator != null ||
-                  !hasMore && noMoreItemsIndicator != null ||
-                  items.isEmpty && emptyIndicator != null
-              ? 1
-              : 0),
-      itemBuilder: (context, index) {
-        // If we're at the end of the loaded items and it's loading, show a spinner
-        if (isLoading && index == items.length) {
-          return const Center(child: CircularProgressIndicator());
-        }
+    if (!isLoading &&
+        !isLoadingError &&
+        items.isEmpty &&
+        emptyIndicator != null) {
+      return emptyIndicator!;
+    } else {
+      return ListView.builder(
+        controller: scrollController,
+        scrollDirection: scrollDirection,
+        reverse: reverse,
+        padding: EdgeInsets.zero,
+        shrinkWrap: true,
+        physics: neverScrollable ? const NeverScrollableScrollPhysics() : null,
+        itemCount: items.length +
+            (isLoading ||
+                    isLoadingError && errorIndicator != null ||
+                    !hasMore && noMoreItemsIndicator != null
+                ? 1
+                : 0),
+        itemBuilder: (context, index) {
+          // If we're at the end of the loaded items and it's loading, show a spinner
+          if (isLoading && index == items.length) {
+            return loadingIndicator;
+          }
 
-        // If we're at the end of the loaded items and there's an error, show the error message
-        if (isLoadingError && index == items.length) {
-          return Center(
-            child: errorIndicator,
-          );
-        }
+          // If we're at the end of the loaded items and there's an error, show the error message
+          if (isLoadingError && index == items.length) {
+            return errorIndicator;
+          }
 
-        // If we're at the last item and there are no more items to load, show the end-of-list indicator
-        if (!hasMore && index == items.length) {
-          return Center(
-            child: noMoreItemsIndicator,
-          );
-        }
+          // If we're at the last item and there are no more items to load, show the end-of-list indicator
+          if (!hasMore && index == items.length) {
+            return noMoreItemsIndicator;
+          }
 
-        // Load more items when we're halfway through the last page of items
-        if (hasMore && !isLoading && index == items.length - limit ~/ 2) {
-          loadItems();
-        }
+          // Load more items when we're halfway through the last page of items
+          if (hasMore && !isLoading && index == items.length - limit ~/ 2) {
+            loadItems();
+          }
 
-        // Display an empty list indicator if applicable
-        if (items.isEmpty && index == 0 && !isLoading && !isLoadingError) {
-          return Center(
-            child: emptyIndicator,
-          );
-        }
-
-        // For indices 0 to items.length - 1, return the actual item
-        return items[index];
-      },
-    );
+          // For indices 0 to items.length - 1, return the actual item
+          return items[index];
+        },
+      );
+    }
   }
 }

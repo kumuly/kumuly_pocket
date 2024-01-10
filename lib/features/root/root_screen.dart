@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:kumuly_pocket/enums/app_network.dart';
+import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:kumuly_pocket/services/wallet_service.dart';
 import 'package:kumuly_pocket/services/lightning_node_service.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
@@ -38,7 +38,9 @@ class RootScreen extends ConsumerWidget {
       } else {
         // Wallet was created already, so can connect to node
         await ref.read(breezeSdkLightningNodeServiceProvider).connect(
-              AppNetwork.bitcoin,
+              ref.watch(
+                bitcoinNetworkProvider,
+              ),
             );
 
         // Check if a pin exists, else go to pin setup flow

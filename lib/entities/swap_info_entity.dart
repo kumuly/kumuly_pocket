@@ -7,22 +7,22 @@ class SwapInfoEntity extends Equatable {
     this.bitcoinAddress,
     this.maxAmount,
     this.minAmount,
-    this.proportionalChannelOpeningFee,
-    this.feeExpiry,
+    this.paymentHash,
+    this.paidAmountSat,
   );
 
   final String bitcoinAddress;
   final int maxAmount;
   final int minAmount;
-  final int? proportionalChannelOpeningFee; // in ppm
-  final String? feeExpiry;
+  final String? paymentHash;
+  final int? paidAmountSat;
 
   @override
   List<Object?> get props => [
         bitcoinAddress,
         maxAmount,
         minAmount,
-        proportionalChannelOpeningFee,
-        feeExpiry,
+        paymentHash,
+        paidAmountSat,
       ];
 }

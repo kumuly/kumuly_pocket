@@ -31,7 +31,10 @@ String? displayBitcoinAmount(DisplayBitcoinAmountRef ref, int? amountSat) {
   }
 
   return bitcoinUnit == BitcoinUnit.btc
-      ? ref.watch(satToBtcProvider(amountSat))?.toStringAsFixed(8)
+      ? ref
+          .watch(satToBtcProvider(amountSat))
+          ?.toStringAsFixed(8)
+          .replaceAll(RegExp(r"([.]*0+)(?!.*\d)"), "")
       : amountSat.toDouble().toStringAsFixed(0);
 }
 

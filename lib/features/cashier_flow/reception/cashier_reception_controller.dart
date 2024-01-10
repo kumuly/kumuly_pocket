@@ -14,11 +14,10 @@ class CashierReceptionController extends _$CashierReceptionController {
     if (invoice != null) {
       ref
           .read(breezeSdkLightningNodeServiceProvider)
-          .streamInvoicePayment(
+          .waitForPayment(
             bolt11: invoice.bolt11,
             paymentHash: invoice.paymentHash,
           )
-          .firstWhere((paid) => paid)
           .then((value) => onReceived());
     }
   }

@@ -5,6 +5,7 @@ import 'package:kumuly_pocket/entities/bip21_entity.dart';
 import 'package:kumuly_pocket/entities/invoice_entity.dart';
 import 'package:kumuly_pocket/entities/keysend_payment_details_entity.dart';
 import 'package:kumuly_pocket/entities/lnurl_pay_entity.dart';
+import 'package:kumuly_pocket/entities/paid_invoice_entity.dart';
 import 'package:kumuly_pocket/entities/payment_entity.dart';
 import 'package:kumuly_pocket/entities/payment_request_entity.dart';
 import 'package:kumuly_pocket/entities/recommended_fees_entity.dart';
@@ -34,8 +35,8 @@ abstract class LightningNodeRepository {
   Future<int> get onChainBalanceMsat;
   Future<int> get inboundLiquidityMsat;
   Future<RecommendedFeesEntity> get recommendedFees;
-  Stream<(String invoice, String paymentHash)> get paidInvoiceStream;
-  Future<String?> get inProgressSwap;
+  Stream<PaidInvoiceEntity> get paidInvoiceStream;
+  Future<SwapInfoEntity?> get inProgressSwap;
   Future<String> connect(
     Uint8List seed,
     AppNetwork network,
@@ -121,15 +122,32 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
   }
 
   @override
-  Stream<(String bolt11, String paymentHash)> get paidInvoiceStream =>
-      _breezSdk.invoicePaidStream
-          .map((event) => (event.bolt11, event.paymentHash));
+  Stream<PaidInvoiceEntity> get paidInvoiceStream =>
+      _breezSdk.invoicePaidStream.map(
+        (event) => PaidInvoiceEntity(
+          bolt11: event.bolt11,
+          paymentHash: event.paymentHash,
+          amountSat: event.payment!.amountMsat ~/ 1000,
+        ),
+      );
 
   @override
-  Future<String?> get inProgressSwap async {
+  Future<SwapInfoEntity?> get inProgressSwap async {
     SwapInfo? swap = await _breezSdk.inProgressSwap();
 
-    return swap?.bitcoinAddress;
+    print('swap in progress: $swap');
+
+    if (swap == null) {
+      return null;
+    }
+
+    return SwapInfoEntity(
+      swap.bitcoinAddress,
+      swap.maxAllowedDeposit,
+      swap.minAllowedDeposit,
+      String.fromCharCodes(swap.paymentHash),
+      swap.paidSats,
+    );
   }
 
   @override
@@ -387,25 +405,36 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
 
   @override
   Future<int> estimateChannelOpeningFeeMsat(int amountSat) async {
-    /* final response = await _breezSdk.openChannelFee(
+    try {
+      final req = OpenChannelFeeRequest(
         amountMsat: amountSat * 1000,
-    );
-    return response.feeMsat;*/
-    return 0;
+      );
+      final response = await _breezSdk.openChannelFee(req: req);
+      return response.feeMsat;
+    } catch (e) {
+      print(e);
+      throw EstimateChannelOpeningFeeException(e.toString());
+    }
   }
 
   @override
   Future<SwapInfoEntity> swapIn() async {
-    final swapInfo =
-        await _breezSdk.receiveOnchain(req: const ReceiveOnchainRequest());
+    try {
+      final swapInfo =
+          await _breezSdk.receiveOnchain(req: const ReceiveOnchainRequest());
 
-    return SwapInfoEntity(
-      swapInfo.bitcoinAddress,
-      swapInfo.maxAllowedDeposit,
-      swapInfo.minAllowedDeposit,
-      swapInfo.channelOpeningFees?.proportional,
-      swapInfo.channelOpeningFees?.validUntil,
-    );
+      print('swap info generated: $swapInfo');
+      return SwapInfoEntity(
+        swapInfo.bitcoinAddress,
+        swapInfo.maxAllowedDeposit,
+        swapInfo.minAllowedDeposit,
+        String.fromCharCodes(swapInfo.paymentHash),
+        swapInfo.paidSats,
+      );
+    } catch (e) {
+      print(e);
+      throw SwapInException(e.toString());
+    }
   }
 
   @override
@@ -613,6 +642,18 @@ class LnUrlPayMaxAmount implements Exception {
 /// The error message is the reason for the failure.
 class LnUrlPayFailure implements Exception {
   LnUrlPayFailure(this.message);
+
+  final String message;
+}
+
+class SwapInException implements Exception {
+  SwapInException(this.message);
+
+  final String message;
+}
+
+class EstimateChannelOpeningFeeException implements Exception {
+  EstimateChannelOpeningFeeException(this.message);
 
   final String message;
 }

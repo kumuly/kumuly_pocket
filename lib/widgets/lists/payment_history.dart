@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/enums/payment_direction.dart';
 import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
 import 'package:kumuly_pocket/providers/settings_providers.dart';
@@ -9,6 +10,7 @@ import 'package:kumuly_pocket/view_models/payment.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 import 'package:kumuly_pocket/widgets/lists/lazy_list.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:lottie/lottie.dart';
 
 class PaymentHistory extends StatelessWidget {
   const PaymentHistory({
@@ -32,6 +34,7 @@ class PaymentHistory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final copy = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
 
     return Column(
@@ -65,9 +68,16 @@ class PaymentHistory extends StatelessWidget {
           hasMore: hasMore,
           isLoading: isLoading,
           isLoadingError: isLoadingError,
-          emptyIndicator: null, // TODO: implement emptyIndicator
-          errorIndicator: null, // TODO: implement errorIndicator
-          noMoreItemsIndicator: null, // TODO: implement noMoreItemsIndicator
+          loadingIndicator: const PaymentHistoryLoadingIndicator(),
+          emptyIndicator: PaymentHistoryIndicatorText(
+            copy.noPaymentsYet,
+          ),
+          errorIndicator: PaymentHistoryIndicatorText(
+            copy.errorWhileLoadingPayments,
+          ),
+          noMoreItemsIndicator: PaymentHistoryIndicatorText(
+            copy.endOfPayments,
+          ),
         ),
       ],
     );
@@ -127,6 +137,57 @@ class PaymentHistoryItem extends ConsumerWidget {
               : Palette.neutral[70],
           FontWeight.w500,
         ),
+      ),
+    );
+  }
+}
+
+// Todo: extract this to a separate file as it can be used in multiple places
+class PaymentHistoryLoadingIndicator extends StatelessWidget {
+  const PaymentHistoryLoadingIndicator({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      titleAlignment: ListTileTitleAlignment.center,
+      title: LottieBuilder.asset(
+        'assets/lottie/loading_animation.json',
+        width: 96.0,
+        height: 24.0,
+        delegates: LottieDelegates(
+          values: [
+            ValueDelegate.color(
+              const ['**'],
+              value: Palette.neutral[50],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class PaymentHistoryIndicatorText extends StatelessWidget {
+  const PaymentHistoryIndicatorText(this.text, {super.key});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: kSpacing5,
+      ),
+      titleAlignment: ListTileTitleAlignment.center,
+      title: Text(
+        text,
+        style: textTheme.body3(
+          Palette.neutral[50],
+          FontWeight.w500,
+        ),
+        textAlign: TextAlign.center,
       ),
     );
   }

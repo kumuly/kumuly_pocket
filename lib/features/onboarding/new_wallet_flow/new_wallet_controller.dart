@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kumuly_pocket/entities/mnemonic_entity.dart';
-import 'package:kumuly_pocket/enums/app_network.dart';
 import 'package:kumuly_pocket/enums/mnemonic_language.dart';
 import 'package:kumuly_pocket/features/onboarding/new_wallet_flow/new_wallet_state.dart';
+import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:kumuly_pocket/services/wallet_service.dart';
 import 'package:kumuly_pocket/services/lightning_node_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -106,7 +106,9 @@ class NewWalletController extends _$NewWalletController {
             breezeSdkLightningNodeServiceProvider,
           )
           .connect(
-            AppNetwork.bitcoin, // Todo: Get network from App Network Provider
+            ref.watch(
+              bitcoinNetworkProvider,
+            ), // Todo: Get network from App Network Provider
             mnemonic: MnemonicEntity(
               words: state.mnemonicWords,
               language: state.language,
