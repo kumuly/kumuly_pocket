@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_controller.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_reception_controller.dart';
@@ -19,34 +20,41 @@ class ReceiveSatsInvoicesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
-    // Watch the reception controller to start listening for the payment
-    ref.watch(receiveSatsReceptionControllerProvider);
+    final router = GoRouter.of(context);
+    final pageViewController = ref
+        .read(pageViewControllerProvider(kReceiveSatsFlowPageViewId).notifier);
 
     final state = ref.watch(receiveSatsControllerProvider);
-    final bip21Uri = state.bip21Uri;
+
+    // Watch the reception controller to start listening for the payment
+    ref.watch(receiveSatsReceptionControllerProvider);
 
     final copy = AppLocalizations.of(context)!;
 
     return PopScope(
       canPop: false,
-      onPopInvoked: (canPop) => ref
-          .read(pageViewControllerProvider(kReceiveSatsFlowPageViewId).notifier)
-          .previousPage(),
+      onPopInvoked: (canPop) => pageViewController.previousPage(),
       child: Scaffold(
         backgroundColor: Palette.neutral[20],
         appBar: AppBar(
           title: Text(
             copy.receiveBitcoin,
-            style: Theme.of(context).textTheme.display4(
-                  Palette.neutral[100]!,
-                  FontWeight.w600,
-                ),
+            style: textTheme.display4(
+              Palette.neutral[100]!,
+              FontWeight.w600,
+            ),
           ),
           centerTitle: true,
           backgroundColor: Colors.transparent,
           elevation: 0,
           surfaceTintColor: Palette.neutral[100]!,
           iconTheme: IconThemeData(color: Palette.neutral[100]!),
+          actions: [
+            CloseButton(
+              color: Palette.neutral[70],
+              onPressed: router.pop,
+            ),
+          ],
         ),
         body: SingleChildScrollView(
           child: Padding(
@@ -56,7 +64,7 @@ class ReceiveSatsInvoicesScreen extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  copy.copyCodeOrScanQR,
+                  copy.copyInvoiceOrScanQR,
                   style:
                       textTheme.display2(Palette.neutral[70], FontWeight.w400),
                 ),
@@ -242,7 +250,7 @@ class ReceiveSatsInvoicesScreen extends ConsumerWidget {
                                 },
                               );
                             },
-                            child: QrImageView(data: bip21Uri!),
+                            child: QrImageView(data: state.bip21Uri!),
                           ),
                         ),
                         const SizedBox(height: kSpacing3),

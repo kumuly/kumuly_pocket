@@ -10,6 +10,7 @@ import 'package:kumuly_pocket/view_models/payment.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 import 'package:kumuly_pocket/widgets/lists/lazy_list.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:lottie/lottie.dart';
 
 class PaymentHistory extends StatelessWidget {
   const PaymentHistory({
@@ -67,6 +68,7 @@ class PaymentHistory extends StatelessWidget {
           hasMore: hasMore,
           isLoading: isLoading,
           isLoadingError: isLoadingError,
+          loadingIndicator: const PaymentHistoryLoadingIndicator(),
           emptyIndicator: PaymentHistoryIndicatorText(
             copy.noPaymentsYet,
           ),
@@ -134,6 +136,31 @@ class PaymentHistoryItem extends ConsumerWidget {
               ? Palette.success[50]
               : Palette.neutral[70],
           FontWeight.w500,
+        ),
+      ),
+    );
+  }
+}
+
+// Todo: extract this to a separate file as it can be used in multiple places
+class PaymentHistoryLoadingIndicator extends StatelessWidget {
+  const PaymentHistoryLoadingIndicator({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      titleAlignment: ListTileTitleAlignment.center,
+      title: LottieBuilder.asset(
+        'assets/lottie/loading_animation.json',
+        width: 96.0,
+        height: 24.0,
+        delegates: LottieDelegates(
+          values: [
+            ValueDelegate.color(
+              const ['**'],
+              value: Palette.neutral[50],
+            ),
+          ],
         ),
       ),
     );

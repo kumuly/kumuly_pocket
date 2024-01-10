@@ -11,6 +11,7 @@ class LazyList extends StatelessWidget {
     this.hasMore = true,
     this.isLoading = false,
     this.isLoadingError = false,
+    this.loadingIndicator,
     this.emptyIndicator,
     this.errorIndicator,
     this.noMoreItemsIndicator,
@@ -26,6 +27,7 @@ class LazyList extends StatelessWidget {
   final bool hasMore;
   final bool isLoading;
   final bool isLoadingError;
+  final Widget? loadingIndicator;
   final Widget? emptyIndicator;
   final Widget? errorIndicator;
   final Widget? noMoreItemsIndicator;
@@ -58,7 +60,7 @@ class LazyList extends StatelessWidget {
         itemBuilder: (context, index) {
           // If we're at the end of the loaded items and it's loading, show a spinner
           if (isLoading && index == items.length) {
-            return const LazyListLoadingIndicator();
+            return loadingIndicator;
           }
 
           // If we're at the end of the loaded items and there's an error, show the error message
@@ -81,29 +83,5 @@ class LazyList extends StatelessWidget {
         },
       );
     }
-  }
-}
-
-class LazyListLoadingIndicator extends StatelessWidget {
-  const LazyListLoadingIndicator({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      titleAlignment: ListTileTitleAlignment.center,
-      title: LottieBuilder.asset(
-        'assets/lottie/loading_animation.json',
-        width: 96.0,
-        height: 24.0,
-        delegates: LottieDelegates(
-          values: [
-            ValueDelegate.color(
-              const ['**'],
-              value: Palette.neutral[50],
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

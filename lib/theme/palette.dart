@@ -24,14 +24,14 @@ class Palette {
     25: Color.fromARGB(255, 200, 193, 205),
   };
 
-  static const Map<int, Color> organge = {
+  static const Map<int, Color> orange = {
     100: Color.fromARGB(255, 255, 139, 41),
     75: Color.fromARGB(255, 255, 175, 108),
     50: Color.fromARGB(255, 255, 204, 161),
     25: Color.fromARGB(255, 255, 233, 215),
   };
 
-  static const Map<int, Color> portlandOrgange = {
+  static const Map<int, Color> portlandOrange = {
     100: Color.fromARGB(255, 255, 85, 54),
     75: Color.fromARGB(255, 255, 151, 129),
     50: Color.fromARGB(255, 255, 192, 180),

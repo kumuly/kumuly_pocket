@@ -1,15 +1,14 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/entities/invoice_entity.dart';
 import 'package:kumuly_pocket/entities/keysend_payment_details_entity.dart';
 import 'package:kumuly_pocket/entities/mnemonic_entity.dart';
+import 'package:kumuly_pocket/entities/paid_invoice_entity.dart';
 import 'package:kumuly_pocket/entities/payment_entity.dart';
-import 'package:kumuly_pocket/entities/swap_in_info_entity.dart';
+import 'package:kumuly_pocket/entities/swap_info_entity.dart';
 import 'package:kumuly_pocket/enums/app_network.dart';
-import 'package:kumuly_pocket/enums/mnemonic_language.dart';
 import 'package:kumuly_pocket/enums/on_chain_fee_velocity.dart';
 import 'package:kumuly_pocket/enums/payment_request_type.dart';
 import 'package:kumuly_pocket/environment_variables.dart';
@@ -50,8 +49,11 @@ Future<int> spendableBalanceSat(SpendableBalanceSatRef ref) {
 }
 
 abstract class LightningNodeService {
-  Stream<bool> streamInvoicePayment({String? bolt11, String? paymentHash});
-  Stream<String> inProgressSwapPolling(Duration interval);
+  Future<PaidInvoiceEntity> waitForPayment({
+    String? bolt11,
+    String? paymentHash,
+  });
+  Stream<SwapInfoEntity> inProgressSwapPolling(Duration interval);
   Future<void> connect(
     AppNetwork network, {
     MnemonicEntity? mnemonic,
@@ -75,7 +77,7 @@ abstract class LightningNodeService {
   );
   Future<void> swapOut(String bitcoinAddress, int amountSat, int satPerVbyte);
   Future<int> getChannelOpeningFeeEstimate(int amountSat);
-  Future<SwapInInfoEntity> getSwapInInfo(int amountSat);
+  Future<SwapInfoEntity> getSwapInInfo();
   Future<int> get spendableBalanceSat;
   Future<int> get onChainBalanceSat;
   //Future<ReceptionAmountLimitsEntity> get receptionAmountLimits;
@@ -173,26 +175,9 @@ class BreezSdkLightningNodeService implements LightningNodeService {
   }
 
   @override
-  Future<SwapInInfoEntity> getSwapInInfo(int amountSat) async {
+  Future<SwapInfoEntity> getSwapInInfo() async {
     try {
-      final swapInfoEntity = await _lightningNodeRepository.swapIn();
-      final feeEstimate = swapInfoEntity.proportionalChannelOpeningFee == null
-          ? null
-          : swapInfoEntity.proportionalChannelOpeningFee! *
-              amountSat ~/
-              1000000;
-      final feeExpiryTimestamp = swapInfoEntity.feeExpiry == null
-          ? null
-          : DateTime.parse(swapInfoEntity.feeExpiry!).millisecondsSinceEpoch ~/
-              1000;
-
-      return SwapInInfoEntity(
-        swapInfoEntity.bitcoinAddress,
-        swapInfoEntity.maxAmount,
-        swapInfoEntity.minAmount,
-        feeEstimate,
-        feeExpiryTimestamp,
-      );
+      return _lightningNodeRepository.swapIn();
     } catch (e) {
       print(e);
       throw GetSwapInInfoException(e.toString());
@@ -279,13 +264,12 @@ class BreezSdkLightningNodeService implements LightningNodeService {
       _lightningNodeRepository.getPayments(offset: offset, limit: limit);
 
   @override
-  Stream<bool> streamInvoicePayment({String? bolt11, String? paymentHash}) {
-    return _lightningNodeRepository.paidInvoiceStream.map((event) {
-      print('paidInvoiceStream: $event');
-      final paidInvoice = event.$1;
-      final paidHash = event.$2;
-      if ((bolt11 != null && bolt11 == paidInvoice) ||
-          (paymentHash != null && paymentHash == paidHash)) {
+  Future<PaidInvoiceEntity> waitForPayment(
+      {String? bolt11, String? paymentHash}) {
+    return _lightningNodeRepository.paidInvoiceStream.firstWhere((event) {
+      print('waitForPayment: $event');
+      if ((bolt11 != null && bolt11 == event.bolt11) ||
+          (paymentHash != null && paymentHash == event.paymentHash)) {
         return true;
       }
       return false;
@@ -293,14 +277,14 @@ class BreezSdkLightningNodeService implements LightningNodeService {
   }
 
   @override
-  Stream<String> inProgressSwapPolling(Duration interval) {
+  Stream<SwapInfoEntity> inProgressSwapPolling(Duration interval) {
     // Use a StreamController to control the stream
-    var controller = StreamController<String>();
+    var controller = StreamController<SwapInfoEntity>();
 
     var timer = Timer.periodic(interval, (Timer t) async {
-      var swapAddress = await _lightningNodeRepository.inProgressSwap;
-      if (swapAddress != null) {
-        controller.add(swapAddress);
+      var swap = await _lightningNodeRepository.inProgressSwap;
+      if (swap != null) {
+        controller.add(swap);
       }
     });
 

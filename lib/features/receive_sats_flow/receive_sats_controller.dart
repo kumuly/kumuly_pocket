@@ -49,8 +49,6 @@ class ReceiveSatsController extends _$ReceiveSatsController {
     state = state.copyWith(
       feeEstimate: channelOpeningFeeEstimate,
     );
-
-    print('channel opening fee estimate: $channelOpeningFeeEstimate');
   }
 
   void passFeesToPayerChangeHandler(bool value) {
@@ -61,8 +59,7 @@ class ReceiveSatsController extends _$ReceiveSatsController {
     try {
       final nodeServiceNotifier =
           ref.read(breezeSdkLightningNodeServiceProvider);
-      final swapInInfo =
-          await nodeServiceNotifier.getSwapInInfo(state.amountToPaySat!);
+      final swapInInfo = await nodeServiceNotifier.getSwapInInfo();
 
       state = state.copyWith(
         onChainAddress: swapInInfo.bitcoinAddress,

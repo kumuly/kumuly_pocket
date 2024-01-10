@@ -221,31 +221,32 @@ class ReceiveSatsFeeBottomSheetModalFeeSection extends ConsumerWidget {
             ],
           ),
         ),
-        SwitchListTile(
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: kSpacing4,
-          ),
-          title: Text(
-            'Pass fees on to payer',
-            style: textTheme.body3(
-              Palette.neutral[80],
-              FontWeight.w400,
+        if (state.feeEstimate! > 0)
+          SwitchListTile(
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: kSpacing4,
             ),
-          ),
-          subtitle: Text(
-            'Switch off to bear the fees.',
-            style: textTheme.caption1(
-              Palette.neutral[50],
-              FontWeight.w400,
+            title: Text(
+              'Pass fees on to payer',
+              style: textTheme.body3(
+                Palette.neutral[80],
+                FontWeight.w400,
+              ),
             ),
+            subtitle: Text(
+              'Switch off to bear the fees.',
+              style: textTheme.caption1(
+                Palette.neutral[50],
+                FontWeight.w400,
+              ),
+            ),
+            value: !state.assumeFee,
+            inactiveTrackColor: Palette.neutral[40],
+            inactiveThumbColor: Palette.neutral[60],
+            trackOutlineColor: MaterialStateProperty.all(Colors.transparent),
+            activeColor: Palette.russianViolet[100],
+            onChanged: notifier.passFeesToPayerChangeHandler,
           ),
-          value: !state.assumeFee,
-          inactiveTrackColor: Palette.neutral[40],
-          inactiveThumbColor: Palette.neutral[60],
-          trackOutlineColor: MaterialStateProperty.all(Colors.transparent),
-          activeColor: Palette.russianViolet[100],
-          onChanged: notifier.passFeesToPayerChangeHandler,
-        ),
         Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: kSpacing4,
@@ -315,12 +316,13 @@ class ReceiveSatsFeeBottomSheetModalGenerateInvoiceButton
           onPressed: () async {
             try {
               final invoiceCreation = notifier.createInvoice();
+              final swapCreation = notifier.createOnChainAddress();
               // Show loading dialog
               showTransitionDialog(context, copy.oneMomentPlease);
               // Remove the keyboard from inputting the amount
               FocusScope.of(context).unfocus();
               // Wait for the invoice to be created
-              await invoiceCreation;
+              await Future.wait([invoiceCreation, swapCreation]);
               // Pop one time for the bottom sheet
               router.pop();
               // Pop another time for the transition modal
@@ -332,7 +334,7 @@ class ReceiveSatsFeeBottomSheetModalGenerateInvoiceButton
                   .nextPage();
             } catch (e) {
               print(e);
-              // Pop  the transition dialog
+              // Pop the transition dialog
               router.pop();
             }
           },

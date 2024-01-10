@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/enums/chat_message_status.dart';
 import 'package:kumuly_pocket/enums/chat_message_type.dart';
-import 'package:kumuly_pocket/enums/payment_direction.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/view_models/contact_list_item.dart';
