@@ -3,8 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
+import 'package:kumuly_pocket/enums/bitcoin_unit.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_controller.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_reception_controller.dart';
+import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
+import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
@@ -21,6 +24,7 @@ class ReceiveSatsInvoicesScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
     final router = GoRouter.of(context);
+    final copy = AppLocalizations.of(context)!;
     final pageViewController = ref
         .read(pageViewControllerProvider(kReceiveSatsFlowPageViewId).notifier);
 
@@ -29,7 +33,14 @@ class ReceiveSatsInvoicesScreen extends ConsumerWidget {
     // Watch the reception controller to start listening for the payment
     ref.watch(receiveSatsReceptionControllerProvider);
 
-    final copy = AppLocalizations.of(context)!;
+    final amountToPay = ref.watch(
+      displayBitcoinAmountProvider(
+        state.amountToPaySat,
+      ),
+    );
+    final unit = ref.watch(
+      bitcoinUnitProvider,
+    );
 
     return PopScope(
       canPop: false,
@@ -89,146 +100,83 @@ class ReceiveSatsInvoicesScreen extends ConsumerWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(kSpacing3),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              state.onChainAddress == null ||
-                                      state.onChainAddress!.isEmpty ||
-                                      state.amountSat! >
-                                          state.onChainMaxAmount! ||
-                                      state.amountSat! < state.onChainMinAmount!
-                                  ? Column(
-                                      children: [
-                                        state.onChainAddress == null ||
-                                                state.onChainAddress!.isEmpty
-                                            ? Text(
-                                                copy.somethingWentWrong,
-                                                style: textTheme.display2(
-                                                  Palette.neutral[40],
-                                                  FontWeight.w400,
-                                                ),
-                                                textAlign: TextAlign.center,
-                                              )
-                                            : state.amountSat! >
-                                                    state.onChainMaxAmount!
-                                                ? Text(
-                                                    copy.amountTooBigForOnChain,
-                                                    style: textTheme.display2(
-                                                      Palette.neutral[40],
-                                                      FontWeight.w400,
-                                                    ),
-                                                    textAlign: TextAlign.center,
-                                                  )
-                                                : Text(
-                                                    copy.amountTooSmallForOnChain,
-                                                    style: textTheme.display2(
-                                                      Palette.neutral[40],
-                                                      FontWeight.w400,
-                                                    ),
-                                                    textAlign: TextAlign.center,
-                                                  ),
-                                        Text(
-                                          copy.bitcoinAddress,
-                                          style: textTheme.display2(
-                                            Palette.neutral[40],
-                                            FontWeight.w500,
-                                          ),
-                                          textAlign: TextAlign.center,
-                                        )
-                                      ],
-                                    )
-                                  : InkWell(
-                                      onTap: () {
-                                        Clipboard.setData(ClipboardData(
-                                                text: state.onChainAddress!))
-                                            .then(
-                                          (_) {
-                                            // Optionally, show a confirmation message to the user.
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(
-                                              SnackBar(
-                                                content: Text(
-                                                  copy.bitcoinAddressCopied,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        );
-                                      },
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            state.partialOnChainAddress!,
-                                            style: textTheme.display2(
-                                              Palette.neutral[40],
-                                              FontWeight.w400,
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                          Text(
-                                            copy.copyBitcoinAddress,
-                                            style: textTheme.display2(
-                                              Palette.lilac[100],
-                                              FontWeight.w500,
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                            ],
+                        ListTile(
+                          title: Text(
+                            state.partialOnChainAddress!,
+                            style: textTheme.display2(
+                              Palette.neutral[40],
+                              FontWeight.w400,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                        ),
-                        Divider(
-                          color: Palette.neutral[20],
-                          thickness: 1,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(kSpacing3),
-                          child: InkWell(
-                            onTap: () {
-                              Clipboard.setData(ClipboardData(
-                                      text: state.invoice!.bolt11))
-                                  .then(
-                                (_) {
-                                  // Optionally, show a confirmation message to the user.
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content:
-                                          Text(copy.lightningInvoiceCopied),
-                                    ),
-                                  );
-                                },
-                              );
-                            },
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  state.partialInvoice!,
-                                  style: textTheme.display2(
-                                    Palette.neutral[40],
-                                    FontWeight.w400,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                                Text(
-                                  copy.copyLightningInvoice,
-                                  style: textTheme.display2(
-                                    Palette.lilac[100],
-                                    FontWeight.w500,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                ),
-                              ],
+                          subtitle: Text(
+                            copy.copyBitcoinAddress,
+                            style: textTheme.display2(
+                              Palette.lilac[100],
+                              FontWeight.w500,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          shape: Border(
+                            bottom: BorderSide(
+                              color: Palette.neutral[20]!,
+                              width: 1,
                             ),
                           ),
+                          onTap: () {
+                            Clipboard.setData(
+                                    ClipboardData(text: state.onChainAddress!))
+                                .then(
+                              (_) {
+                                // Optionally, show a confirmation message to the user.
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      copy.bitcoinAddressCopied,
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
                         ),
-                        Divider(
-                          color: Palette.neutral[20],
-                          thickness: 1,
+                        ListTile(
+                          title: Text(
+                            state.partialInvoice!,
+                            style: textTheme.display2(
+                              Palette.neutral[40],
+                              FontWeight.w400,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          subtitle: Text(
+                            copy.copyLightningInvoice,
+                            style: textTheme.display2(
+                              Palette.lilac[100],
+                              FontWeight.w500,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          shape: Border(
+                            bottom: BorderSide(
+                              color: Palette.neutral[20]!,
+                              width: 1,
+                            ),
+                          ),
+                          onTap: () {
+                            Clipboard.setData(
+                                    ClipboardData(text: state.invoice!.bolt11))
+                                .then(
+                              (_) {
+                                // Optionally, show a confirmation message to the user.
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(copy.lightningInvoiceCopied),
+                                  ),
+                                );
+                              },
+                            );
+                          },
                         ),
                         Padding(
                           padding: const EdgeInsets.only(
@@ -250,7 +198,22 @@ class ReceiveSatsInvoicesScreen extends ConsumerWidget {
                                 },
                               );
                             },
-                            child: QrImageView(data: state.bip21Uri!),
+                            child: Column(
+                              children: [
+                                QrImageView(
+                                  data: state.bip21Uri!,
+                                ),
+                                Text(
+                                  'Can be scanned by or copied to both Bitcoin and Lightning wallets'
+                                      .toUpperCase(),
+                                  style: textTheme.caption1(
+                                    Palette.neutral[50],
+                                    FontWeight.w500,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                         const SizedBox(height: kSpacing3),
@@ -259,7 +222,7 @@ class ReceiveSatsInvoicesScreen extends ConsumerWidget {
                           children: [
                             IconButton(
                               icon: DynamicIcon(
-                                icon: 'assets/icons/save_qr_code.svg',
+                                icon: Icons.edit,
                                 color: Palette.neutral[70],
                               ),
                               onPressed: () {},
@@ -288,6 +251,74 @@ class ReceiveSatsInvoicesScreen extends ConsumerWidget {
                       ],
                     ),
                   ),
+                ),
+                const SizedBox(height: kSpacing4),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: kSpacing5,
+                  ),
+                  child: RichText(
+                    text: TextSpan(
+                      text: 'When using the ',
+                      style:
+                          textTheme.body2(Palette.neutral[60], FontWeight.w500),
+                      children: [
+                        TextSpan(
+                          text: 'Bitcoin address',
+                          style: textTheme.body2(
+                              Palette.neutral[60], FontWeight.w700),
+                        ),
+                        TextSpan(
+                          text: ', make sure to pass the correct amount:',
+                          style: textTheme.body2(
+                              Palette.neutral[60], FontWeight.w500),
+                        ),
+                      ],
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: kSpacing2),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        Clipboard.setData(
+                          ClipboardData(
+                            text: '${amountToPay!} ${unit.code}',
+                          ),
+                        ).then(
+                          (_) {
+                            // Optionally, show a confirmation message to the user.
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    'Amount to pay copied in ${unit.code}'),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                      icon: const Icon(Icons.copy),
+                      iconSize: 16,
+                      color: Palette.lilac[100],
+                    ),
+                    Text(
+                      amountToPay!,
+                      style: textTheme.display3(
+                        Palette.neutral[80],
+                        FontWeight.w400,
+                      ),
+                    ),
+                    Text(
+                      ' ${unit.code}',
+                      style: textTheme.caption1(
+                        Palette.neutral[60],
+                        FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

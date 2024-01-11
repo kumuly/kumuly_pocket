@@ -5,7 +5,7 @@ import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/features/activity/paid_promos/paid_promos_controller.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+//import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:kumuly_pocket/view_models/promo.dart';
 import 'package:kumuly_pocket/widgets/containers/ripped_paper_container.dart';
 import 'package:kumuly_pocket/widgets/tabs/chip_tab.dart';
@@ -17,9 +17,8 @@ class PaidPromosScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final copy = AppLocalizations.of(context)!;
+    //final copy = AppLocalizations.of(context)!;
     final TextTheme textTheme = Theme.of(context).textTheme;
-    final router = GoRouter.of(context);
 
     final notifier = ref.read(paidPromosControllerProvider.notifier);
     final state = ref.watch(paidPromosControllerProvider);
@@ -29,10 +28,10 @@ class PaidPromosScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(
           'Paid promos',
-          style: Theme.of(context).textTheme.display4(
-                Palette.neutral[100]!,
-                FontWeight.w600,
-              ),
+          style: textTheme.display4(
+            Palette.neutral[100]!,
+            FontWeight.w600,
+          ),
         ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
@@ -244,7 +243,7 @@ class ActivePromoCard extends StatelessWidget {
 }
 
 class RedeemedPromoCard extends StatelessWidget {
-  const RedeemedPromoCard(this.promo, {Key? key}) : super(key: key);
+  const RedeemedPromoCard(this.promo, {super.key});
 
   final Promo promo;
 
