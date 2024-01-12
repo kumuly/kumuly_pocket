@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/view_models/invoice.dart';
 
 @immutable
@@ -7,50 +8,66 @@ class ReceiveSatsState extends Equatable {
   const ReceiveSatsState({
     required this.amountController,
     this.amountSat,
+    // this.label, Todo: add label with default value being the name of the user
     this.description,
-    this.expiry,
+    required this.descriptionController,
+    required this.hoursTillExpiry,
+    required this.hoursTillExpiryController,
     this.feeEstimate,
     this.onChainMaxAmount,
     this.onChainMinAmount,
     this.assumeFee = false,
     this.invoice,
     this.onChainAddress,
+    this.isFetchingEditedInvoice = false,
   });
 
   final TextEditingController amountController;
   final int? amountSat;
-  final int? expiry;
+  final int hoursTillExpiry;
+  final TextEditingController hoursTillExpiryController;
   final String? description;
+  final TextEditingController descriptionController;
   final int? feeEstimate;
   final int? onChainMaxAmount;
   final int? onChainMinAmount;
   final bool assumeFee;
   final Invoice? invoice;
   final String? onChainAddress;
+  final bool isFetchingEditedInvoice;
 
   ReceiveSatsState copyWith({
     TextEditingController? amountController,
     int? amountSat,
     String? description,
-    int? expiry,
+    TextEditingController? descriptionController,
+    int? hoursTillExpiry,
+    TextEditingController? hoursTillExpiryController,
     int? feeEstimate,
     int? onChainMaxAmount,
     int? onChainMinAmount,
     bool? assumeFee,
     Invoice? invoice,
     String? onChainAddress,
+    bool? isFetchingEditedInvoice,
   }) {
     return ReceiveSatsState(
       amountController: amountController ?? this.amountController,
       amountSat: amountSat ?? this.amountSat,
       description: description ?? this.description,
-      expiry: expiry ?? this.expiry,
+      descriptionController:
+          descriptionController ?? this.descriptionController,
+      hoursTillExpiry: hoursTillExpiry ?? this.hoursTillExpiry,
+      hoursTillExpiryController:
+          hoursTillExpiryController ?? this.hoursTillExpiryController,
       feeEstimate: feeEstimate ?? this.feeEstimate,
       onChainMaxAmount: onChainMaxAmount ?? this.onChainMaxAmount,
       onChainMinAmount: onChainMinAmount ?? this.onChainMinAmount,
       assumeFee: assumeFee ?? this.assumeFee,
       invoice: invoice ?? this.invoice,
       onChainAddress: onChainAddress ?? this.onChainAddress,
+      isFetchingEditedInvoice:
+          isFetchingEditedInvoice ?? this.isFetchingEditedInvoice,
     );
   }
 
@@ -96,7 +113,10 @@ class ReceiveSatsState extends Equatable {
       return invoice!.bolt11;
     }
 
-    return 'bitcoin:$onChainAddress?amount=$amountToPaySat&lightning=${invoice!.bolt11}';
+    return 'bitcoin:$onChainAddress?'
+        'amount=${amountToPaySat! / 100000000.toDouble()}&'
+        '${description != null && description!.isNotEmpty ? 'message=$description&' : ''}'
+        'lightning=${invoice!.bolt11}';
   }
 
   bool get isSwapInPossible {
@@ -132,17 +152,46 @@ class ReceiveSatsState extends Equatable {
     return false;
   }
 
+  int get expiry {
+    return hoursTillExpiry * 60 * 60;
+  }
+
+  String get formattedExpiry {
+    final DateTime date;
+    if (hoursTillExpiryController.text == '') {
+      date = DateTime.now()
+          .add(const Duration(hours: kDefaultHoursTillInvoiceExpiry));
+    } else {
+      date = DateTime.now()
+          .add(Duration(hours: int.parse(hoursTillExpiryController.text)));
+    }
+
+    return '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute}';
+  }
+
+  String get invoiceInfoToShare {
+    return '${bip21Uri!}\n\n'
+        'Lightning Invoice: ${invoice!.bolt11}\n'
+        'Bitcoin address: $onChainAddress\n'
+        'Amount: $amountToPaySat sats or ${amountToPaySat! / 100000000.toDouble()} BTC\n'
+        'Description: ${descriptionController.text}\n'
+        'Expiry: $formattedExpiry';
+  }
+
   @override
   List<Object?> get props => [
         amountController,
         amountSat,
         description,
-        expiry,
+        descriptionController,
+        hoursTillExpiry,
+        hoursTillExpiryController,
         feeEstimate,
         onChainMaxAmount,
         onChainMinAmount,
         assumeFee,
         invoice,
         onChainAddress,
+        isFetchingEditedInvoice,
       ];
 }

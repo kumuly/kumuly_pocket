@@ -49,11 +49,7 @@ abstract class LightningNodeRepository {
   Future<InvoiceEntity> createInvoice({
     required int amountMsat,
     String? description,
-    Uint8List? preimage,
-    OpeningFeeParams? openingFeeParams,
-    bool? useDescriptionHash,
     int? expiry,
-    int? cltv,
   });
   Future<InvoiceEntity> decodeInvoice(String invoice);
   Future<PaymentRequestEntity> decodePaymentRequest(String paymentRequest);
@@ -212,15 +208,12 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
   Future<InvoiceEntity> createInvoice({
     required int amountMsat,
     String? description,
-    Uint8List? preimage,
-    OpeningFeeParams? openingFeeParams,
-    bool? useDescriptionHash,
     int? expiry,
-    int? cltv,
   }) async {
     final paymentRequest = ReceivePaymentRequest(
       amountMsat: amountMsat,
       description: description ?? '',
+      expiry: expiry,
     );
     final receivePaymentResponse =
         await _breezSdk.receivePayment(req: paymentRequest);

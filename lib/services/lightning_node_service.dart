@@ -60,7 +60,11 @@ abstract class LightningNodeService {
     String? inviteCode,
     String? partnerCredentials,
   });
-  Future<InvoiceEntity> createInvoice(int amountSat, String? description);
+  Future<InvoiceEntity> createInvoice(
+    int amountSat,
+    String? description,
+    int? expiry,
+  );
   Future<(int? minAmountSat, int? maxAmountSat)> getLnurlPayAmounts(
     String paymentLink,
   );
@@ -123,11 +127,15 @@ class BreezSdkLightningNodeService implements LightningNodeService {
 
   @override
   Future<InvoiceEntity> createInvoice(
-      int amountSat, String? description) async {
+    int amountSat,
+    String? description,
+    int? expiry,
+  ) async {
     final amountMsat = amountSat * 1000;
     return _lightningNodeRepository.createInvoice(
       amountMsat: amountMsat,
       description: description,
+      expiry: expiry,
     );
   }
 

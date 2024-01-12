@@ -61,7 +61,7 @@ class ChatSendBottomSheetModal extends ConsumerWidget {
               ),
               border: Border.all(color: Palette.neutral[40]!, width: 1),
             ),
-            // Your modal content goes here
+            // Modal content
             child: Stack(
               children: [
                 Positioned(

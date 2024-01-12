@@ -13,8 +13,8 @@ import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/buttons/primary_filled_button.dart';
 import 'package:kumuly_pocket/widgets/dialogs/transition_dialog.dart';
+import 'package:kumuly_pocket/widgets/loaders/label_with_loading_animation.dart';
 import 'package:kumuly_pocket/widgets/page_views/page_view_controller.dart';
-import 'package:lottie/lottie.dart';
 
 class ReceiveSatsFeesBottomSheetModal extends ConsumerWidget {
   const ReceiveSatsFeesBottomSheetModal({
@@ -25,25 +25,16 @@ class ReceiveSatsFeesBottomSheetModal extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final copy = AppLocalizations.of(context)!;
     final state = ref.watch(receiveSatsControllerProvider);
 
     return SizedBox(
       width: double.infinity,
       child: state.feeEstimate == null
           ? Center(
-              heightFactor: 10,
-              child: LottieBuilder.asset(
-                'assets/lottie/loading_animation.json',
-                width: 96.0,
-                height: 24.0,
-                delegates: LottieDelegates(
-                  values: [
-                    ValueDelegate.color(
-                      const ['**'],
-                      value: Palette.neutral[50],
-                    ),
-                  ],
-                ),
+              heightFactor: 5,
+              child: LabelWithLoadingAnimation(
+                '${copy.estimatingFees}...',
               ),
             )
           : const SingleChildScrollView(
@@ -187,14 +178,14 @@ class ReceiveSatsFeeBottomSheetModalFeeSection extends ConsumerWidget {
             horizontal: kSpacing4,
           ),
           title: Text(
-            'Estimated fee',
+            copy.estimatedFee,
             style: textTheme.display2(
               Palette.neutral[80],
               FontWeight.w500,
             ),
           ),
           subtitle: Text(
-            'Lightning channel opening fee',
+            copy.lightningChannelOpeningFee,
             style: textTheme.caption1(
               Palette.neutral[50],
               FontWeight.w400,
@@ -227,14 +218,14 @@ class ReceiveSatsFeeBottomSheetModalFeeSection extends ConsumerWidget {
               horizontal: kSpacing4,
             ),
             title: Text(
-              'Pass fees on to payer',
+              copy.passFeesOnToPayer,
               style: textTheme.body3(
                 Palette.neutral[80],
                 FontWeight.w400,
               ),
             ),
             subtitle: Text(
-              'Switch off to bear the fees.',
+              copy.switchOffToBearTheFees,
               style: textTheme.caption1(
                 Palette.neutral[50],
                 FontWeight.w400,
@@ -262,7 +253,7 @@ class ReceiveSatsFeeBottomSheetModalFeeSection extends ConsumerWidget {
             horizontal: kSpacing4,
           ),
           title: Text(
-            'Total to pay',
+            copy.totalToPay,
             style: textTheme.display2(
               Palette.success[50],
               FontWeight.w700,

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/enums/bitcoin_unit.dart';
+import 'package:kumuly_pocket/features/receive_sats_flow/pages/receive_sats_invoices_edit_bottom_sheet_modal.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_controller.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_reception_controller.dart';
 import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
@@ -14,6 +15,7 @@ import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 import 'package:kumuly_pocket/widgets/page_views/page_view_controller.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ReceiveSatsInvoicesScreen extends ConsumerWidget {
   const ReceiveSatsInvoicesScreen({
@@ -32,15 +34,6 @@ class ReceiveSatsInvoicesScreen extends ConsumerWidget {
 
     // Watch the reception controller to start listening for the payment
     ref.watch(receiveSatsReceptionControllerProvider);
-
-    final amountToPay = ref.watch(
-      displayBitcoinAmountProvider(
-        state.amountToPaySat,
-      ),
-    );
-    final unit = ref.watch(
-      bitcoinUnitProvider,
-    );
 
     return PopScope(
       canPop: false,
@@ -229,9 +222,11 @@ class ReceiveSatsInvoicesScreenInvoicesCard extends ConsumerWidget {
                     ),
                     Text(
                       state.isSwapInPossible
-                          ? 'Can be scanned by or copied to both Bitcoin and Lightning wallets'
+                          ? copy
+                              .canBeScannedByOrCopiedToBothBitcoinAndLightningWallets
                               .toUpperCase()
-                          : 'Can be scanned by or copied to Lightning compatible wallets'
+                          : copy
+                              .canBeScannedByOrCopiedToLightningCompatibleWallets
                               .toUpperCase(),
                       style: textTheme.caption1(
                         Palette.neutral[50],
@@ -252,7 +247,16 @@ class ReceiveSatsInvoicesScreenInvoicesCard extends ConsumerWidget {
                     icon: Icons.edit,
                     color: Palette.neutral[70],
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    showModalBottomSheet(
+                      isScrollControlled: true,
+                      backgroundColor: Colors.white,
+                      context: context,
+                      elevation: 0,
+                      builder: (context) =>
+                          const ReceiveSatsInvoicesEditBottomSheetModal(),
+                    );
+                  },
                 ),
                 const SizedBox(
                   width: kSpacing4,
@@ -270,7 +274,9 @@ class ReceiveSatsInvoicesScreenInvoicesCard extends ConsumerWidget {
                     icon: 'assets/icons/share.svg',
                     color: Palette.neutral[70],
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Share.share(state.invoiceInfoToShare);
+                  },
                 ),
               ],
             ),
@@ -288,6 +294,7 @@ class ReceiveSatsInvoicesScreenAmountSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
+    final copy = AppLocalizations.of(context)!;
 
     final state = ref.watch(receiveSatsControllerProvider);
     final amountToPay = ref.watch(
@@ -307,15 +314,15 @@ class ReceiveSatsInvoicesScreenAmountSection extends ConsumerWidget {
           ),
           child: RichText(
             text: TextSpan(
-              text: 'When sharing only the ',
+              text: copy.whenSharingOnlyTheBitcoinAddressPart1,
               style: textTheme.body2(Palette.neutral[60], FontWeight.w500),
               children: [
                 TextSpan(
-                  text: 'Bitcoin address',
+                  text: copy.whenSharingOnlyTheBitcoinAddressPart2,
                   style: textTheme.body2(Palette.neutral[60], FontWeight.w700),
                 ),
                 TextSpan(
-                  text: ', make sure to also pass the correct amount:',
+                  text: copy.whenSharingOnlyTheBitcoinAddressPart3,
                   style: textTheme.body2(Palette.neutral[60], FontWeight.w500),
                 ),
               ],
@@ -338,7 +345,8 @@ class ReceiveSatsInvoicesScreenAmountSection extends ConsumerWidget {
                     // Optionally, show a confirmation message to the user.
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text('Amount to pay copied in ${unit.code}'),
+                        content:
+                            Text('${copy.amountToPayCopiedIn} ${unit.code}'),
                       ),
                     );
                   },
@@ -374,8 +382,46 @@ class ReceiveSatsInvoicesScreenAmountTooSmallSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // TODO: implement build
-    throw UnimplementedError();
+    final textTheme = Theme.of(context).textTheme;
+    final copy = AppLocalizations.of(context)!;
+
+    final state = ref.watch(receiveSatsControllerProvider);
+    final minAmount = ref.watch(
+      displayBitcoinAmountProvider(
+        state.onChainMinAmount,
+      ),
+    );
+    final unit = ref.watch(
+      bitcoinUnitProvider,
+    );
+
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: kSpacing3,
+          ),
+          child: RichText(
+            text: TextSpan(
+              text: copy.minAmountToEnableOnChainReceivingPart1,
+              style: textTheme.body2(Palette.neutral[60], FontWeight.w500),
+              children: [
+                TextSpan(
+                  text: copy.minAmountToEnableOnChainReceivingPart2,
+                  style: textTheme.body2(Palette.neutral[60], FontWeight.w700),
+                ),
+                TextSpan(
+                  text:
+                      '${copy.minAmountToEnableOnChainReceivingPart3} $minAmount ${unit.code}.',
+                  style: textTheme.body2(Palette.neutral[60], FontWeight.w500),
+                ),
+              ],
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -384,7 +430,45 @@ class ReceiveSatsInvoicesScreenAmountTooBigSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // TODO: implement build
-    throw UnimplementedError();
+    final textTheme = Theme.of(context).textTheme;
+    final copy = AppLocalizations.of(context)!;
+
+    final state = ref.watch(receiveSatsControllerProvider);
+    final maxAmount = ref.watch(
+      displayBitcoinAmountProvider(
+        state.onChainMaxAmount,
+      ),
+    );
+    final unit = ref.watch(
+      bitcoinUnitProvider,
+    );
+
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: kSpacing3,
+          ),
+          child: RichText(
+            text: TextSpan(
+              text: copy.maxAmountToEnableOnChainReceivingPart1,
+              style: textTheme.body2(Palette.neutral[60], FontWeight.w500),
+              children: [
+                TextSpan(
+                  text: copy.maxAmountToEnableOnChainReceivingPart2,
+                  style: textTheme.body2(Palette.neutral[60], FontWeight.w700),
+                ),
+                TextSpan(
+                  text:
+                      '${copy.maxAmountToEnableOnChainReceivingPart3} $maxAmount ${unit.code}.',
+                  style: textTheme.body2(Palette.neutral[60], FontWeight.w500),
+                ),
+              ],
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ],
+    );
   }
 }

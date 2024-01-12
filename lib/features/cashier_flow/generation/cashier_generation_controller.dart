@@ -38,6 +38,7 @@ class CashierGenerationController extends _$CashierGenerationController {
         await ref.read(breezeSdkLightningNodeServiceProvider).createInvoice(
               state.amountSat!,
               state.description,
+              null,
             );
 
     print(invoice);
