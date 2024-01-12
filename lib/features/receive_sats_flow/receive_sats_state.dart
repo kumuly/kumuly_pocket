@@ -99,6 +99,39 @@ class ReceiveSatsState extends Equatable {
     return 'bitcoin:$onChainAddress?amount=$amountToPaySat&lightning=${invoice!.bolt11}';
   }
 
+  bool get isSwapInPossible {
+    if (onChainAddress == null || onChainAddress!.isEmpty) {
+      return false;
+    }
+    if (amountToPaySat! > onChainMaxAmount!) {
+      return false;
+    }
+    if (amountToPaySat! < onChainMinAmount!) {
+      return false;
+    }
+    return true;
+  }
+
+  bool get isAmountTooSmallForSwapIn {
+    if (onChainAddress == null || onChainAddress!.isEmpty) {
+      return false;
+    }
+    if (amountToPaySat! < onChainMinAmount!) {
+      return true;
+    }
+    return false;
+  }
+
+  bool get isAmountTooBigForSwapIn {
+    if (onChainAddress == null || onChainAddress!.isEmpty) {
+      return false;
+    }
+    if (amountToPaySat! > onChainMaxAmount!) {
+      return true;
+    }
+    return false;
+  }
+
   @override
   List<Object?> get props => [
         amountController,
