@@ -122,7 +122,7 @@ class ReceiveSatsInvoicesEditBottomSheetModal extends ConsumerWidget {
                                         notifier.hoursTillExpiryChangeHandler,
                                   ),
                                   Text(
-                                    '≈ ${state.formattedExpiry}',
+                                    '≈ ${state.formattedExpiryPreview}',
                                     style: textTheme.display1(
                                       Palette.neutral[60],
                                       FontWeight.w500,

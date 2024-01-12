@@ -109,7 +109,7 @@ class ReceiveSatsState extends Equatable {
       return null;
     }
 
-    if (onChainAddress == null || onChainAddress!.isEmpty) {
+    if (!isSwapInPossible) {
       return invoice!.bolt11;
     }
 
@@ -156,7 +156,7 @@ class ReceiveSatsState extends Equatable {
     return hoursTillExpiry * 60 * 60;
   }
 
-  String get formattedExpiry {
+  String get formattedExpiryPreview {
     final DateTime date;
     if (hoursTillExpiryController.text == '') {
       date = DateTime.now()
@@ -169,12 +169,18 @@ class ReceiveSatsState extends Equatable {
     return '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute}';
   }
 
+  String get formattedExpiry {
+    final DateTime date = DateTime.now().add(Duration(hours: hoursTillExpiry));
+
+    return '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute}';
+  }
+
   String get invoiceInfoToShare {
-    return '${bip21Uri!}\n\n'
+    return '${isSwapInPossible ? '${bip21Uri!}\n\n' : ''}'
         'Lightning Invoice: ${invoice!.bolt11}\n'
-        'Bitcoin address: $onChainAddress\n'
+        '${isSwapInPossible ? 'Bitcoin address: $onChainAddress\n' : ''}'
         'Amount: $amountToPaySat sats or ${amountToPaySat! / 100000000.toDouble()} BTC\n'
-        'Description: ${descriptionController.text}\n'
+        '${description != null && description!.isNotEmpty ? 'Description: ${descriptionController.text}\n' : ''}'
         'Expiry: $formattedExpiry';
   }
 
