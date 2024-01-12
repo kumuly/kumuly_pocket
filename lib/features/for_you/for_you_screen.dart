@@ -14,8 +14,6 @@ class ForYouScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final router = GoRouter.of(context);
-
     final state = ref.watch(forYouControllerProvider);
     final notifier = ref.read(forYouControllerProvider.notifier);
 
@@ -58,8 +56,8 @@ class ForYouTabs extends StatelessWidget {
     required this.tabs,
     required this.selectedTab,
     required this.onTabSelectHandler,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final List<String> tabs;
   final int selectedTab;
@@ -95,7 +93,7 @@ class ForYouTabs extends StatelessWidget {
 }
 
 class PromosGrid extends StatelessWidget {
-  const PromosGrid(this.promos, {Key? key}) : super(key: key);
+  const PromosGrid(this.promos, {super.key});
 
   final List<Promo> promos;
 

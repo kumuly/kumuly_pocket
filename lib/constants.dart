@@ -61,3 +61,4 @@ const kSeedEntropyLength = 128;
 const kInviteCodeLength = 9;
 const kPinLength = 4;
 const kBreezSdkWorkingDirName = 'breezSdk';
+const kDefaultHoursTillInvoiceExpiry = 1;

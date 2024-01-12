@@ -1,4 +1,3 @@
-import 'package:kumuly_pocket/features/chat/chat_controller.dart';
 import 'package:kumuly_pocket/features/chat/messages/chat_messages_state.dart';
 import 'package:kumuly_pocket/services/chat_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

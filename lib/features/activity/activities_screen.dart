@@ -22,10 +22,10 @@ class ActivitiesScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(
           copy.yourActivity,
-          style: Theme.of(context).textTheme.display4(
-                Palette.neutral[100]!,
-                FontWeight.w600,
-              ),
+          style: textTheme.display4(
+            Palette.neutral[100]!,
+            FontWeight.w600,
+          ),
         ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
@@ -85,12 +85,12 @@ class ActivitiesScreen extends ConsumerWidget {
 
 class ActivityListItem extends StatelessWidget {
   const ActivityListItem({
-    Key? key,
+    super.key,
     required this.leading,
     required this.title,
     this.subtitle,
     this.onTap,
-  }) : super(key: key);
+  });
 
   final Widget leading;
   final String title;

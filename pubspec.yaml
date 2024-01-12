@@ -68,6 +68,7 @@ dependencies:
   geocoding: ^2.1.1
   sqflite: ^2.3.0
   confetti: ^0.7.0
+  share_plus: ^7.2.1
 
 dev_dependencies:
   flutter_test:

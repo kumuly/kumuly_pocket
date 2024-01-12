@@ -1,7 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/enums/bitcoin_unit.dart';
-import 'package:kumuly_pocket/features/chat/chat_controller.dart';
 import 'package:kumuly_pocket/features/chat/messages/chat_messages_controller.dart';
 import 'package:kumuly_pocket/features/chat/send/chat_send_state.dart';
 import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
