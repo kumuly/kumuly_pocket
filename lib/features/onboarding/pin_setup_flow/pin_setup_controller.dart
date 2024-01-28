@@ -1,5 +1,5 @@
 import 'package:kumuly_pocket/features/onboarding/pin_setup_flow/pin_setup_state.dart';
-import 'package:kumuly_pocket/services/wallet_service.dart';
+import 'package:kumuly_pocket/services/app_lock_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'pin_setup_controller.g.dart';

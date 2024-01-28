@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/providers/settings_providers.dart';
-import 'package:kumuly_pocket/services/wallet_service.dart';
+import 'package:kumuly_pocket/services/app_lock_service.dart';
 import 'package:kumuly_pocket/services/lightning_node_service.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/dialogs/transition_dialog.dart';

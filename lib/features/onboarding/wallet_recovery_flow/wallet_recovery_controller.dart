@@ -3,7 +3,7 @@ import 'package:kumuly_pocket/entities/mnemonic_entity.dart';
 import 'package:kumuly_pocket/features/onboarding/wallet_recovery_flow/wallet_recovery_state.dart';
 import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:kumuly_pocket/services/lightning_node_service.dart';
-import 'package:kumuly_pocket/services/wallet_service.dart';
+import 'package:kumuly_pocket/services/app_lock_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'wallet_recovery_controller.g.dart';
