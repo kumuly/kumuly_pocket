@@ -41,7 +41,6 @@ const kWalletRecoveryFlowPageViewId = 'wallet-recovery-flow';
 /* Secure storage keys */
 const kMnemonicKey = 'mnemonic';
 const kMnemonicLanguageKey = 'mnemonic-language';
-const kPinDigestKey = 'pin-digest';
 /* Settings keys */
 const kBitcoinUnitSettingsKey = 'bitcoin-unit-settings';
 const kLocalCurrencySettingsKey = 'local-currency-settings';
@@ -59,6 +58,5 @@ const kMyPostsLimit = 10;
 const kMaxSeedEntropyLength = 256;
 const kSeedEntropyLength = 128;
 const kInviteCodeLength = 9;
-const kPinLength = 4;
 const kBreezSdkWorkingDirName = 'breezSdk';
 const kDefaultHoursTillInvoiceExpiry = 1;

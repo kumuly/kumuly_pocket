@@ -69,6 +69,7 @@ dependencies:
   sqflite: ^2.3.0
   confetti: ^0.7.0
   share_plus: ^7.2.1
+  bdk_flutter: ^0.30.0
 
 dev_dependencies:
   flutter_test:

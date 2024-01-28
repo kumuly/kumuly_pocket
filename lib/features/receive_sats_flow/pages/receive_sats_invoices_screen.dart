@@ -275,7 +275,7 @@ class ReceiveSatsInvoicesScreenInvoicesCard extends ConsumerWidget {
                     color: Palette.neutral[70],
                   ),
                   onPressed: () {
-                    Share.share(state.invoiceInfoToShare);
+                    Share.share(state.bip21Uri!);
                   },
                 ),
               ],

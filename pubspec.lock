@@ -65,6 +65,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
+  bdk_flutter:
+    dependency: "direct main"
+    description:
+      name: bdk_flutter
+      sha256: "94283cb9ffd95c98f5d8b1eebd223a179565a56d0c3f2265f1feacf6d4c5825e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.30.0"
   bip39_mnemonic:
     dependency: "direct main"
     description:
@@ -822,6 +830,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.5.6"
+  mockito:
+    dependency: transitive
+    description:
+      name: mockito
+      sha256: "6841eed20a7befac0ce07df8116c8b8233ed1f4486a7647c7fc5a02ae6163917"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.4.4"
   package_config:
     dependency: transitive
     description:

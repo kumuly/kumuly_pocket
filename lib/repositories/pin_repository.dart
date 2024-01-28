@@ -1,12 +1,15 @@
-import 'dart:convert';
-
-import 'package:crypto/crypto.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/providers/local_storage_providers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'pin_repository.g.dart';
+
+abstract class PinRepository {
+  Future<void> set(String pinDigest);
+  Future<String?> get();
+  Future<bool> exists();
+  Future<void> delete();
+}
 
 @riverpod
 PinRepository secureStoragePinRepository(SecureStoragePinRepositoryRef ref) {
@@ -14,23 +17,44 @@ PinRepository secureStoragePinRepository(SecureStoragePinRepositoryRef ref) {
   return SecureStoragePinRepository(secureStorage);
 }
 
-abstract class PinRepository {
-  Future<void> set(String pin);
-  Future<bool> hasPin();
-  Future<bool> validate(String pin);
-  Future<void> change(String pin, String newPin);
-  Future<void> delete(String pin);
+class SecureStoragePinRepository implements PinRepository {
+  SecureStoragePinRepository(this._secureStorage);
+
+  final FlutterSecureStorage _secureStorage;
+  static const kPinDigestKey = 'pin-digest';
+
+  @override
+  Future<void> set(String pinDigest) async {
+    await _secureStorage.write(key: kPinDigestKey, value: pinDigest);
+  }
+
+  @override
+  Future<String?> get() async {
+    return await _secureStorage.read(key: kPinDigestKey);
+  }
+
+  @override
+  Future<bool> exists() async {
+    return await _secureStorage.containsKey(key: kPinDigestKey) &&
+        await _secureStorage.read(key: kPinDigestKey) != null;
+  }
+
+  @override
+  Future<void> delete() async {
+    await _secureStorage.delete(key: kPinDigestKey);
+  }
 }
 
+/*
 class SecureStoragePinRepository implements PinRepository {
   const SecureStoragePinRepository(this._secureStorage);
 
   final FlutterSecureStorage _secureStorage;
 
   @override
-  Future<void> set(String pin) async {
+  Future<void> create(String pin) async {
     if (pin.length != kPinLength) {
-      throw Exception('PIN must be 4 digits');
+      throw Exception('PIN must be $kPinLength digits');
     }
 
     // Check if the PIN is already set.
@@ -101,4 +125,4 @@ class SecureStoragePinRepository implements PinRepository {
     final digest = _hashPin(pin);
     await _secureStorage.write(key: kPinDigestKey, value: digest);
   }
-}
+}*/
