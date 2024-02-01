@@ -47,6 +47,8 @@ class ReceiveSatsFeesBottomSheetModal extends ConsumerWidget {
                   SizedBox(height: kSpacing8),
                   ReceiveSatsFeeBottomSheetModalFeeSection(),
                   SizedBox(height: kSpacing9),
+                  ReceiveSatsFeeBottomSheetModalFeeBearerSelection(),
+                  SizedBox(height: kSpacing2),
                   ReceiveSatsFeeBottomSheetModalGenerateInvoiceButton(),
                   SizedBox(height: kSpacing5),
                 ],
@@ -151,7 +153,6 @@ class ReceiveSatsFeeBottomSheetModalFeeSection extends ConsumerWidget {
     final copy = AppLocalizations.of(context)!;
 
     final state = ref.watch(receiveSatsControllerProvider);
-    final notifier = ref.read(receiveSatsControllerProvider.notifier);
 
     final feeAmount = ref.watch(
       displayBitcoinAmountProvider(
@@ -178,7 +179,7 @@ class ReceiveSatsFeeBottomSheetModalFeeSection extends ConsumerWidget {
             horizontal: kSpacing4,
           ),
           title: Text(
-            copy.estimatedFee,
+            copy.expectedFee,
             style: textTheme.display2(
               Palette.neutral[80],
               FontWeight.w500,
@@ -212,32 +213,6 @@ class ReceiveSatsFeeBottomSheetModalFeeSection extends ConsumerWidget {
             ],
           ),
         ),
-        if (state.feeEstimate! > 0)
-          SwitchListTile(
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: kSpacing4,
-            ),
-            title: Text(
-              copy.passFeesOnToPayer,
-              style: textTheme.body3(
-                Palette.neutral[80],
-                FontWeight.w400,
-              ),
-            ),
-            subtitle: Text(
-              copy.switchOffToBearTheFees,
-              style: textTheme.caption1(
-                Palette.neutral[50],
-                FontWeight.w400,
-              ),
-            ),
-            value: !state.assumeFee,
-            inactiveTrackColor: Palette.neutral[40],
-            inactiveThumbColor: Palette.neutral[60],
-            trackOutlineColor: MaterialStateProperty.all(Colors.transparent),
-            activeColor: Palette.russianViolet[100],
-            onChanged: notifier.passFeesToPayerChangeHandler,
-          ),
         Padding(
           padding: const EdgeInsets.symmetric(
             horizontal: kSpacing4,
@@ -253,7 +228,7 @@ class ReceiveSatsFeeBottomSheetModalFeeSection extends ConsumerWidget {
             horizontal: kSpacing4,
           ),
           title: Text(
-            copy.totalToPay,
+            copy.invoiceTotal,
             style: textTheme.display2(
               Palette.success[50],
               FontWeight.w700,
@@ -283,6 +258,49 @@ class ReceiveSatsFeeBottomSheetModalFeeSection extends ConsumerWidget {
         ),
       ],
     );
+  }
+}
+
+class ReceiveSatsFeeBottomSheetModalFeeBearerSelection extends ConsumerWidget {
+  const ReceiveSatsFeeBottomSheetModalFeeBearerSelection({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final copy = AppLocalizations.of(context)!;
+    final textTheme = Theme.of(context).textTheme;
+
+    final state = ref.watch(receiveSatsControllerProvider);
+    final notifier = ref.read(receiveSatsControllerProvider.notifier);
+
+    if (state.feeEstimate! > 0) {
+      return SwitchListTile(
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: kSpacing4,
+        ),
+        title: Text(
+          copy.addFeeToInvoice,
+          style: textTheme.body3(
+            Palette.neutral[80],
+            FontWeight.w400,
+          ),
+        ),
+        subtitle: Text(
+          copy.switchOffToBearTheFeeYourself,
+          style: textTheme.caption1(
+            Palette.neutral[50],
+            FontWeight.w400,
+          ),
+        ),
+        value: !state.assumeFee,
+        inactiveTrackColor: Palette.neutral[40],
+        inactiveThumbColor: Palette.neutral[60],
+        trackOutlineColor: MaterialStateProperty.all(Colors.transparent),
+        activeColor: Palette.russianViolet[100],
+        onChanged: notifier.passFeesToPayerChangeHandler,
+      );
+    } else {
+      return const SizedBox();
+    }
   }
 }
 
