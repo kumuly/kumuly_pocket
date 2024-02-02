@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:breez_sdk/breez_sdk.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/entities/invoice_entity.dart';
 import 'package:kumuly_pocket/entities/keysend_payment_details_entity.dart';
-import 'package:kumuly_pocket/entities/mnemonic_entity.dart';
 import 'package:kumuly_pocket/entities/paid_invoice_entity.dart';
 import 'package:kumuly_pocket/entities/payment_entity.dart';
 import 'package:kumuly_pocket/entities/swap_info_entity.dart';
@@ -12,8 +12,8 @@ import 'package:kumuly_pocket/enums/app_network.dart';
 import 'package:kumuly_pocket/enums/on_chain_fee_velocity.dart';
 import 'package:kumuly_pocket/enums/payment_request_type.dart';
 import 'package:kumuly_pocket/environment_variables.dart';
+import 'package:kumuly_pocket/providers/breez_sdk_providers.dart';
 import 'package:kumuly_pocket/repositories/lightning_node_repository.dart';
-import 'package:kumuly_pocket/repositories/mnemonic_repository.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -25,10 +25,10 @@ LightningNodeService breezeSdkLightningNodeService(
     BreezeSdkLightningNodeServiceRef ref) {
   final lightningNodeRepository =
       ref.watch(breezeSdkLightningNodeRepositoryProvider);
-  final mnemonicRepository = ref.watch(secureStorageMnemonicRepositoryProvider);
+  final breezSdk = ref.watch(breezSdkProvider);
   return BreezSdkLightningNodeService(
     lightningNodeRepository,
-    mnemonicRepository,
+    breezSdk,
   );
 }
 
@@ -55,8 +55,8 @@ abstract class LightningNodeService {
   });
   Stream<SwapInfoEntity> inProgressSwapPolling(Duration interval);
   Future<void> connect(
-    AppNetwork network, {
-    MnemonicEntity? mnemonic,
+    AppNetwork network,
+    String mnemonic, {
     String? inviteCode,
     String? partnerCredentials,
   });
@@ -94,18 +94,15 @@ abstract class LightningNodeService {
 }
 
 class BreezSdkLightningNodeService implements LightningNodeService {
-  BreezSdkLightningNodeService(
-    this._lightningNodeRepository,
-    this._mnemonicRepository,
-  );
+  BreezSdkLightningNodeService(this._lightningNodeRepository, this._breezSdk);
 
   final LightningNodeRepository _lightningNodeRepository;
-  final MnemonicRepository _mnemonicRepository;
+  final BreezSDK _breezSdk;
 
   @override
   Future<void> connect(
-    AppNetwork network, {
-    MnemonicEntity? mnemonic,
+    AppNetwork network,
+    String mnemonic, {
     String? inviteCode,
     String? partnerCredentials,
   }) async {
@@ -113,10 +110,7 @@ class BreezSdkLightningNodeService implements LightningNodeService {
     final path = await _getWorkingDirectory();
 
     await _lightningNodeRepository.connect(
-      mnemonic != null
-          ? _mnemonicRepository
-              .mnemonicToSeed(mnemonic) // Use the provided mnemonic.
-          : await _mnemonicRepository.getSeed(), // Use the stored mnemonic.
+      await _breezSdk.mnemonicToSeed(mnemonic),
       network,
       breezSdkApiKey,
       path,

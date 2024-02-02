@@ -6,23 +6,23 @@ import 'package:kumuly_pocket/entities/encryption_result_entity.dart';
 class PasswordDerivedEncryptionResultEntity extends Equatable {
   const PasswordDerivedEncryptionResultEntity({
     required this.passwordSalt,
-    required this.encryptionResultEntity,
+    required this.encryptionResult,
   });
 
   final String
       passwordSalt; // The salt used to derive the encryption key from the password
-  final EncryptionResultEntity encryptionResultEntity;
+  final EncryptionResultEntity encryptionResult;
 
   PasswordDerivedEncryptionResultEntity.fromJson(Map<String, dynamic> json)
       : passwordSalt = json['passwordSalt'] as String,
-        encryptionResultEntity = EncryptionResultEntity.fromJson(
-            json['encryptionResultEntity'] as Map<String, dynamic>);
+        encryptionResult = EncryptionResultEntity.fromJson(
+            json['encryptionResult'] as Map<String, dynamic>);
 
   Map<String, dynamic> toJson() => {
         'passwordSalt': passwordSalt,
-        'encryptionResultEntity': encryptionResultEntity.toJson(),
+        'encryptionResult': encryptionResult.toJson(),
       };
 
   @override
-  List<Object?> get props => [passwordSalt, encryptionResultEntity];
+  List<Object?> get props => [passwordSalt, encryptionResult];
 }

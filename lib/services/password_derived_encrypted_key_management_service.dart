@@ -25,7 +25,7 @@ abstract class PasswordDerivedEncryptedKeyManagementService {
 PasswordDerivedEncryptedKeyManagementService masterKeyManagementService(
     MasterKeyManagementServiceRef ref) {
   final encryptedMasterKeyRepository = ref.watch(
-    encryptedMasterKeyRepositoryProvider,
+    secureStoragePasswordDerivedEncryptedKeyRepositoryProvider,
   );
   return MasterKeyManagementService(encryptedMasterKeyRepository);
 }
@@ -35,6 +35,7 @@ class MasterKeyManagementService
   final PasswordDerivedEncryptedKeyRepository _encryptedMasterKeyRepository;
   final _aesGcm = AesGcm.with256bits();
   static const _kByteLength = 32;
+  static const kLabel = 'master';
 
   MasterKeyManagementService(this._encryptedMasterKeyRepository);
 
@@ -93,7 +94,17 @@ class MasterKeyManagementService
 
   @override
   Future<bool> isPasswordValid(String password) async {
-    return false;
+    // Try to decrypt the master key with the password
+    try {
+      await _getMasterKey(password);
+      return true;
+    } on SecretBoxAuthenticationError catch (_) {
+      print('Invalid password');
+      return false;
+    } catch (_) {
+      print('Other error');
+      return false;
+    }
   }
 
   @override
@@ -129,17 +140,20 @@ class MasterKeyManagementService
 
   Future<List<int>> _getMasterKey(String password) async {
     // Get the encrypted master key data
-    final encryptedKey = await _encryptedMasterKeyRepository.getEncryptedKey();
+    final encryptedKey =
+        await _encryptedMasterKeyRepository.getEncryptedKey(kLabel);
     // Derive the encryption key from the password and salt
     final encryptionKey = await _deriveKeyFromPassword(
-        password, base64Decode(encryptedKey.passwordSalt));
+      password,
+      base64Decode(encryptedKey.passwordSalt),
+    );
 
     // Decrypt the master key with the encryption key
     final masterKeySecretBox = SecretBox(
-      base64Decode(encryptedKey.encryptionResultEntity.ciphertext),
-      nonce: base64Decode(encryptedKey.encryptionResultEntity.iv),
+      base64Decode(encryptedKey.encryptionResult.ciphertext),
+      nonce: base64Decode(encryptedKey.encryptionResult.iv),
       mac: await _aesGcm.macAlgorithm.calculateMac(
-        base64Decode(encryptedKey.encryptionResultEntity.mac!),
+        base64Decode(encryptedKey.encryptionResult.mac!),
         secretKey: encryptionKey,
       ),
     );
@@ -168,7 +182,7 @@ class MasterKeyManagementService
     // Prepare the encrypted master key data for storage
     final encryptedKeyData = PasswordDerivedEncryptionResultEntity(
       passwordSalt: base64Encode(salt),
-      encryptionResultEntity: EncryptionResultEntity(
+      encryptionResult: EncryptionResultEntity(
         ciphertext: base64Encode(encryptedKeySecretBox.cipherText),
         iv: base64Encode(encryptedKeySecretBox.nonce),
         mac: base64Encode(encryptedKeySecretBox.mac.bytes),
@@ -176,6 +190,9 @@ class MasterKeyManagementService
     );
 
     // Store the encrypted master key data
-    await _encryptedMasterKeyRepository.setEncryptedKey(encryptedKeyData);
+    await _encryptedMasterKeyRepository.setEncryptedKey(
+      kLabel,
+      encryptedKeyData,
+    );
   }
 }
