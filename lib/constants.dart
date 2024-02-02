@@ -38,9 +38,6 @@ const kPromoValidationFlowPageViewId = 'promo-validation-flow';
 const kAddContactFlowPageViewId = 'add-contact-flow';
 const kSeedBackupFlowPageViewId = 'seed-backup-flow';
 const kWalletRecoveryFlowPageViewId = 'wallet-recovery-flow';
-/* Secure storage keys */
-const kMnemonicKey = 'mnemonic';
-const kMnemonicLanguageKey = 'mnemonic-language';
 /* Settings keys */
 const kBitcoinUnitSettingsKey = 'bitcoin-unit-settings';
 const kLocalCurrencySettingsKey = 'local-currency-settings';
