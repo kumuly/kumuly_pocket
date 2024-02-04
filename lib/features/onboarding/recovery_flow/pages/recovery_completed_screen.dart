@@ -9,8 +9,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:kumuly_pocket/widgets/buttons/primary_text_button.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 
-class WalletRecoveryCompletedScreen extends ConsumerWidget {
-  const WalletRecoveryCompletedScreen({Key? key}) : super(key: key);
+class RecoveryCompletedScreen extends ConsumerWidget {
+  const RecoveryCompletedScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

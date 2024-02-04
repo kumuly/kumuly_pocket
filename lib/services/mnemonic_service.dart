@@ -1,15 +1,17 @@
 import 'package:bdk_flutter/bdk_flutter.dart';
+import 'package:kumuly_pocket/enums/mnemonic_length.dart';
 import 'package:kumuly_pocket/repositories/encrypted_mnemonic_repository.dart';
-import 'package:kumuly_pocket/services/password_derived_encrypted_key_management_service.dart';
+import 'package:kumuly_pocket/services/pin_derived_encrypted_key_management_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'mnemonic_service.g.dart';
 
 abstract class MnemonicService {
-  Future<void> createMnemonic(String label, String password);
-  Future<String> getMnemonic(String label, String password);
+  Future<String> createMnemonic(MnemonicLength length);
+  Future<void> storeMnemonic(String mnemonic, String label, String pin);
+  Future<String> getMnemonic(String label, String pin);
   Future<List<String>> getStoredMnemonics();
-  Future<void> deleteMnemonic(String label, String password);
+  Future<void> deleteMnemonic(String label, String pin);
 }
 
 @riverpod
@@ -29,8 +31,9 @@ MnemonicService masterKeyEncryptedMnemonicService(
 
 class MasterKeyEncryptedMnemonicService implements MnemonicService {
   final EncryptedMnemonicRepository _encryptedMnemonicRepository;
-  final PasswordDerivedEncryptedKeyManagementService
-      _masterKeyManagementService;
+  final PinDerivedEncryptedKeyManagementService _masterKeyManagementService;
+
+  static const kDefaultMnemonicLabel = 'default';
 
   MasterKeyEncryptedMnemonicService(
     this._encryptedMnemonicRepository,
@@ -38,11 +41,19 @@ class MasterKeyEncryptedMnemonicService implements MnemonicService {
   );
 
   @override
-  Future<void> createMnemonic(String label, String password) async {
-    final mnemonic = await Mnemonic.create(WordCount.Words12);
+  Future<String> createMnemonic(MnemonicLength length) async {
+    final bdkWordCount = length == MnemonicLength.words12
+        ? WordCount.Words12
+        : WordCount.Words24;
+    final mnemonic = await Mnemonic.create(bdkWordCount);
+    return mnemonic.asString();
+  }
+
+  @override
+  Future<void> storeMnemonic(String mnemonic, String label, String pin) async {
     final encryptedMnemonic = await _masterKeyManagementService.encrypt(
-      mnemonic.asString(),
-      password,
+      mnemonic,
+      pin,
     );
     await _encryptedMnemonicRepository.setEncryptedMnemonic(
       label,
@@ -51,11 +62,11 @@ class MasterKeyEncryptedMnemonicService implements MnemonicService {
   }
 
   @override
-  Future<String> getMnemonic(String label, String password) async {
+  Future<String> getMnemonic(String label, String pin) async {
     final encryptedMnemonic =
         await _encryptedMnemonicRepository.getEncryptedMnemonic(label);
 
-    return _masterKeyManagementService.decrypt(encryptedMnemonic, password);
+    return _masterKeyManagementService.decrypt(encryptedMnemonic, pin);
   }
 
   @override
@@ -64,9 +75,9 @@ class MasterKeyEncryptedMnemonicService implements MnemonicService {
   }
 
   @override
-  Future<void> deleteMnemonic(String label, String password) async {
-    if (await _masterKeyManagementService.isPasswordValid(password) == false) {
-      throw UnauthorizedException('Invalid password');
+  Future<void> deleteMnemonic(String label, String pin) async {
+    if (await _masterKeyManagementService.isPinValid(pin) == false) {
+      throw UnauthorizedException('Invalid pin');
     }
     await _encryptedMnemonicRepository.deleteEncryptedMnemonic(label);
   }

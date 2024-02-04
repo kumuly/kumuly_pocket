@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:kumuly_pocket/providers/settings_providers.dart';
-import 'package:kumuly_pocket/services/app_lock_service.dart';
-import 'package:kumuly_pocket/services/lightning_node_service.dart';
+import 'package:kumuly_pocket/services/mnemonic_service.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/dialogs/transition_dialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -17,8 +15,9 @@ class RootScreen extends ConsumerWidget {
     final copy = AppLocalizations.of(context)!;
 
     // Add providers to check for existing connection and accounts
-    final fetchingHasWallet = ref.read(walletServiceImplProvider).hasWallet();
-    final fetchingHasPin = ref.read(walletServiceImplProvider).hasPin();
+    final gettingMnemonics = ref
+        .read(masterKeyEncryptedMnemonicServiceProvider)
+        .getStoredMnemonics();
 
     // Schedule the dialog presentation after the current build phase.
     Future.microtask(() async {
@@ -28,32 +27,29 @@ class RootScreen extends ConsumerWidget {
       // Show the transition dialog for at least 1.5 seconds while checking
       // for accounts and connection.
       await Future.delayed(const Duration(milliseconds: 1500));
-      final hasWallet = await fetchingHasWallet;
+      final mnemonics = await gettingMnemonics;
 
-      // If no accounts exist on the device yet, go to the landing screen.
-      if (!hasWallet) {
+      // If no mnemonics are stored on the device yet, go to the landing screen.
+      if (mnemonics.isEmpty) {
         router.pop();
-        router.goNamed('landing-flow');
+        router.goNamed('onboarding');
         return Container(color: Palette.lilac[100]);
       } else {
         // Wallet was created already, so can connect to node
-        await ref.read(breezeSdkLightningNodeServiceProvider).connect(
+        // Todo: PIN is needed to unlock the wallet
+        /*await ref.read(breezeSdkLightningNodeServiceProvider).connect(
               ref.watch(
                 bitcoinNetworkProvider,
               ),
+              await ref
+                  .read(masterKeyEncryptedMnemonicServiceProvider)
+                  .getMnemonic(mnemonics.first, ''),
             );
+          */
 
-        // Check if a pin exists, else go to pin setup flow
-        final hasPin = await fetchingHasPin;
-        if (!hasPin) {
-          router.pop();
-          router.goNamed('pin-setup-flow');
-          return Container(color: Palette.lilac[100]);
-        } else {
-          router.pop();
-          router.goNamed('pocket');
-          return Container(color: Palette.lilac[100]);
-        }
+        router.pop();
+        router.goNamed('pocket');
+        return Container(color: Palette.lilac[100]);
       }
     });
 

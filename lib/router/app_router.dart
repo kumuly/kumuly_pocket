@@ -6,11 +6,9 @@ import 'package:kumuly_pocket/features/add_contact_flow/add_contact_scanner_scre
 import 'package:kumuly_pocket/features/cashier_flow/cashier_flow.dart';
 import 'package:kumuly_pocket/features/chat/chat_screen.dart';
 import 'package:kumuly_pocket/features/contact_id/contact_id_screen.dart';
-import 'package:kumuly_pocket/features/landing/landing_flow.dart';
-import 'package:kumuly_pocket/features/onboarding/new_wallet_flow/new_wallet_flow.dart';
-import 'package:kumuly_pocket/features/onboarding/onboarding_start_creen.dart';
-import 'package:kumuly_pocket/features/onboarding/pin_setup_flow/pin_setup_flow.dart';
-import 'package:kumuly_pocket/features/onboarding/wallet_recovery_flow/wallet_recovery_flow.dart';
+import 'package:kumuly_pocket/features/onboarding/new_user_flow/new_user_flow.dart';
+import 'package:kumuly_pocket/features/onboarding/onboarding_start_screen.dart';
+import 'package:kumuly_pocket/features/onboarding/recovery_flow/recovery_flow.dart';
 import 'package:kumuly_pocket/features/promo_flow/code/promo_code_screen.dart';
 import 'package:kumuly_pocket/features/promo_flow/promo_flow.dart';
 import 'package:kumuly_pocket/features/promo_validation_flow/promo_validation_flow.dart';
@@ -48,11 +46,6 @@ GoRouter appRouter(AppRouterRef ref) {
         builder: (context, state) => const RootScreen(),
       ),
       GoRoute(
-        path: '/landing',
-        name: 'landing-flow',
-        builder: (context, state) => const LandingFlow(),
-      ),
-      GoRoute(
         path: '/onboarding',
         name: 'onboarding',
         builder: (context, state) {
@@ -60,20 +53,14 @@ GoRouter appRouter(AppRouterRef ref) {
         },
       ),
       GoRoute(
-        path: '/new-wallet',
-        name: 'new-wallet-flow',
-        builder: (context, state) => const NewWalletFlow(),
+        path: '/new-user',
+        name: 'new-user-flow',
+        builder: (context, state) => const NewUserFlow(),
       ),
       GoRoute(
-        path: '/wallet-recovery',
-        name: 'wallet-recovery-flow',
-        builder: (context, state) => const WalletRecoveryFlow(),
-      ),
-      GoRoute(
-        parentNavigatorKey: _rootNavigatorKey,
-        path: '/pin-setup',
-        name: 'pin-setup-flow',
-        builder: (context, state) => const PinSetupFlow(),
+        path: '/recovery',
+        name: 'recovery-flow',
+        builder: (context, state) => const RecoveryFlow(),
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,

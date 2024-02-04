@@ -3,36 +3,43 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:kumuly_pocket/entities/encryption_result_entity.dart';
-import 'package:kumuly_pocket/entities/password_derived_encryption_result_entity.dart';
-import 'package:kumuly_pocket/repositories/password_derived_encrypted_key_repository.dart';
+import 'package:kumuly_pocket/entities/pin_derived_encryption_result_entity.dart';
+import 'package:kumuly_pocket/repositories/pin_derived_encrypted_key_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:cryptography/cryptography.dart';
 
-part 'password_derived_encrypted_key_management_service.g.dart';
+part 'pin_derived_encrypted_key_management_service.g.dart';
 
-abstract class PasswordDerivedEncryptedKeyManagementService {
-  Future<void> init(String password);
-  Future<EncryptionResultEntity> encrypt(String plaintext, String password);
+abstract class PinDerivedEncryptedKeyManagementService {
+  Future<void> init(String pin);
+  Future<EncryptionResultEntity> encrypt(String plaintext, String pin);
   Future<String> decrypt(
     EncryptionResultEntity encryptionResult,
-    String password,
+    String pin,
   );
-  Future<bool> isPasswordValid(String password);
-  Future<void> updatePassword(String oldPassword, String newPassword);
+  Future<bool> isPinValid(String pin);
+  Future<void> updatePin(String oldPin, String newPin);
 }
 
 @riverpod
-PasswordDerivedEncryptedKeyManagementService masterKeyManagementService(
+Future<bool> checkPin(CheckPinRef ref, String pin) async {
+  final masterKeyManagementService =
+      ref.read(masterKeyManagementServiceProvider);
+  return masterKeyManagementService.isPinValid(pin);
+}
+
+@riverpod
+PinDerivedEncryptedKeyManagementService masterKeyManagementService(
     MasterKeyManagementServiceRef ref) {
   final encryptedMasterKeyRepository = ref.watch(
-    secureStoragePasswordDerivedEncryptedKeyRepositoryProvider,
+    secureStoragePinDerivedEncryptedKeyRepositoryProvider,
   );
   return MasterKeyManagementService(encryptedMasterKeyRepository);
 }
 
 class MasterKeyManagementService
-    implements PasswordDerivedEncryptedKeyManagementService {
-  final PasswordDerivedEncryptedKeyRepository _encryptedMasterKeyRepository;
+    implements PinDerivedEncryptedKeyManagementService {
+  final PinDerivedEncryptedKeyRepository _encryptedMasterKeyRepository;
   final _aesGcm = AesGcm.with256bits();
   static const _kByteLength = 32;
   static const kLabel = 'master';
@@ -40,19 +47,19 @@ class MasterKeyManagementService
   MasterKeyManagementService(this._encryptedMasterKeyRepository);
 
   @override
-  Future<void> init(String password) async {
-    final passwordSalt = _generateRandomBytes();
+  Future<void> init(String pin) async {
+    final pinSalt = _generateRandomBytes();
     final masterKey = _generateRandomBytes(); // Generate a new master key
-    await _encryptAndStoreMasterKey(masterKey, password, passwordSalt);
+    await _encryptAndStoreMasterKey(masterKey, pin, pinSalt);
   }
 
   @override
   Future<EncryptionResultEntity> encrypt(
     String plaintext,
-    String password,
+    String pin,
   ) async {
     // Get the master key
-    final masterKey = await _getMasterKey(password);
+    final masterKey = await _getMasterKey(pin);
 
     // Encrypt the plaintext with the master key
     final plaintextSecretBox = await _aesGcm.encrypt(
@@ -70,10 +77,10 @@ class MasterKeyManagementService
   @override
   Future<String> decrypt(
     EncryptionResultEntity encryptionResult,
-    String password,
+    String pin,
   ) async {
     // Get the master key
-    final masterKey = await _getMasterKey(password);
+    final masterKey = await _getMasterKey(pin);
 
     // Decrypt the ciphertext with the master key
     final plaintextSecretBox = SecretBox(
@@ -93,13 +100,13 @@ class MasterKeyManagementService
   }
 
   @override
-  Future<bool> isPasswordValid(String password) async {
-    // Try to decrypt the master key with the password
+  Future<bool> isPinValid(String pin) async {
+    // Try to decrypt the master key with the pin
     try {
-      await _getMasterKey(password);
+      await _getMasterKey(pin);
       return true;
     } on SecretBoxAuthenticationError catch (_) {
-      print('Invalid password');
+      print('Invalid pin');
       return false;
     } catch (_) {
       print('Other error');
@@ -108,12 +115,12 @@ class MasterKeyManagementService
   }
 
   @override
-  Future<void> updatePassword(String oldPassword, String newPassword) async {
-    final masterKey = await _getMasterKey(
-        oldPassword); // Decrypt the master key with the old password
-    final newPasswordSalt =
-        _generateRandomBytes(); // Generate a new salt for the new password
-    await _encryptAndStoreMasterKey(masterKey, newPassword, newPasswordSalt);
+  Future<void> updatePin(String oldPin, String newPin) async {
+    final masterKey =
+        await _getMasterKey(oldPin); // Decrypt the master key with the old pin
+    final newPinSalt =
+        _generateRandomBytes(); // Generate a new salt for the new pin
+    await _encryptAndStoreMasterKey(masterKey, newPin, newPinSalt);
   }
 
   Uint8List _generateRandomBytes({int length = _kByteLength}) {
@@ -125,8 +132,8 @@ class MasterKeyManagementService
     return bytes;
   }
 
-  Future<SecretKey> _deriveKeyFromPassword(
-    String password,
+  Future<SecretKey> _deriveKeyFromPin(
+    String pin,
     Uint8List salt,
   ) async {
     final algorithm = Argon2id(
@@ -135,17 +142,17 @@ class MasterKeyManagementService
       iterations: 1,
       hashLength: _kByteLength,
     );
-    return algorithm.deriveKeyFromPassword(password: password, nonce: salt);
+    return algorithm.deriveKeyFromPassword(password: pin, nonce: salt);
   }
 
-  Future<List<int>> _getMasterKey(String password) async {
+  Future<List<int>> _getMasterKey(String pin) async {
     // Get the encrypted master key data
     final encryptedKey =
         await _encryptedMasterKeyRepository.getEncryptedKey(kLabel);
-    // Derive the encryption key from the password and salt
-    final encryptionKey = await _deriveKeyFromPassword(
-      password,
-      base64Decode(encryptedKey.passwordSalt),
+    // Derive the encryption key from the pin and salt
+    final encryptionKey = await _deriveKeyFromPin(
+      pin,
+      base64Decode(encryptedKey.pinSalt),
     );
 
     // Decrypt the master key with the encryption key
@@ -167,11 +174,11 @@ class MasterKeyManagementService
 
   Future<void> _encryptAndStoreMasterKey(
     List<int> masterKey,
-    String password,
+    String pin,
     Uint8List salt,
   ) async {
-    // Derive the encryption key from the password and salt
-    final encryptionKey = await _deriveKeyFromPassword(password, salt);
+    // Derive the encryption key from the pin and salt
+    final encryptionKey = await _deriveKeyFromPin(pin, salt);
 
     // Encrypt the master key with the derived encryption key
     final encryptedKeySecretBox = await _aesGcm.encrypt(
@@ -180,8 +187,8 @@ class MasterKeyManagementService
     );
 
     // Prepare the encrypted master key data for storage
-    final encryptedKeyData = PasswordDerivedEncryptionResultEntity(
-      passwordSalt: base64Encode(salt),
+    final encryptedKeyData = PinDerivedEncryptionResultEntity(
+      pinSalt: base64Encode(salt),
       encryptionResult: EncryptionResultEntity(
         ciphertext: base64Encode(encryptedKeySecretBox.cipherText),
         iv: base64Encode(encryptedKeySecretBox.nonce),

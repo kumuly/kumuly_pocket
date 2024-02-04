@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
-import 'package:kumuly_pocket/features/onboarding/pin_setup_flow/pin_setup_controller.dart';
+import 'package:kumuly_pocket/features/onboarding/onboarding_controller.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/dialogs/transition_dialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:kumuly_pocket/widgets/page_views/page_view_controller.dart';
 import 'package:kumuly_pocket/widgets/screens/pin_input_screen.dart';
 
-class PinSetupConfirmationScreen extends ConsumerWidget {
-  const PinSetupConfirmationScreen({super.key});
+class NewUserPinSetupConfirmationScreen extends ConsumerWidget {
+  const NewUserPinSetupConfirmationScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -18,13 +18,13 @@ class PinSetupConfirmationScreen extends ConsumerWidget {
     final copy = AppLocalizations.of(context)!;
     final pageController = ref.read(
       pageViewControllerProvider(
-        kPinSetupFlowPageViewId,
+        kNewUserFlowPageViewId,
       ).notifier,
     );
 
-    final state = ref.watch(pinSetupControllerProvider);
+    final state = ref.watch(onboardingControllerProvider);
     final notifier = ref.read(
-      pinSetupControllerProvider.notifier,
+      onboardingControllerProvider.notifier,
     );
     final pinConfirmation = state.pinConfirmation;
     final pin = state.pin;
@@ -48,11 +48,19 @@ class PinSetupConfirmationScreen extends ConsumerWidget {
         confirmHandler: () async {
           try {
             final confirming = notifier.confirmPin();
+            final generatingMnemonic = notifier.generateMnemonic();
             showTransitionDialog(context, copy.oneMomentPlease);
-            await confirming;
-            router.pop();
+            await Future.wait([confirming, generatingMnemonic]);
+            await notifier.connectNode();
+            await notifier.storeMnemonic();
+
+            router.pop(); // pop the transition dialog
+            router.pop(); // pop the onboarding flow that was pushed
             router.goNamed('pocket');
           } catch (e) {
+            if (e is CouldNotConnectToNodeException) {
+              print('Could not connect to node');
+            }
             router.pop();
           }
         },

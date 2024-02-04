@@ -3,26 +3,26 @@ import 'package:flutter/foundation.dart';
 import 'package:kumuly_pocket/entities/encryption_result_entity.dart';
 
 @immutable
-class PasswordDerivedEncryptionResultEntity extends Equatable {
-  const PasswordDerivedEncryptionResultEntity({
-    required this.passwordSalt,
+class PinDerivedEncryptionResultEntity extends Equatable {
+  const PinDerivedEncryptionResultEntity({
+    required this.pinSalt,
     required this.encryptionResult,
   });
 
   final String
-      passwordSalt; // The salt used to derive the encryption key from the password
+      pinSalt; // The salt used to derive the encryption key from the pin
   final EncryptionResultEntity encryptionResult;
 
-  PasswordDerivedEncryptionResultEntity.fromJson(Map<String, dynamic> json)
-      : passwordSalt = json['passwordSalt'] as String,
+  PinDerivedEncryptionResultEntity.fromJson(Map<String, dynamic> json)
+      : pinSalt = json['pinSalt'] as String,
         encryptionResult = EncryptionResultEntity.fromJson(
             json['encryptionResult'] as Map<String, dynamic>);
 
   Map<String, dynamic> toJson() => {
-        'passwordSalt': passwordSalt,
+        'pinSalt': pinSalt,
         'encryptionResult': encryptionResult.toJson(),
       };
 
   @override
-  List<Object?> get props => [passwordSalt, encryptionResult];
+  List<Object?> get props => [pinSalt, encryptionResult];
 }

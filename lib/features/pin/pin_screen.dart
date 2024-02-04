@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:kumuly_pocket/services/app_lock_service.dart';
+import 'package:kumuly_pocket/services/pin_derived_encrypted_key_management_service.dart';
 import 'package:kumuly_pocket/widgets/pin/pin_controller.dart';
 import 'package:kumuly_pocket/widgets/screens/pin_input_screen.dart';
 

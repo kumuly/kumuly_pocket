@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:breez_sdk/breez_sdk.dart';
 import 'package:kumuly_pocket/constants.dart';
@@ -17,6 +18,7 @@ import 'package:kumuly_pocket/repositories/lightning_node_repository.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:convert/convert.dart';
 
 part 'lightning_node_service.g.dart';
 
@@ -108,9 +110,10 @@ class BreezSdkLightningNodeService implements LightningNodeService {
   }) async {
     // The node needs a working directory to store its data.
     final path = await _getWorkingDirectory();
+    final seed = await _breezSdk.mnemonicToSeed(mnemonic);
 
     await _lightningNodeRepository.connect(
-      await _breezSdk.mnemonicToSeed(mnemonic),
+      seed,
       network,
       breezSdkApiKey,
       path,
