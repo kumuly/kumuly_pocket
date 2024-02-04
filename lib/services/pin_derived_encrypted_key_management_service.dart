@@ -86,10 +86,7 @@ class MasterKeyManagementService
     final plaintextSecretBox = SecretBox(
       base64Decode(encryptionResult.ciphertext),
       nonce: base64Decode(encryptionResult.iv),
-      mac: await _aesGcm.macAlgorithm.calculateMac(
-        base64Decode(encryptionResult.mac!),
-        secretKey: SecretKey(masterKey),
-      ),
+      mac: Mac(base64Decode(encryptionResult.mac!)),
     );
     final plaintext = await _aesGcm.decrypt(
       plaintextSecretBox,
@@ -159,10 +156,7 @@ class MasterKeyManagementService
     final masterKeySecretBox = SecretBox(
       base64Decode(encryptedKey.encryptionResult.ciphertext),
       nonce: base64Decode(encryptedKey.encryptionResult.iv),
-      mac: await _aesGcm.macAlgorithm.calculateMac(
-        base64Decode(encryptedKey.encryptionResult.mac!),
-        secretKey: encryptionKey,
-      ),
+      mac: Mac(base64Decode(encryptedKey.encryptionResult.mac!)),
     );
     final masterKey = await _aesGcm.decrypt(
       masterKeySecretBox,

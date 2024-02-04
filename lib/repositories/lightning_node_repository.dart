@@ -155,6 +155,7 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
     String? inviteCode,
     String? partnerCredentials,
   }) async {
+    print('Connecting to Breez node with seed: $seed');
     try {
       NodeConfig nodeConfig = NodeConfig.greenlight(
         config: GreenlightNodeConfig(

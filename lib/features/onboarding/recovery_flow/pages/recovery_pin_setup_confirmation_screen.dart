@@ -49,9 +49,7 @@ class RecoveryPinSetupConfirmationScreen extends ConsumerWidget {
           try {
             final confirming = notifier.confirmPin();
             showTransitionDialog(context, copy.oneMomentPlease);
-            print('Invite code: ${state.inviteCode}');
-            print('Mnemonic: ${state.mnemonic}');
-            print('Pin: ${state.pin}');
+            await confirming;
             await notifier.connectNode();
             await notifier.storeMnemonic();
 
@@ -61,6 +59,10 @@ class RecoveryPinSetupConfirmationScreen extends ConsumerWidget {
           } catch (e) {
             if (e is CouldNotConnectToNodeException) {
               print('Could not connect to node');
+            } else if (e is CouldNotStoreMnemonicException) {
+              print('Could not store mnemonic');
+            } else {
+              print('Unknown error: $e');
             }
             router.pop();
           }

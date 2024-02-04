@@ -89,7 +89,6 @@ class OnboardingController extends _$OnboardingController {
             masterKeyEncryptedMnemonicServiceProvider,
           )
           .createMnemonic(state.mnemonicLength);
-      print('Mnemonic generated: $mnemonic');
       state = state.copyWith(mnemonic: mnemonic);
     } catch (e) {
       print(e);
