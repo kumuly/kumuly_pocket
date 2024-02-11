@@ -1,4 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:kumuly_pocket/constants.dart';
+import 'package:path/path.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
@@ -10,18 +12,44 @@ FlutterSecureStorage secureStorage(SecureStorageRef ref) {
   return const FlutterSecureStorage();
 }
 
-@riverpod
-SharedPreferences sharedPreferences(SharedPreferencesRef ref) {
-  // Since the SharedPreferences constructor is not async,
-  //  it is overridden in the main.dart file to make it synchronous.
-  //  And here we don't need to do anything but declare the provider.
-  throw UnimplementedError();
+@Riverpod(keepAlive: true)
+Future<SharedPreferences> sharedPreferences(SharedPreferencesRef ref) {
+  return SharedPreferences.getInstance();
 }
 
-@riverpod
-Database sqlite(SqliteRef ref) {
-  // Since we need an async operation to open the database,
-  //  it is overridden in the main.dart file to make it synchronous.
-  //  And here we don't need to do anything but declare the provider.
-  throw UnimplementedError();
+@Riverpod(keepAlive: true)
+Future<Database> sqlite(SqliteRef ref) async {
+  return openDatabase(
+    join(await getDatabasesPath(), 'kumuly_pocket.db'),
+    onCreate: (db, version) async {
+      // Create the contacts and messages table
+      await db.execute(
+        'CREATE TABLE $kContactsTable('
+        'name TEXT, '
+        'avatarImagePath TEXT, '
+        'nodeId TEXT, '
+        'bolt12 TEXT, '
+        'lightningAddress TEXT, '
+        'bitcoinAddress TEXT, '
+        'createdAt INTEGER'
+        ')',
+      );
+      return db.execute(
+        'CREATE TABLE $kChatMessagesTable('
+        'contactId INTEGER NOT NULL, '
+        'type TEXT NOT NULL, '
+        'status TEXT, '
+        'paymentHash TEXT, '
+        'amountSat INTEGER NOT NULL, '
+        'memo TEXT, '
+        'isRead INTEGER DEFAULT 0, '
+        'createdAt INTEGER NOT NULL, '
+        'FOREIGN KEY(contactId) REFERENCES $kContactsTable(rowid)'
+        ')',
+      );
+    },
+    // Set the version. This executes the onCreate function and provides a
+    // path to perform database upgrades and downgrades.
+    version: 1,
+  );
 }

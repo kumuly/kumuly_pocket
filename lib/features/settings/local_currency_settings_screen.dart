@@ -26,6 +26,7 @@ class LocalCurrencySettingsScreen extends ConsumerWidget {
     localCurrencySelectionHandler(LocalCurrency currency) {
       ref
           .read(sharedPreferencesProvider)
+          .requireValue
           .setString(kLocalCurrencySettingsKey, currency.name)
           .then((value) => ref.refresh(localCurrencyProvider));
     }

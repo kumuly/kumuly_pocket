@@ -7,6 +7,8 @@ import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
+import 'package:kumuly_pocket/widgets/amounts/bitcoin_amount_display.dart';
+import 'package:kumuly_pocket/widgets/amounts/local_currency_amount_display.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 import 'package:kumuly_pocket/widgets/page_views/page_view_controller.dart';
 
@@ -17,10 +19,6 @@ class CashierPaidScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
 
-    final localCurrency = ref.watch(localCurrencyProvider);
-    final formattedLocalCurrencyAmount = ref
-        .watch(cashierGenerationControllerProvider)
-        .formattedLocalCurrencyAmount(localCurrency.decimals);
     final amountSat = ref.watch(cashierGenerationControllerProvider).amountSat;
 
     final copy = AppLocalizations.of(context)!;
@@ -72,30 +70,32 @@ class CashierPaidScreen extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    '+ $amountSat ',
-                    style: textTheme.display7(
-                        Palette.success[40], FontWeight.w600),
-                    textAlign: TextAlign.center,
-                  ),
-                  Text(
-                    ref.watch(bitcoinUnitProvider).name.toUpperCase(),
-                    style: textTheme.display2(
+                  BitcoinAmountDisplay(
+                    prefix: '+ ',
+                    amountSat: amountSat,
+                    amountStyle: textTheme.display7(
+                      Palette.success[40],
+                      FontWeight.w600,
+                    ),
+                    unitCodeStyle: textTheme.display2(
                       Palette.success[40],
                       FontWeight.w500,
                     ),
-                    textAlign: TextAlign.center,
+                    unitSymbolStyle: textTheme.display2(
+                      Palette.success[40],
+                      FontWeight.w500,
+                    ),
                   ),
                 ],
               ),
-              Text(
-                '≈ $formattedLocalCurrencyAmount ${localCurrency.code}',
-                style: textTheme.display2(
+              LocalCurrencyAmountDisplay(
+                prefix: '≈ ',
+                amountSat: amountSat,
+                amountStyle: textTheme.display2(
                   Palette.neutral[80],
                   FontWeight.w400,
                 ),
-                textAlign: TextAlign.center,
-              )
+              ),
             ],
           ),
           Column(

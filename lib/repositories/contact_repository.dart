@@ -26,7 +26,7 @@ abstract class ContactRepository {
 @riverpod
 ContactRepository sqliteContactRepository(SqliteContactRepositoryRef ref) {
   return SqliteContactRepository(
-    db: ref.watch(sqliteProvider),
+    db: ref.watch(sqliteProvider).requireValue,
   );
 }
 

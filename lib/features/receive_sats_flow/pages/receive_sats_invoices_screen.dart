@@ -11,6 +11,7 @@ import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
 import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
+import 'package:kumuly_pocket/widgets/amounts/bitcoin_amount_display.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 import 'package:kumuly_pocket/widgets/page_views/page_view_controller.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -297,11 +298,7 @@ class ReceiveSatsInvoicesScreenAmountSection extends ConsumerWidget {
     final copy = AppLocalizations.of(context)!;
 
     final state = ref.watch(receiveSatsControllerProvider);
-    final amountToPay = ref.watch(
-      displayBitcoinAmountProvider(
-        state.amountToPaySat,
-      ),
-    );
+
     final unit = ref.watch(
       bitcoinUnitProvider,
     );
@@ -338,15 +335,19 @@ class ReceiveSatsInvoicesScreenAmountSection extends ConsumerWidget {
               onPressed: () {
                 Clipboard.setData(
                   ClipboardData(
-                    text: '${amountToPay!} ${unit.code}',
+                    text: '${ref.watch(
+                      displayBitcoinAmountProvider(
+                        state.amountToPaySat,
+                      ),
+                    )}',
                   ),
                 ).then(
                   (_) {
                     // Optionally, show a confirmation message to the user.
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content:
-                            Text('${copy.amountToPayCopiedIn} ${unit.code}'),
+                        content: Text(
+                            '${copy.amountToPayCopiedIn} ${unit == BitcoinUnit.btc ? unit.code : unit.symbol}'),
                       ),
                     );
                   },
@@ -356,16 +357,17 @@ class ReceiveSatsInvoicesScreenAmountSection extends ConsumerWidget {
               iconSize: 16,
               color: Palette.lilac[100],
             ),
-            Text(
-              amountToPay!,
-              style: textTheme.display3(
+            BitcoinAmountDisplay(
+              amountSat: state.amountToPaySat,
+              amountStyle: textTheme.display3(
                 Palette.neutral[80],
                 FontWeight.w400,
               ),
-            ),
-            Text(
-              ' ${unit.code}',
-              style: textTheme.caption1(
+              unitSymbolStyle: textTheme.caption1(
+                Palette.neutral[60],
+                FontWeight.w600,
+              ),
+              unitCodeStyle: textTheme.caption1(
                 Palette.neutral[60],
                 FontWeight.w600,
               ),
@@ -412,7 +414,7 @@ class ReceiveSatsInvoicesScreenAmountTooSmallSection extends ConsumerWidget {
                 ),
                 TextSpan(
                   text:
-                      '${copy.minAmountToEnableOnChainReceivingPart3} $minAmount ${unit.code}.',
+                      '${copy.minAmountToEnableOnChainReceivingPart3}${unit == BitcoinUnit.sat ? ' ${unit.symbol} ' : ' '}$minAmount${unit == BitcoinUnit.btc ? ' ${unit.code}' : ''}.',
                   style: textTheme.body2(Palette.neutral[60], FontWeight.w500),
                 ),
               ],
@@ -460,7 +462,7 @@ class ReceiveSatsInvoicesScreenAmountTooBigSection extends ConsumerWidget {
                 ),
                 TextSpan(
                   text:
-                      '${copy.maxAmountToEnableOnChainReceivingPart3} $maxAmount ${unit.code}.',
+                      '${copy.maxAmountToEnableOnChainReceivingPart3}${unit == BitcoinUnit.sat ? ' ${unit.symbol} ' : ' '}$maxAmount${unit == BitcoinUnit.btc ? ' ${unit.code}' : ''}.',
                   style: textTheme.body2(Palette.neutral[60], FontWeight.w500),
                 ),
               ],

@@ -1,4 +1,4 @@
-import 'package:kumuly_pocket/features/pocket_mode/pocket_mode_menu_state.dart';
+import 'package:kumuly_pocket/features/pocket/menu/pocket_mode_menu_state.dart';
 import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:kumuly_pocket/repositories/lightning_node_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

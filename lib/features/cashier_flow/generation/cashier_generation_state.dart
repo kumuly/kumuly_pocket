@@ -41,20 +41,6 @@ class CashierGenerationState extends Equatable {
     }
   }
 
-  String formattedLocalCurrencyAmount(int decimals) {
-    if (localCurrencyAmount == null) {
-      return '';
-    } else {
-      final fixed = localCurrencyAmount!.toStringAsFixed(decimals);
-      final [integerString, decimalsString] = fixed.split('.');
-      if (int.parse(decimalsString) == 0) {
-        return integerString;
-      } else {
-        return fixed;
-      }
-    }
-  }
-
   @override
   List<Object?> get props => [
         localCurrencyAmount,

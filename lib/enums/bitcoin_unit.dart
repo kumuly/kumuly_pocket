@@ -20,7 +20,7 @@ extension BitcoinUnitExtension on BitcoinUnit {
       case BitcoinUnit.btc:
         return '₿';
       case BitcoinUnit.sat:
-        return '⚡';
+        return '₿';
       default:
         throw ArgumentError('Unsupported bitcoin unit');
     }

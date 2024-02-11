@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:breez_sdk/breez_sdk.dart';
+import 'package:breez_sdk/bridge_generated.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/entities/invoice_entity.dart';
 import 'package:kumuly_pocket/entities/keysend_payment_details_entity.dart';
@@ -11,14 +11,17 @@ import 'package:kumuly_pocket/entities/payment_entity.dart';
 import 'package:kumuly_pocket/entities/swap_info_entity.dart';
 import 'package:kumuly_pocket/enums/app_network.dart';
 import 'package:kumuly_pocket/enums/on_chain_fee_velocity.dart';
+import 'package:kumuly_pocket/enums/transaction_direction.dart';
 import 'package:kumuly_pocket/enums/payment_request_type.dart';
+import 'package:kumuly_pocket/enums/transaction_status.dart';
+import 'package:kumuly_pocket/enums/transaction_type.dart';
 import 'package:kumuly_pocket/environment_variables.dart';
 import 'package:kumuly_pocket/providers/breez_sdk_providers.dart';
 import 'package:kumuly_pocket/repositories/lightning_node_repository.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:convert/convert.dart';
+import 'package:sqflite/sqflite.dart';
 
 part 'lightning_node_service.g.dart';
 
@@ -92,6 +95,7 @@ abstract class LightningNodeService {
     int? offset,
     int? limit,
   });
+  Future<PaymentEntity?> getPaymentByHash(String hash);
   Future<void> disconnect();
 }
 
@@ -263,10 +267,39 @@ class BreezSdkLightningNodeService implements LightningNodeService {
 
   @override
   Future<List<PaymentEntity>> getPaymentHistory({
+    TransactionDirection? direction,
+    int? fromTimestamp,
+    int? toTimestamp,
+    bool? includeFailures,
     int? offset,
     int? limit,
-  }) =>
-      _lightningNodeRepository.getPayments(offset: offset, limit: limit);
+  }) async {
+    List<PaymentTypeFilter>? filters;
+
+    if (direction != null) {
+      filters = [
+        direction == TransactionDirection.incoming
+            ? PaymentTypeFilter.Received
+            : PaymentTypeFilter.Sent,
+      ];
+    }
+
+    ListPaymentsRequest req = ListPaymentsRequest(
+      filters: filters,
+      fromTimestamp: fromTimestamp,
+      toTimestamp: toTimestamp,
+      includeFailures: includeFailures,
+      offset: offset,
+      limit: limit,
+    );
+    List<Payment> payments = await _breezSdk.listPayments(req: req);
+    // Only keep LN payments and remove closed channel payments
+    payments.removeWhere(
+        (payment) => payment.details is PaymentDetails_ClosedChannel);
+    return payments
+        .map((payment) => _paymentEntityFromPayment(payment))
+        .toList();
+  }
 
   @override
   Future<PaidInvoiceEntity> waitForPayment(
@@ -305,6 +338,86 @@ class BreezSdkLightningNodeService implements LightningNodeService {
   @override
   Future<KeysendPaymentDetailsEntity> keysend(String nodeId, int amountSat) {
     return _lightningNodeRepository.keysend(nodeId, amountSat * 1000);
+  }
+
+  @override
+  Future<PaymentEntity?> getPaymentByHash(String hash) async {
+    final payment = await _breezSdk.paymentByHash(hash: hash);
+    if (payment == null) {
+      return null;
+    }
+    return _paymentEntityFromPayment(payment);
+  }
+
+  PaymentEntity _paymentEntityFromPayment(Payment payment) {
+    PaymentDetails_Ln details = payment.details as PaymentDetails_Ln;
+
+    return PaymentEntity(
+      id: details.data.paymentHash,
+      receivedAmountSat: payment.paymentType == PaymentType.Received
+          ? payment.amountMsat ~/ 1000
+          : 0,
+      sentAmountSat: payment.paymentType == PaymentType.Sent
+          ? payment.amountMsat ~/ 1000
+          : 0,
+      timestamp: payment.paymentTime,
+      status: payment.status == PaymentStatus.Pending
+          ? TransactionStatus.pending
+          : payment.status == PaymentStatus.Complete
+              ? TransactionStatus.complete
+              : payment.status == PaymentStatus.Failed
+                  ? TransactionStatus.failed
+                  : TransactionStatus.unknown,
+      type: TransactionType.lightningPayment,
+      feeAmountSat: payment.feeMsat ~/ 1000,
+      description: payment.description,
+      destinationPubkey: details.data.destinationPubkey,
+      paymentPreimage: details.data.paymentPreimage,
+      keysend: details.data.keysend,
+      bolt11: details.data.bolt11,
+      lnurlSuccessAction: details.data.lnurlSuccessAction == null
+          ? null
+          : LnurlSuccessAction(
+              description:
+                  details.data.lnurlSuccessAction is SuccessActionProcessed_Aes
+                      ? ((details.data.lnurlSuccessAction!
+                                  as SuccessActionProcessed_Aes)
+                              .result as AesSuccessActionDataResult_Decrypted)
+                          .data
+                          .description
+                      : details.data.lnurlSuccessAction
+                              is SuccessActionProcessed_Url
+                          ? (details.data.lnurlSuccessAction!
+                                  as SuccessActionProcessed_Url)
+                              .data
+                              .description
+                          : null,
+              plaintext:
+                  details.data.lnurlSuccessAction is SuccessActionProcessed_Aes
+                      ? ((details.data.lnurlSuccessAction!
+                                  as SuccessActionProcessed_Aes)
+                              .result as AesSuccessActionDataResult_Decrypted)
+                          .data
+                          .plaintext
+                      : null,
+              message: details.data.lnurlSuccessAction
+                      is SuccessActionProcessed_Message
+                  ? (details.data.lnurlSuccessAction!
+                          as SuccessActionProcessed_Message)
+                      .data
+                      .message
+                  : null,
+              url: details.data.lnurlSuccessAction is SuccessActionProcessed_Url
+                  ? (details.data.lnurlSuccessAction!
+                          as SuccessActionProcessed_Url)
+                      .data
+                      .url
+                  : null,
+            ),
+      lnAddress: details.data.lnAddress,
+      lnurlMetadata: details.data.lnurlMetadata,
+      lnurlWithdrawEndpoint: details.data.lnurlWithdrawEndpoint,
+    );
   }
 }
 

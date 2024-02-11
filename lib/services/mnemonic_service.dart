@@ -14,21 +14,6 @@ abstract class MnemonicService {
   Future<void> deleteMnemonic(String label, String pin);
 }
 
-@riverpod
-MnemonicService masterKeyEncryptedMnemonicService(
-    MasterKeyEncryptedMnemonicServiceRef ref) {
-  final encryptedMnemonicRepository = ref.watch(
-    secureStorageEncryptedMnemonicRepositoryProvider,
-  );
-  final masterKeyManagementService = ref.watch(
-    masterKeyManagementServiceProvider,
-  );
-  return MasterKeyEncryptedMnemonicService(
-    encryptedMnemonicRepository,
-    masterKeyManagementService,
-  );
-}
-
 class MasterKeyEncryptedMnemonicService implements MnemonicService {
   final EncryptedMnemonicRepository _encryptedMnemonicRepository;
   final PinDerivedEncryptedKeyManagementService _masterKeyManagementService;
@@ -87,4 +72,19 @@ class UnauthorizedException implements Exception {
   final String message;
 
   UnauthorizedException(this.message);
+}
+
+@riverpod
+MnemonicService masterKeyEncryptedMnemonicService(
+    MasterKeyEncryptedMnemonicServiceRef ref) {
+  final encryptedMnemonicRepository = ref.watch(
+    secureStorageEncryptedMnemonicRepositoryProvider,
+  );
+  final masterKeyManagementService = ref.watch(
+    masterKeyManagementServiceProvider,
+  );
+  return MasterKeyEncryptedMnemonicService(
+    encryptedMnemonicRepository,
+    masterKeyManagementService,
+  );
 }

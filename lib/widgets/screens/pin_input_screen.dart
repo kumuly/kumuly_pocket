@@ -43,6 +43,7 @@ class PinInputScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         leading: leading,
         title: Text(
           title ?? copy.pin,

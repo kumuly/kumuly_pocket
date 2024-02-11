@@ -1,0 +1,4 @@
+enum TransactionDirection {
+  incoming,
+  outgoing,
+}

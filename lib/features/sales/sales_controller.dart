@@ -7,6 +7,6 @@ part 'sales_controller.g.dart';
 class SalesController extends _$SalesController {
   @override
   SalesState build() {
-    return const SalesState(balanceSat: 0, payments: null);
+    return const SalesState(balanceSat: 0, sales: null);
   }
 }

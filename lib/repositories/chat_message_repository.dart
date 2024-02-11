@@ -34,7 +34,7 @@ abstract class ChatMessageRepository {
 ChatMessageRepository sqliteChatMessageRepository(
     SqliteChatMessageRepositoryRef ref) {
   return SqliteChatMessageRepository(
-    db: ref.watch(sqliteProvider),
+    db: ref.watch(sqliteProvider).requireValue,
   );
 }
 

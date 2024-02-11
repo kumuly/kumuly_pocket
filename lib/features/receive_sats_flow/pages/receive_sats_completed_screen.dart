@@ -6,11 +6,10 @@ import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:confetti/confetti.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_reception_controller.dart';
-import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
-import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:kumuly_pocket/widgets/amounts/bitcoin_amount_display.dart';
 import 'package:kumuly_pocket/widgets/buttons/primary_text_button.dart';
 
 class ReceiveSatsCompletedScreen extends ConsumerStatefulWidget {
@@ -47,9 +46,6 @@ class ReceiveSatsCompletedScreenState
     final copy = AppLocalizations.of(context)!;
     final router = GoRouter.of(context);
     final state = ref.watch(receiveSatsReceptionControllerProvider);
-
-    final amount = ref.watch(displayBitcoinAmountProvider(state.amountSat));
-    final unit = ref.watch(bitcoinUnitProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -92,9 +88,10 @@ class ReceiveSatsCompletedScreenState
                     ),
                   ),
                   const SizedBox(height: 4.0),
-                  Text(
-                    '+ $amount ${unit.name.toUpperCase()}',
-                    style: textTheme.display7(
+                  BitcoinAmountDisplay(
+                    prefix: '+ ',
+                    amountSat: state.amountSat,
+                    amountStyle: textTheme.display7(
                       state.isPaid ? Palette.success[50] : Palette.neutral[60],
                       FontWeight.w700,
                     ),

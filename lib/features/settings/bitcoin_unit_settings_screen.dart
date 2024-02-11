@@ -28,6 +28,7 @@ class BitcoinUnitSettingsScreen extends ConsumerWidget {
     bitcoinUnitSelectionHandler(BitcoinUnit unit) {
       ref
           .read(sharedPreferencesProvider)
+          .requireValue
           .setString(kBitcoinUnitSettingsKey, unit.name)
           .then((value) => ref.refresh(bitcoinUnitProvider));
     }

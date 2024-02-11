@@ -1,27 +1,26 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:kumuly_pocket/view_models/payment.dart';
 
 @immutable
 class SalesState extends Equatable {
   const SalesState({
     this.balanceSat,
-    this.payments,
+    this.sales,
   });
 
   final int? balanceSat;
-  final List<Payment>? payments;
+  final List<void>? sales;
 
   SalesState copyWith({
     int? balanceInSat,
-    List<Payment>? payments,
+    List<void>? sales,
   }) {
     return SalesState(
       balanceSat: balanceSat ?? balanceSat,
-      payments: payments ?? this.payments,
+      sales: sales ?? this.sales,
     );
   }
 
   @override
-  List<Object?> get props => [balanceSat, payments];
+  List<Object?> get props => [balanceSat, sales];
 }

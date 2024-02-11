@@ -52,6 +52,7 @@ class RecoveryPinSetupConfirmationScreen extends ConsumerWidget {
             await confirming;
             await notifier.connectNode();
             await notifier.storeMnemonic();
+            await notifier.completeOnboarding();
 
             router.pop(); // pop the transition dialog
             router.pop(); // pop the onboarding flow that was pushed

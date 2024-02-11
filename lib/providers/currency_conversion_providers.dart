@@ -40,7 +40,8 @@ String? displayBitcoinAmount(DisplayBitcoinAmountRef ref, int? amountSat) {
 
 @riverpod
 Future<double?> fiatRates(FiatRatesRef ref, LocalCurrency localCurrency) async {
-  final fiatRates = await ref.watch(breezSdkProvider).fetchFiatRates();
+  final breezSdk = ref.watch(breezSdkProvider);
+  final fiatRates = await breezSdk.fetchFiatRates();
 
   return fiatRates[localCurrency.code]?.value;
 }

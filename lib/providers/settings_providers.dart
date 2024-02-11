@@ -9,8 +9,10 @@ part 'settings_providers.g.dart';
 
 @riverpod
 BitcoinUnit bitcoinUnit(BitcoinUnitRef ref) {
+  final sharedPreferences = ref.watch(sharedPreferencesProvider).requireValue;
+
   final bitcoinUnitSetting =
-      ref.watch(sharedPreferencesProvider).getString(kBitcoinUnitSettingsKey);
+      sharedPreferences.getString(kBitcoinUnitSettingsKey);
 
   if (bitcoinUnitSetting == null) {
     return BitcoinUnit.sat;
@@ -27,8 +29,10 @@ AppNetwork bitcoinNetwork(BitcoinNetworkRef ref) {
 
 @riverpod
 LocalCurrency localCurrency(LocalCurrencyRef ref) {
+  final sharedPreferences = ref.watch(sharedPreferencesProvider).requireValue;
+
   final localCurrencySetting =
-      ref.watch(sharedPreferencesProvider).getString(kLocalCurrencySettingsKey);
+      sharedPreferences.getString(kLocalCurrencySettingsKey);
 
   if (localCurrencySetting == null) {
     return LocalCurrency.euro;

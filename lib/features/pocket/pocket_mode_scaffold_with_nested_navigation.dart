@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/enums/local_currency.dart';
-import 'package:kumuly_pocket/features/pocket_mode/pocket_mode_menu_controller.dart';
+import 'package:kumuly_pocket/features/pocket/menu/pocket_mode_menu_controller.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/dialogs/transition_dialog.dart';

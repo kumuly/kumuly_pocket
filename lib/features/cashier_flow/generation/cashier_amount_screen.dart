@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
-import 'package:kumuly_pocket/enums/local_currency.dart';
 import 'package:kumuly_pocket/features/cashier_flow/generation/cashier_generation_controller.dart';
-import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
-import 'package:kumuly_pocket/providers/settings_providers.dart';
+import 'package:kumuly_pocket/widgets/amounts/bitcoin_amount_display.dart';
+import 'package:kumuly_pocket/widgets/amounts/local_currency_amount_display.dart';
 import 'package:kumuly_pocket/widgets/buttons/rectangular_border_button.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
@@ -25,9 +24,7 @@ class CashierAmountScreen extends ConsumerWidget {
     final TextTheme textTheme = Theme.of(context).textTheme;
     final router = GoRouter.of(context);
 
-    final unit = ref.watch(bitcoinUnitProvider);
     final amountSat = ref.watch(cashierGenerationControllerProvider).amountSat;
-    final localCurrency = ref.watch(localCurrencyProvider);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -117,21 +114,20 @@ class CashierAmountScreen extends ConsumerWidget {
                           ),
                           const SizedBox(
                             width: kSpacing1 / 2,
-                          ), // Adjust the width value for the desired spacing
-                          Text(
-                            localCurrency.code.toUpperCase(),
-                            textAlign: TextAlign.left,
-                            style: textTheme.display3(
+                          ),
+                          LocalCurrencyAmountDisplay(
+                            amountSat: amountSat,
+                            amountStyle: textTheme.display3(
                               Palette.neutral[80],
                               FontWeight.w400,
                             ),
-                          ),
+                          ) // Adjust the width value for the desired spacing
                         ],
                       ),
-                      Text(
-                        '≈ ${ref.watch(displayBitcoinAmountProvider(amountSat))} ${unit.name.toUpperCase()}',
-                        textAlign: TextAlign.center,
-                        style: textTheme.display1(
+                      BitcoinAmountDisplay(
+                        prefix: '≈ ',
+                        amountSat: amountSat,
+                        amountStyle: textTheme.display1(
                           Palette.neutral[50],
                           FontWeight.w600,
                         ),

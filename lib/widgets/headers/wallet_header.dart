@@ -1,31 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kumuly_pocket/constants.dart';
-import 'package:kumuly_pocket/enums/bitcoin_unit.dart';
-import 'package:kumuly_pocket/enums/local_currency.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
+import 'package:kumuly_pocket/widgets/amounts/bitcoin_amount_display.dart';
+import 'package:kumuly_pocket/widgets/amounts/local_currency_amount_display.dart';
 
-class WalletHeader extends StatelessWidget {
+class WalletHeader extends ConsumerWidget {
   const WalletHeader({
     super.key,
     this.actions,
     required this.title,
-    required this.balance,
-    required this.unit,
-    required this.localCurrencyBalance,
-    required this.localCurrency,
+    required this.balanceSat,
   });
 
   final String title;
-  final String? balance;
-  final BitcoinUnit unit;
-  final double? localCurrencyBalance;
-  final LocalCurrency localCurrency;
+  final int? balanceSat;
   final List<Widget>? actions;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -41,7 +37,7 @@ class WalletHeader extends StatelessWidget {
           const SizedBox(
             height: kSpacing2,
           ),
-          balance == null
+          balanceSat == null
               ? const SizedBox(
                   height: 32,
                   width: 32,
@@ -49,22 +45,21 @@ class WalletHeader extends StatelessWidget {
                 )
               : Column(
                   children: [
-                    Text(
-                      '$balance ${unit.name.toUpperCase()}',
-                      style: textTheme.display7(
+                    BitcoinAmountDisplay(
+                      amountSat: balanceSat,
+                      amountStyle: textTheme.display7(
                         Palette.neutral[120],
                         FontWeight.w700,
                       ),
                     ),
-                    localCurrencyBalance == null
-                        ? const CircularProgressIndicator()
-                        : Text(
-                            '≈ ${localCurrencyBalance?.toStringAsFixed(localCurrency.decimals)} ${localCurrency.code.toUpperCase()}',
-                            style: textTheme.display2(
-                              Palette.neutral[70],
-                              FontWeight.normal,
-                            ),
-                          ),
+                    LocalCurrencyAmountDisplay(
+                      prefix: '≈ ',
+                      amountSat: balanceSat,
+                      amountStyle: textTheme.display2(
+                        Palette.neutral[70],
+                        FontWeight.normal,
+                      ),
+                    ),
                   ],
                 ),
           const SizedBox(
