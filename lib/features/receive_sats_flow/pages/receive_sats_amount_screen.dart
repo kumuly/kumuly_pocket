@@ -3,11 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/enums/bitcoin_unit.dart';
-import 'package:kumuly_pocket/enums/local_currency.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_controller.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/pages/receive_sats_fees_bottom_sheet_modal.dart';
-import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
 import 'package:kumuly_pocket/providers/settings_providers.dart';
+import 'package:kumuly_pocket/widgets/amounts/local_currency_amount_display.dart';
 import 'package:kumuly_pocket/widgets/buttons/rectangular_border_button.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
@@ -28,15 +27,6 @@ class ReceiveSatsAmountScreen extends ConsumerWidget {
     final notifier = ref.read(receiveSatsControllerProvider.notifier);
 
     final unit = ref.watch(bitcoinUnitProvider);
-    final amount = ref.watch(
-      displayBitcoinAmountProvider(
-        state.amountSat,
-      ),
-    );
-
-    final localCurrency = ref.watch(localCurrencyProvider);
-    final localCurrencyAmount =
-        ref.watch(satToLocalProvider(state.amountSat)).asData?.value ?? 0;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -113,9 +103,10 @@ class ReceiveSatsAmountScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      Text(
-                        '≈ ${localCurrencyAmount.toStringAsFixed(localCurrency.decimals)} ${localCurrency.code.toUpperCase()}',
-                        style: textTheme.display2(
+                      LocalCurrencyAmountDisplay(
+                        prefix: '≈ ',
+                        amountSat: state.amountSat,
+                        amountStyle: textTheme.display2(
                           Palette.neutral[70],
                           FontWeight.normal,
                         ),
@@ -128,7 +119,7 @@ class ReceiveSatsAmountScreen extends ConsumerWidget {
           ),
           RectangularBorderButton(
             text: copy.confirmAmount,
-            onPressed: amount == null || double.parse(amount) == 0
+            onPressed: state.amountSat == null || state.amountSat == 0
                 ? null
                 : () async {
                     try {

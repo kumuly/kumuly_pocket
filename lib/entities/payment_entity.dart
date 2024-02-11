@@ -1,52 +1,38 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:kumuly_pocket/enums/lightning_channel_state.dart';
-import 'package:kumuly_pocket/enums/payment_direction.dart';
-import 'package:kumuly_pocket/enums/payment_status.dart';
+import 'package:kumuly_pocket/entities/transaction_entity.dart';
 
 @immutable
-class PaymentEntity extends Equatable {
-  final String id;
-  final PaymentDirection direction;
-  final int paymentTime;
-  final int amountMsat;
-  final int feeMsat;
-  final PaymentStatus status;
+class PaymentEntity extends TransactionEntity {
+  final int feeAmountSat;
   final String? description;
-  final LightningPaymentDetailsEntity? lightningPaymentDetails;
-  final ClosedChannelPaymentDetailsEntity? closedChannelPaymentDetails;
+  final String destinationPubkey;
+  final String paymentPreimage;
+  final bool keysend;
+  final String bolt11;
+
+  /// Only set for sent payments that are part of a LNURL-pay workflow where
+  /// the endpoint returns a success action
+  final LnurlSuccessAction? lnurlSuccessAction;
+
+  /// Only set for sent payments that are sent to a Lightning Address
+  final String? lnAddress;
+
+  /// Only set for sent payments where the receiver endpoint returned LNURL metadata
+  final String? lnurlMetadata;
+
+  /// Only set for received payments that were received as part of LNURL-withdraw
+  final String? lnurlWithdrawEndpoint;
 
   const PaymentEntity({
-    required this.id,
-    required this.direction,
-    required this.paymentTime,
-    required this.amountMsat,
-    required this.feeMsat,
-    required this.status,
+    required super.id,
+    super.receivedAmountSat = 0,
+    super.sentAmountSat = 0,
+    required super.timestamp,
+    required super.status,
+    required super.type,
+    required this.feeAmountSat,
     this.description,
-    this.lightningPaymentDetails,
-    this.closedChannelPaymentDetails,
-  });
-
-  @override
-  List<Object?> get props => [
-        id,
-        direction,
-        paymentTime,
-        amountMsat,
-        feeMsat,
-        status,
-        description,
-        lightningPaymentDetails,
-        closedChannelPaymentDetails,
-      ];
-}
-
-@immutable
-class LightningPaymentDetailsEntity extends Equatable {
-  const LightningPaymentDetailsEntity({
-    required this.paymentHash,
-    required this.label,
     required this.destinationPubkey,
     required this.paymentPreimage,
     required this.keysend,
@@ -57,30 +43,12 @@ class LightningPaymentDetailsEntity extends Equatable {
     this.lnurlWithdrawEndpoint,
   });
 
-  final String paymentHash;
-  final String label;
-  final String destinationPubkey;
-  final String paymentPreimage;
-  final bool keysend;
-  final String bolt11;
-
-  /// Only set for [PaymentType::Sent] payments that are part of a LNURL-pay workflow where
-  /// the endpoint returns a success action
-  final LnurlSuccessAction? lnurlSuccessAction;
-
-  /// Only set for [PaymentType::Sent] payments that are sent to a Lightning Address
-  final String? lnAddress;
-
-  /// Only set for [PaymentType::Sent] payments where the receiver endpoint returned LNURL metadata
-  final String? lnurlMetadata;
-
-  /// Only set for [PaymentType::Received] payments that were received as part of LNURL-withdraw
-  final String? lnurlWithdrawEndpoint;
-
   @override
-  List<Object?> get props => [
-        paymentHash,
-        label,
+  List<Object?> get props => super.props
+    ..addAll(
+      [
+        feeAmountSat,
+        description,
         destinationPubkey,
         paymentPreimage,
         keysend,
@@ -89,32 +57,8 @@ class LightningPaymentDetailsEntity extends Equatable {
         lnAddress,
         lnurlMetadata,
         lnurlWithdrawEndpoint,
-      ];
-}
-
-@immutable
-class ClosedChannelPaymentDetailsEntity extends Equatable {
-  const ClosedChannelPaymentDetailsEntity({
-    required this.shortChannelId,
-    required this.state,
-    required this.fundingTxid,
-    this.closingTxid,
-  });
-
-  final String shortChannelId;
-  final LightningChannelState state;
-  final String fundingTxid;
-
-  /// Can be empty for older closed channels.
-  final String? closingTxid;
-
-  @override
-  List<Object?> get props => [
-        shortChannelId,
-        state,
-        fundingTxid,
-        closingTxid,
-      ];
+      ],
+    );
 }
 
 @immutable

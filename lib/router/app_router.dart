@@ -3,20 +3,19 @@ import 'package:kumuly_pocket/features/activity/activities_screen.dart';
 import 'package:kumuly_pocket/features/activity/paid_promos/paid_promos_screen.dart';
 import 'package:kumuly_pocket/features/add_contact_flow/add_contact_flow.dart';
 import 'package:kumuly_pocket/features/add_contact_flow/add_contact_scanner_screen.dart';
+import 'package:kumuly_pocket/features/app_unlock/app_unlock_screen.dart';
 import 'package:kumuly_pocket/features/cashier_flow/cashier_flow.dart';
 import 'package:kumuly_pocket/features/chat/chat_screen.dart';
 import 'package:kumuly_pocket/features/contact_id/contact_id_screen.dart';
-import 'package:kumuly_pocket/features/landing/landing_flow.dart';
-import 'package:kumuly_pocket/features/onboarding/new_wallet_flow/new_wallet_flow.dart';
-import 'package:kumuly_pocket/features/onboarding/onboarding_start_creen.dart';
-import 'package:kumuly_pocket/features/onboarding/pin_setup_flow/pin_setup_flow.dart';
-import 'package:kumuly_pocket/features/onboarding/wallet_recovery_flow/wallet_recovery_flow.dart';
+import 'package:kumuly_pocket/features/onboarding/new_user_flow/new_user_flow.dart';
+import 'package:kumuly_pocket/features/onboarding/onboarding_start_screen.dart';
+import 'package:kumuly_pocket/features/onboarding/recovery_flow/recovery_flow.dart';
+import 'package:kumuly_pocket/features/pocket/payment_details/pocket_payment_details_screen.dart';
 import 'package:kumuly_pocket/features/promo_flow/code/promo_code_screen.dart';
 import 'package:kumuly_pocket/features/promo_flow/promo_flow.dart';
 import 'package:kumuly_pocket/features/promo_validation_flow/promo_validation_flow.dart';
 import 'package:kumuly_pocket/features/promos/promos_screen.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_flow.dart';
-import 'package:kumuly_pocket/features/root/root_screen.dart';
 import 'package:kumuly_pocket/features/seed_backup_flow/seed_backup_flow.dart';
 import 'package:kumuly_pocket/features/send_sats_flow/errors/send_sats_expired_invoice_screen.dart';
 import 'package:kumuly_pocket/features/send_sats_flow/input/send_sats_scanner_screen.dart';
@@ -24,10 +23,10 @@ import 'package:kumuly_pocket/features/send_sats_flow/send_sats_flow.dart';
 import 'package:kumuly_pocket/features/settings/bitcoin_unit_settings_screen.dart';
 import 'package:kumuly_pocket/features/settings/local_currency_settings_screen.dart';
 import 'package:kumuly_pocket/features/settings/location_settings_screen.dart';
+import 'package:kumuly_pocket/repositories/onboarding_repository.dart';
 import 'package:kumuly_pocket/router/merchant_mode_route.dart';
 import 'package:kumuly_pocket/router/pocket_mode_route.dart';
 import 'package:kumuly_pocket/view_models/promo.dart';
-import 'package:kumuly_pocket/features/pin/pin_screen.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:go_router/go_router.dart';
 
@@ -36,56 +35,71 @@ part 'app_router.g.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
+enum AppRoute {
+  appUnlock,
+  appResume,
+  onboarding,
+  pocket,
+  newUserFlow,
+  recoveryFlow,
+  paymentDetails,
+}
+
 @riverpod
 GoRouter appRouter(AppRouterRef ref) {
   return GoRouter(
-    initialLocation: '/',
+    initialLocation: '/appUnlock',
     navigatorKey: _rootNavigatorKey,
+    redirect: (context, state) {
+      final onboardingRepository =
+          ref.watch(onboardingRepositoryProvider).requireValue;
+      final isOnboardingComplete = onboardingRepository.isOnboardingComplete();
+      final path = state.uri.path;
+
+      if (!isOnboardingComplete) {
+        if (path != '/onboarding' &&
+            path != '/new-user' &&
+            path != '/recovery') {
+          return '/onboarding';
+        }
+      }
+      return null;
+    },
     routes: [
       GoRoute(
-        path: '/',
-        name: 'root',
-        builder: (context, state) => const RootScreen(),
-      ),
-      GoRoute(
-        path: '/landing',
-        name: 'landing-flow',
-        builder: (context, state) => const LandingFlow(),
+        path: '/appUnlock',
+        name: AppRoute.appUnlock.name,
+        pageBuilder: (context, state) => const NoTransitionPage(
+          child: AppUnlockScreen(),
+        ),
       ),
       GoRoute(
         path: '/onboarding',
-        name: 'onboarding',
-        builder: (context, state) {
-          return const OnboardingStartScreen();
-        },
+        name: AppRoute.onboarding.name,
+        pageBuilder: (context, state) => const NoTransitionPage(
+          child: OnboardingStartScreen(),
+        ),
       ),
       GoRoute(
-        path: '/new-wallet',
-        name: 'new-wallet-flow',
-        builder: (context, state) => const NewWalletFlow(),
+        path: '/newUser',
+        name: AppRoute.newUserFlow.name,
+        builder: (context, state) => const NewUserFlow(),
       ),
       GoRoute(
-        path: '/wallet-recovery',
-        name: 'wallet-recovery-flow',
-        builder: (context, state) => const WalletRecoveryFlow(),
-      ),
-      GoRoute(
-        parentNavigatorKey: _rootNavigatorKey,
-        path: '/pin-setup',
-        name: 'pin-setup-flow',
-        builder: (context, state) => const PinSetupFlow(),
-      ),
-      GoRoute(
-        parentNavigatorKey: _rootNavigatorKey,
-        path: '/pin',
-        name: 'pin',
-        builder: (context, state) {
-          return PinScreen(
-            confirmHandler: state.extra as void Function(),
-          );
-        },
+        path: '/recovery',
+        name: AppRoute.recoveryFlow.name,
+        builder: (context, state) => const RecoveryFlow(),
       ),
       pocketModeRoute,
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: '/paymentDetails/:hash',
+        name: AppRoute.paymentDetails.name,
+        builder: (context, state) {
+          final hash = state.pathParameters['hash']!;
+          return PocketPaymentDetailsScreen(hash: hash);
+        },
+      ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
         path: '/contact-id',

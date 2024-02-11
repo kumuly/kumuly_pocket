@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
-import 'package:kumuly_pocket/features/pocket_mode/pocket_mode_menu_controller.dart';
+import 'package:kumuly_pocket/features/pocket/menu/pocket_mode_menu_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';

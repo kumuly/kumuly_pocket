@@ -3,8 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/features/promo_flow/code/promo_code_controller.dart';
 import 'package:kumuly_pocket/features/promo_flow/details/promo_details_controller.dart';
-import 'package:kumuly_pocket/widgets/carousels/image_carousel.dart';
-import 'package:kumuly_pocket/widgets/clippers/ripped_paper_clipper.dart';
 import 'package:kumuly_pocket/widgets/containers/ripped_paper_container.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 import 'package:kumuly_pocket/widgets/promos/promo_description_section.dart';
@@ -19,8 +17,7 @@ import 'package:kumuly_pocket/widgets/promos/rating_stars.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class PromoCodeScreen extends ConsumerWidget {
-  const PromoCodeScreen({Key? key, required this.id, this.promo})
-      : super(key: key);
+  const PromoCodeScreen({super.key, required this.id, this.promo});
 
   final String id;
   final Promo? promo;
@@ -66,10 +63,10 @@ class PromoCodeScreen extends ConsumerWidget {
                 ? const SizedBox()
                 : Column(
                     children: [
-                      DashedDivider(),
+                      const DashedDivider(),
                       PromoMerchantInfoSection(
                           promoDetailsController.promo.merchant),
-                      DashedDivider(),
+                      const DashedDivider(),
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 16.0, vertical: 40.0),
@@ -138,11 +135,11 @@ class PromoCodeScreen extends ConsumerWidget {
 
 class PromoCodeAndInstructionsSection extends StatelessWidget {
   const PromoCodeAndInstructionsSection({
-    Key? key,
+    super.key,
     required this.promo,
     this.paymentHash,
     required this.isRedeemed,
-  }) : super(key: key);
+  });
 
   final Promo promo;
   final String? paymentHash;

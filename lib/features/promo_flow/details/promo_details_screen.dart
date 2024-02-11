@@ -4,9 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/enums/local_currency.dart';
 import 'package:kumuly_pocket/features/promo_flow/details/promo_details_controller.dart';
-import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
 import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:kumuly_pocket/services/lightning_node_service.dart';
+import 'package:kumuly_pocket/widgets/amounts/bitcoin_amount_display.dart';
 import 'package:kumuly_pocket/widgets/page_views/page_view_controller.dart';
 import 'package:kumuly_pocket/widgets/promos/promo_description_section.dart';
 import 'package:kumuly_pocket/widgets/promos/promo_merchant_info_section.dart';
@@ -25,10 +25,10 @@ import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 
 class PromoDetailsScreen extends ConsumerWidget {
   const PromoDetailsScreen({
-    Key? key,
+    super.key,
     required this.id,
     this.promo,
-  }) : super(key: key);
+  });
 
   final String id;
   final Promo? promo;
@@ -70,7 +70,7 @@ class PromoDetailsScreen extends ConsumerWidget {
               images: promoDetailsController.promo.images,
             ),
             PromoMerchantInfoSection(promoDetailsController.promo.merchant),
-            DashedDivider(),
+            const DashedDivider(),
             Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 16.0, vertical: 40.0),
@@ -149,24 +149,15 @@ class ConfirmPaymentBottomSheetModal extends ConsumerWidget {
     final TextTheme textTheme = Theme.of(context).textTheme;
     final router = GoRouter.of(context);
 
-    final promoDetailsController =
-        ref.watch(promoDetailsControllerProvider(id, promo));
+    final state = ref.watch(promoDetailsControllerProvider(id, promo));
 
-    final unit = ref.watch(bitcoinUnitProvider);
-    final amount = ref.watch(
-      displayBitcoinAmountProvider(
-        promoDetailsController.amountSat,
-      ),
-    );
     final localCurrency = ref.watch(localCurrencyProvider);
     final sufficientBalance =
         ref.watch(spendableBalanceSatProvider).asData?.value != null &&
-                promoDetailsController.amountSat != null
+                state.amountSat != null
             ? ref.watch(spendableBalanceSatProvider).asData!.value >=
-                promoDetailsController.amountSat!
+                state.amountSat!
             : false;
-    final isUpdatedPriceError = promoDetailsController.priceUpdatedError;
-    final paymentErrorMessage = promoDetailsController.paymentErrorMessage;
 
     return SizedBox(
       width: double.infinity,
@@ -184,7 +175,7 @@ class ConfirmPaymentBottomSheetModal extends ConsumerWidget {
               ),
             ],
           ),
-          promoDetailsController.promo.merchant.verified
+          state.promo.merchant.verified
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -206,25 +197,25 @@ class ConfirmPaymentBottomSheetModal extends ConsumerWidget {
               : Container(),
           const SizedBox(height: kSpacing1),
           Text(
-            promoDetailsController.promo.merchant.name,
+            state.promo.merchant.name,
             style: textTheme.display2(
               Palette.neutral[100],
               FontWeight.w400,
             ),
           ),
           const SizedBox(height: kSpacing8),
-          amount == null
+          state.amountSat == null
               ? const CircularProgressIndicator()
-              : Text(
-                  '$amount ${unit.name.toUpperCase()}',
-                  style: textTheme.display6(
+              : BitcoinAmountDisplay(
+                  amountSat: state.amountSat,
+                  amountStyle: textTheme.display6(
                     Palette.russianViolet[100],
                     FontWeight.w500,
                   ),
                 ),
           const SizedBox(height: 2),
           Text(
-            '= ${promoDetailsController.promo.discountedPrice} ${localCurrency.code.toUpperCase()}',
+            '= ${state.promo.discountedPrice} ${localCurrency.code.toUpperCase()}',
             style: textTheme.display2(
               Palette.neutral[60],
               FontWeight.w500,
@@ -246,7 +237,7 @@ class ConfirmPaymentBottomSheetModal extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  isUpdatedPriceError
+                  state.priceUpdatedError
                       ? Text(
                           copy.priceUpdatedError,
                           style: textTheme.caption1(
@@ -255,10 +246,10 @@ class ConfirmPaymentBottomSheetModal extends ConsumerWidget {
                           ),
                           textAlign: TextAlign.center,
                         )
-                      : paymentErrorMessage != null &&
-                              paymentErrorMessage.isNotEmpty
+                      : state.paymentErrorMessage != null &&
+                              state.paymentErrorMessage!.isNotEmpty
                           ? Text(
-                              paymentErrorMessage,
+                              state.paymentErrorMessage!,
                               style: textTheme.caption1(
                                 Palette.error[100],
                                 FontWeight.w400,

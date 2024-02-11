@@ -4,13 +4,11 @@ import 'package:go_router/go_router.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:kumuly_pocket/constants.dart';
-import 'package:kumuly_pocket/enums/bitcoin_unit.dart';
-import 'package:kumuly_pocket/enums/local_currency.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_controller.dart';
-import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
-import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
+import 'package:kumuly_pocket/widgets/amounts/bitcoin_amount_display.dart';
+import 'package:kumuly_pocket/widgets/amounts/local_currency_amount_display.dart';
 import 'package:kumuly_pocket/widgets/buttons/primary_filled_button.dart';
 import 'package:kumuly_pocket/widgets/dialogs/transition_dialog.dart';
 import 'package:kumuly_pocket/widgets/loaders/label_with_loading_animation.dart';
@@ -69,18 +67,6 @@ class ReceiveSatsFeesBottomSheetModalAmountHeader extends ConsumerWidget {
 
     final state = ref.watch(receiveSatsControllerProvider);
 
-    final amountToReceive = ref.watch(
-      displayBitcoinAmountProvider(
-        state.amountToReceiveSat,
-      ),
-    );
-    final unit = ref.watch(bitcoinUnitProvider);
-
-    final localCurrency = ref.watch(localCurrencyProvider);
-    final localCurrencyAmountToReceive =
-        ref.watch(satToLocalProvider(state.amountToReceiveSat)).asData?.value ??
-            0;
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -115,21 +101,20 @@ class ReceiveSatsFeesBottomSheetModalAmountHeader extends ConsumerWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              '$amountToReceive ${unit.name.toUpperCase()}',
-              style: textTheme.display5(
+            BitcoinAmountDisplay(
+              amountSat: state.amountToReceiveSat,
+              amountStyle: textTheme.display5(
                 Palette.neutral[80]!,
                 FontWeight.w500,
               ),
-              textAlign: TextAlign.center,
             ),
-            Text(
-              '≈ ${localCurrencyAmountToReceive.toStringAsFixed(localCurrency.decimals)} ${localCurrency.code.toUpperCase()}',
-              style: textTheme.display3(
+            LocalCurrencyAmountDisplay(
+              prefix: '≈ ',
+              amountSat: state.amountToReceiveSat,
+              amountStyle: textTheme.display3(
                 Palette.neutral[50],
                 FontWeight.w500,
               ),
-              textAlign: TextAlign.center,
             ),
           ],
         ),
@@ -153,24 +138,6 @@ class ReceiveSatsFeeBottomSheetModalFeeSection extends ConsumerWidget {
     final copy = AppLocalizations.of(context)!;
 
     final state = ref.watch(receiveSatsControllerProvider);
-
-    final feeAmount = ref.watch(
-      displayBitcoinAmountProvider(
-        state.feeEstimate,
-      ),
-    );
-    final amountToPay = ref.watch(
-      displayBitcoinAmountProvider(
-        state.amountToPaySat,
-      ),
-    );
-    final unit = ref.watch(bitcoinUnitProvider);
-    final localCurrency = ref.watch(localCurrencyProvider);
-    final localCurrencyFeeAmount =
-        ref.watch(satToLocalProvider(state.feeEstimate)).asData?.value ?? 0;
-
-    final localCurrencyAmountToPay =
-        ref.watch(satToLocalProvider(state.amountToPaySat)).asData?.value ?? 0;
 
     return Column(
       children: [
@@ -196,16 +163,16 @@ class ReceiveSatsFeeBottomSheetModalFeeSection extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
-                '$feeAmount ${unit.code.toUpperCase()}',
-                style: textTheme.display2(
+              BitcoinAmountDisplay(
+                amountSat: state.feeEstimate,
+                amountStyle: textTheme.display2(
                   Palette.neutral[80],
                   FontWeight.w500,
                 ),
               ),
-              Text(
-                '≈ ${localCurrencyFeeAmount.toStringAsFixed(localCurrency.decimals)} ${localCurrency.code.toUpperCase()}',
-                style: textTheme.display1(
+              LocalCurrencyAmountDisplay(
+                amountSat: state.feeEstimate,
+                amountStyle: textTheme.display1(
                   Palette.neutral[50],
                   FontWeight.w500,
                 ),
@@ -239,16 +206,17 @@ class ReceiveSatsFeeBottomSheetModalFeeSection extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
-                '$amountToPay ${unit.code.toUpperCase()}',
-                style: textTheme.display2(
+              BitcoinAmountDisplay(
+                amountSat: state.amountToPaySat,
+                amountStyle: textTheme.display2(
                   Palette.success[50],
                   FontWeight.w700,
                 ),
               ),
-              Text(
-                '≈ ${localCurrencyAmountToPay.toStringAsFixed(localCurrency.decimals)} ${localCurrency.code.toUpperCase()}',
-                style: textTheme.display1(
+              LocalCurrencyAmountDisplay(
+                prefix: '≈ ',
+                amountSat: state.amountToPaySat,
+                amountStyle: textTheme.display1(
                   Palette.neutral[50],
                   FontWeight.w500,
                 ),

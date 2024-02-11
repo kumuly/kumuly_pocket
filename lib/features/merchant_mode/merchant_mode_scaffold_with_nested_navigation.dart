@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kumuly_pocket/router/app_router.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/dialogs/transition_dialog.dart';
@@ -60,14 +61,9 @@ class MerchantModeScaffoldWithNestedNavigation extends StatelessWidget {
               color: Palette.neutral[80],
             ),
             onTap: () async {
-              router.pushNamed(
-                'pin',
-                extra: () async {
-                  showTransitionDialog(context, copy.oneMomentPlease);
-                  await Future.delayed(const Duration(milliseconds: 1500));
-                  router.goNamed('pocket');
-                },
-              );
+              showTransitionDialog(context, copy.oneMomentPlease);
+              await Future.delayed(const Duration(seconds: 1));
+              router.goNamed(AppRoute.pocket.name);
             },
           ),
           const DrawerSectionSpace(),

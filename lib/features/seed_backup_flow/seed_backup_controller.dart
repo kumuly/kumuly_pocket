@@ -1,5 +1,5 @@
 import 'package:kumuly_pocket/features/seed_backup_flow/seed_backup_state.dart';
-import 'package:kumuly_pocket/repositories/mnemonic_repository.dart';
+import 'package:kumuly_pocket/services/mnemonic_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'seed_backup_controller.g.dart';
@@ -11,10 +11,11 @@ class SeedBackupController extends _$SeedBackupController {
     return const SeedBackupState();
   }
 
-  Future<void> loadWords() async {
-    final mnemonicRepository =
-        ref.watch(secureStorageMnemonicRepositoryProvider);
-    List<String> words = await mnemonicRepository.getWords();
+  Future<void> loadWords(String mnemonicLabel, String pin) async {
+    final mnemonicService =
+        ref.watch(masterKeyEncryptedMnemonicServiceProvider);
+    final mnemonic = await mnemonicService.getMnemonic(mnemonicLabel, pin);
+    List<String> words = mnemonic.split(' ');
 
     state = state.copyWith(
       words: words,

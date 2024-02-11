@@ -3,14 +3,12 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/features/sales/sales_controller.dart';
-import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
-import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/buttons/primary_text_button.dart';
 import 'package:kumuly_pocket/widgets/headers/wallet_header.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
-import 'package:kumuly_pocket/widgets/lists/transaction_list.dart';
+import 'package:kumuly_pocket/widgets/lists/sales_list.dart';
 import 'package:kumuly_pocket/features/merchant_mode/merchant_mode_scaffold_with_nested_navigation.dart';
 import 'package:kumuly_pocket/widgets/shadows/bottom_shadow.dart';
 
@@ -24,16 +22,6 @@ class SalesScreen extends ConsumerWidget {
     double screenWidth = MediaQuery.of(context).size.width;
 
     final state = ref.watch(salesControllerProvider);
-
-    final unit = ref.watch(bitcoinUnitProvider);
-    final balance = ref.watch(
-      displayBitcoinAmountProvider(
-        state.balanceSat,
-      ),
-    );
-    final localCurrency = ref.watch(localCurrencyProvider);
-    final localCurrencyBalance =
-        ref.watch(satToLocalProvider(state.balanceSat)).asData?.value;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -62,10 +50,7 @@ class SalesScreen extends ConsumerWidget {
               const SizedBox(height: kSpacing12),
               WalletHeader(
                 title: copy.totalSales.toUpperCase(),
-                balance: balance,
-                unit: unit,
-                localCurrencyBalance: localCurrencyBalance,
-                localCurrency: localCurrency,
+                balanceSat: state.balanceSat,
                 actions: [
                   PrimaryTextButton(
                     text: copy.moveFundsToPocket,
@@ -90,7 +75,7 @@ class SalesScreen extends ConsumerWidget {
               const SizedBox(
                 height: kSpacing3,
               ),
-              TransactionList(
+              SalesList(
                 title: copy.recentTransactions.toUpperCase(),
               ),
             ],

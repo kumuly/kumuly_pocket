@@ -4,16 +4,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/features/pocket/balance/pocket_balance_controller.dart';
-import 'package:kumuly_pocket/features/pocket/payments_history/pocket_payments_history_controller.dart';
+import 'package:kumuly_pocket/features/pocket/transaction_history/pocket_transaction_history_controller.dart';
 import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
-import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/buttons/focus_mark_icon_button.dart';
 import 'package:kumuly_pocket/widgets/headers/wallet_header.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
-import 'package:kumuly_pocket/widgets/lists/payment_history.dart';
+import 'package:kumuly_pocket/widgets/lists/transaction_list.dart';
 import 'package:kumuly_pocket/widgets/modals/actions_bottom_sheet_modal.dart';
-import 'package:kumuly_pocket/features/pocket_mode/pocket_mode_scaffold_with_nested_navigation.dart';
+import 'package:kumuly_pocket/features/pocket/pocket_mode_scaffold_with_nested_navigation.dart';
 import 'package:kumuly_pocket/widgets/shadows/bottom_shadow.dart';
 
 class PocketScreen extends ConsumerWidget {
@@ -26,22 +25,13 @@ class PocketScreen extends ConsumerWidget {
     final router = GoRouter.of(context);
 
     final state = ref.watch(pocketBalanceControllerProvider);
+    const kPaymentsLimit = 20;
 
     final historyState = ref.watch(
-      pocketPaymentsHistoryControllerProvider(
+      pocketTransactionHistoryControllerProvider(
         kPaymentsLimit,
       ),
     );
-
-    final unit = ref.watch(bitcoinUnitProvider);
-    final balance = ref.watch(
-      displayBitcoinAmountProvider(
-        state.balanceSat,
-      ),
-    );
-    final localCurrency = ref.watch(localCurrencyProvider);
-    final localCurrencyBalance =
-        ref.watch(satToLocalProvider(state.balanceSat)).asData?.value;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -73,10 +63,10 @@ class PocketScreen extends ConsumerWidget {
                   .refreshBalance();
               await ref
                   .read(
-                    pocketPaymentsHistoryControllerProvider(kPaymentsLimit)
+                    pocketTransactionHistoryControllerProvider(kPaymentsLimit)
                         .notifier,
                   )
-                  .fetchPayments(refresh: true);
+                  .fetchTransactions(refresh: true);
             },
             child: ListView(
               padding: EdgeInsets.zero,
@@ -84,10 +74,7 @@ class PocketScreen extends ConsumerWidget {
                 const SizedBox(height: kSpacing12),
                 WalletHeader(
                   title: copy.pocketBalance.toUpperCase(),
-                  balance: balance,
-                  unit: unit,
-                  localCurrencyBalance: localCurrencyBalance,
-                  localCurrency: localCurrency,
+                  balanceSat: state.balanceSat,
                   actions: [
                     FocusMarkIconButton(
                       size: 44,
@@ -161,22 +148,23 @@ class PocketScreen extends ConsumerWidget {
                 const SizedBox(
                   height: kSpacing12,
                 ),
-                PaymentHistory(
+                TransactionList(
                   title: copy.recentTransactions.toUpperCase(),
-                  payments: historyState.hasValue
-                      ? historyState.asData!.value.payments
+                  transactions: historyState.hasValue
+                      ? historyState.asData!.value.transactions
                       : [],
-                  loadPayments: ref
+                  loadTransactions: ref
                       .read(
-                        pocketPaymentsHistoryControllerProvider(kPaymentsLimit)
+                        pocketTransactionHistoryControllerProvider(
+                                kPaymentsLimit)
                             .notifier,
                       )
-                      .fetchPayments,
+                      .fetchTransactions,
                   limit: historyState.hasValue
-                      ? historyState.asData!.value.paymentsLimit
+                      ? historyState.asData!.value.transactionsLimit
                       : kPaymentsLimit,
                   hasMore: historyState.hasValue
-                      ? historyState.asData!.value.hasMorePayments
+                      ? historyState.asData!.value.hasMoreTransactions
                       : true,
                   isLoading: historyState.isLoading,
                   isLoadingError: historyState.hasError,

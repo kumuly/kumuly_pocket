@@ -26,9 +26,8 @@ const promosSubcollection = 'promos';
 const allProductsCollection = 'all-products';
 const allPromosCollection = 'all-promos';
 /* PageView ids */
-const kLandingFlowPageViewId = 'landing-flow';
-const kPinSetupFlowPageViewId = 'pin-setup-flow';
-const kNewWalletFlowPageViewId = 'new-wallet-flow';
+const kNewUserFlowPageViewId = 'new-user-flow';
+const kRecoveryFlowPageViewId = 'recovery-flow';
 const kCarouselPageViewId = 'carousel';
 const kReceiveSatsFlowPageViewId = 'receive-sats-flow';
 const kSendSatsFlowPageViewId = 'send-sats-flow';
@@ -37,11 +36,6 @@ const kCashierFlowPageViewId = 'cashier-flow';
 const kPromoValidationFlowPageViewId = 'promo-validation-flow';
 const kAddContactFlowPageViewId = 'add-contact-flow';
 const kSeedBackupFlowPageViewId = 'seed-backup-flow';
-const kWalletRecoveryFlowPageViewId = 'wallet-recovery-flow';
-/* Secure storage keys */
-const kMnemonicKey = 'mnemonic';
-const kMnemonicLanguageKey = 'mnemonic-language';
-const kPinDigestKey = 'pin-digest';
 /* Settings keys */
 const kBitcoinUnitSettingsKey = 'bitcoin-unit-settings';
 const kLocalCurrencySettingsKey = 'local-currency-settings';
@@ -51,14 +45,9 @@ const kContactsTable = 'Contacts';
 const kChatMessagesTable = 'ChatMessages';
 /* List limits */
 const kChatMessagesLimit = 6;
-const kPaymentsLimit = 20;
 const kContactListLimit = 10;
 const kFrequentContactsLimit = 10;
 const kMyPostsLimit = 10;
 /* Other */
-const kMaxSeedEntropyLength = 256;
-const kSeedEntropyLength = 128;
-const kInviteCodeLength = 9;
-const kPinLength = 4;
 const kBreezSdkWorkingDirName = 'breezSdk';
 const kDefaultHoursTillInvoiceExpiry = 1;

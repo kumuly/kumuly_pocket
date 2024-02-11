@@ -175,15 +175,6 @@ class ReceiveSatsState extends Equatable {
     return '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute}';
   }
 
-  String get invoiceInfoToShare {
-    return '${isSwapInPossible ? '${bip21Uri!}\n\n' : ''}'
-        'Lightning Invoice: ${invoice!.bolt11}\n'
-        '${isSwapInPossible ? 'Bitcoin address: $onChainAddress\n' : ''}'
-        'Amount: $amountToPaySat sats or ${amountToPaySat! / 100000000.toDouble()} BTC\n'
-        '${description != null && description!.isNotEmpty ? 'Description: ${descriptionController.text}\n' : ''}'
-        'Expiry: $formattedExpiry';
-  }
-
   @override
   List<Object?> get props => [
         amountController,

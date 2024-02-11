@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kumuly_pocket/constants.dart';
-import 'package:kumuly_pocket/enums/local_currency.dart';
 import 'package:kumuly_pocket/features/cashier_flow/generation/cashier_generation_controller.dart';
 import 'package:kumuly_pocket/features/cashier_flow/reception/cashier_reception_controller.dart';
-import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
-import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
+import 'package:kumuly_pocket/widgets/amounts/bitcoin_amount_display.dart';
+import 'package:kumuly_pocket/widgets/amounts/local_currency_amount_display.dart';
 import 'package:kumuly_pocket/widgets/containers/ripped_paper_container.dart';
 import 'package:kumuly_pocket/widgets/dividers/dashed_divider.dart';
 import 'package:kumuly_pocket/widgets/page_views/page_view_controller.dart';
@@ -23,21 +22,16 @@ class CashierReceptionScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
+    final copy = AppLocalizations.of(context)!;
 
     // Start listening for the payment through the controller
     ref.watch(cashierReceptionControllerProvider);
 
-    final localCurrency = ref.watch(localCurrencyProvider);
-    final invoice = ref.watch(cashierGenerationControllerProvider).invoice;
-    final partialInvoice =
-        ref.watch(cashierGenerationControllerProvider).partialInvoice;
-    final formattedLocalCurrencyAmount = ref
-        .watch(cashierGenerationControllerProvider)
-        .formattedLocalCurrencyAmount(localCurrency.decimals);
-    final localCurrencySymbol = ref.watch(localCurrencyProvider).symbol;
-    final amountSat = ref.watch(cashierGenerationControllerProvider).amountSat;
+    final generationState = ref.watch(cashierGenerationControllerProvider);
 
-    final copy = AppLocalizations.of(context)!;
+    final invoice = generationState.invoice;
+    final partialInvoice = generationState.partialInvoice;
+    final amountSat = generationState.amountSat;
 
     return Scaffold(
       backgroundColor: Palette.neutral[30],
@@ -120,25 +114,22 @@ class CashierReceptionScreen extends ConsumerWidget {
                   length: 264,
                 ),
                 const SizedBox(height: kSpacing4),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      formattedLocalCurrencyAmount,
-                      style: textTheme.display8(
-                          Palette.neutral[120], FontWeight.w400),
-                    ),
-                    Text(
-                      localCurrencySymbol,
-                      style: textTheme.display6(
-                          Palette.neutral[120], FontWeight.w400),
-                    )
-                  ],
+                LocalCurrencyAmountDisplay(
+                  amountSat: amountSat,
+                  amountStyle: textTheme.display8(
+                    Palette.neutral[120],
+                    FontWeight.w400,
+                  ),
+                  unitCodeStyle: textTheme.display6(
+                    Palette.neutral[120],
+                    FontWeight.w400,
+                  ),
                 ),
                 const SizedBox(height: kSpacing1 / 2),
-                Text(
-                  '≈ ${ref.watch(displayBitcoinAmountProvider(amountSat))} ${ref.watch(bitcoinUnitProvider).name.toUpperCase()}',
-                  style: textTheme.display1(
+                BitcoinAmountDisplay(
+                  prefix: '≈ ',
+                  amountSat: amountSat,
+                  amountStyle: textTheme.display1(
                     Palette.neutral[60],
                     FontWeight.w500,
                   ),

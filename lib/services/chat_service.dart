@@ -2,7 +2,6 @@ import 'package:kumuly_pocket/entities/contact_entity.dart';
 import 'package:kumuly_pocket/entities/chat_message_entity.dart';
 import 'package:kumuly_pocket/enums/chat_message_status.dart';
 import 'package:kumuly_pocket/enums/chat_message_type.dart';
-import 'package:kumuly_pocket/features/chat/messages/chat_messages_controller.dart';
 import 'package:kumuly_pocket/providers/local_storage_providers.dart';
 import 'package:kumuly_pocket/repositories/chat_message_repository.dart';
 import 'package:kumuly_pocket/repositories/contact_repository.dart';
@@ -36,7 +35,7 @@ abstract class ChatService {
 @riverpod
 ChatService sqliteChatService(SqliteChatServiceRef ref) {
   return SqliteChatService(
-    db: ref.watch(sqliteProvider),
+    db: ref.watch(sqliteProvider).requireValue,
     contactRepository: ref.watch(sqliteContactRepositoryProvider),
     chatMessageRepository: ref.watch(sqliteChatMessageRepositoryProvider),
     lightningNodeService: ref.watch(breezeSdkLightningNodeServiceProvider),
