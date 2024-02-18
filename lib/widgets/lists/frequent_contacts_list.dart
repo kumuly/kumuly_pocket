@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
+import 'package:kumuly_pocket/router/app_router.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/view_models/frequent_contact_item.dart';
@@ -92,7 +93,7 @@ class AddContactItem extends StatelessWidget {
             ),
           ],
         ),
-        onTap: () => router.pushNamed('add-contact-flow'),
+        onTap: () => router.pushNamed(AppRoute.addContactFlow.name),
       ),
     );
   }
@@ -144,7 +145,7 @@ class FrequentContactItemWidget extends StatelessWidget {
           ],
         ),
         onTap: () => router.pushNamed(
-          'chat',
+          AppRoute.chat.name,
           pathParameters: {'id': contact.contactId.toString()},
         ),
       ),

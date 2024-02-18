@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/enums/payment_request_type.dart';
 import 'package:kumuly_pocket/features/send_sats_flow/send_sats_controller.dart';
+import 'package:kumuly_pocket/router/app_router.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -169,7 +170,7 @@ class SendSatsDestinationScreen extends ConsumerWidget {
                         ),
                       ),
                       onPressed: () {
-                        router.pushNamed('send-sats-scanner');
+                        router.pushNamed(AppRoute.sendSatsScanner.name);
                       },
                       icon: DynamicIcon(
                         icon: 'assets/icons/qr_code_scanner.svg',
@@ -189,7 +190,7 @@ class SendSatsDestinationScreen extends ConsumerWidget {
                       if (state.paymentRequestType ==
                               PaymentRequestType.bolt11 &&
                           state.invoice?.secondsTillExpiry == 0) {
-                        router.pushNamed('expired-invoice');
+                        router.pushNamed(AppRoute.expiredInvoice.name);
                       } else {
                         ref
                             .read(pageViewControllerProvider(

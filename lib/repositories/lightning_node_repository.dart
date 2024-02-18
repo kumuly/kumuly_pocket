@@ -130,7 +130,7 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
       swap.maxAllowedDeposit,
       swap.minAllowedDeposit,
       String.fromCharCodes(swap.paymentHash),
-      swap.paidSats,
+      swap.paidMsat ~/ 1000,
     );
   }
 
@@ -392,7 +392,7 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
         amountMsat: amountSat * 1000,
       );
       final response = await _breezSdk.openChannelFee(req: req);
-      return response.feeMsat;
+      return response.feeMsat ?? 0;
     } catch (e) {
       print(e);
       throw EstimateChannelOpeningFeeException(e.toString());
@@ -411,7 +411,7 @@ class BreezeSdkLightningNodeRepository implements LightningNodeRepository {
         swapInfo.maxAllowedDeposit,
         swapInfo.minAllowedDeposit,
         String.fromCharCodes(swapInfo.paymentHash),
-        swapInfo.paidSats,
+        swapInfo.paidMsat ~/ 1000,
       );
     } catch (e) {
       print(e);

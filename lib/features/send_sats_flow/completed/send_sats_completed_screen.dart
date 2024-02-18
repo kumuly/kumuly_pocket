@@ -5,6 +5,7 @@ import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/features/send_sats_flow/send_sats_controller.dart';
 import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
 import 'package:kumuly_pocket/providers/settings_providers.dart';
+import 'package:kumuly_pocket/router/app_router.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/buttons/primary_text_button.dart';
@@ -36,7 +37,7 @@ class SendSatsCompletedScreen extends ConsumerWidget {
                 Icons.close,
                 color: Palette.neutral[100]!,
               ),
-              onPressed: () => router.goNamed('pocket'),
+              onPressed: () => router.goNamed(AppRoute.pocket.name),
             ),
           ),
         ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
+import 'package:kumuly_pocket/router/app_router.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -46,7 +47,7 @@ class ActivitiesScreen extends ConsumerWidget {
               title: 'Paid promos',
               subtitle: '1 active',
               onTap: () {
-                router.pushNamed('paid-promos');
+                router.pushNamed(AppRoute.paidPromos.name);
               },
             ),
             ActivityListItem(

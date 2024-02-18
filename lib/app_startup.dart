@@ -18,7 +18,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 part 'app_startup.g.dart';
 
 @Riverpod(keepAlive: true)
-Future<void> appStartup(AppStartupRef ref) async {
+Future<bool> appStartup(AppStartupRef ref) async {
+  print('in app startup provider');
   ref.onDispose(() {
     // ensure dependent providers are disposed as well
     ref.invalidate(sharedPreferencesProvider);
@@ -43,13 +44,18 @@ Future<void> appStartup(AppStartupRef ref) async {
         kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
     appleProvider: kDebugMode ? AppleProvider.debug : AppleProvider.appAttest,
   );
+
   // Breez SDK init
   final breezSdk = ref.watch(breezSdkProvider);
-  if (!(await breezSdk.isInitialized())) {
+
+  final isBreezInitialized = await breezSdk.isInitialized();
+  if (!isBreezInitialized) {
     breezSdk.initialize();
   }
+
   // Onboarding init after SharedPreferences is initialized
   await ref.watch(onboardingRepositoryProvider.future);
+  return true;
 }
 
 /// Widget class to manage asynchronous app initialization
@@ -59,9 +65,15 @@ class AppStartupWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    print('Starting up');
     final appStartupState = ref.watch(appStartupProvider);
+
+    print('Started up!');
     return appStartupState.when(
-      data: (_) => onLoaded(context),
+      data: (startedUp) {
+        print('In data available');
+        return onLoaded(context);
+      },
       loading: () => const AppStartupLoadingWidget(),
       error: (e, st) => AppStartupErrorWidget(
         message: e.toString(),

@@ -4,6 +4,7 @@ import 'package:kumuly_pocket/features/contacts/contacts_screen.dart';
 import 'package:kumuly_pocket/features/for_you/for_you_screen.dart';
 import 'package:kumuly_pocket/features/pocket/pocket_screen.dart';
 import 'package:kumuly_pocket/features/pocket/pocket_mode_scaffold_with_nested_navigation.dart';
+import 'package:kumuly_pocket/router/app_router.dart';
 
 // Private navigators
 final _shellNavigatorPocketKey =
@@ -27,7 +28,7 @@ final pocketModeRoute = StatefulShellRoute.indexedStack(
         // top route inside branch
         GoRoute(
           path: '/pocket',
-          name: 'pocket',
+          name: AppRoute.pocket.name,
           pageBuilder: (context, state) => const NoTransitionPage(
             child: PocketScreen(),
           ),
@@ -44,7 +45,7 @@ final pocketModeRoute = StatefulShellRoute.indexedStack(
         // top route inside branch
         GoRoute(
           path: '/contacts',
-          name: 'contacts',
+          name: AppRoute.contacts.name,
           pageBuilder: (context, state) => const NoTransitionPage(
             child: ContactsScreen(),
           ),
@@ -57,8 +58,8 @@ final pocketModeRoute = StatefulShellRoute.indexedStack(
       routes: [
         // top route inside branch
         GoRoute(
-          path: '/for-you',
-          name: 'for-you',
+          path: '/forYou',
+          name: AppRoute.forYou.name,
           pageBuilder: (context, state) => const NoTransitionPage(
             child: ForYouScreen(),
           ),

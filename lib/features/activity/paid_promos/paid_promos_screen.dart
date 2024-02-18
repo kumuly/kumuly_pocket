@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/features/activity/paid_promos/paid_promos_controller.dart';
+import 'package:kumuly_pocket/router/app_router.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 //import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -137,7 +138,7 @@ class ActivePromoCard extends StatelessWidget {
     return InkWell(
       onTap: () {
         router.pushNamed(
-          'promo-code',
+          AppRoute.promoCode.name,
           pathParameters: {'id': promo.id!},
           extra: promo,
         );

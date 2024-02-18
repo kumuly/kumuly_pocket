@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/features/add_contact_flow/add_contact_controller.dart';
+import 'package:kumuly_pocket/router/app_router.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -168,7 +169,7 @@ class AddContactIdScreen extends ConsumerWidget {
                         ),
                       ),
                       onPressed: () {
-                        router.pushNamed('add-contact-scanner');
+                        router.pushNamed(AppRoute.addContactScanner.name);
                       },
                       icon: DynamicIcon(
                         icon: 'assets/icons/qr_code_scanner.svg',

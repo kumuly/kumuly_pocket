@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/features/cashier_flow/generation/cashier_generation_controller.dart';
+import 'package:kumuly_pocket/router/app_router.dart';
 import 'package:kumuly_pocket/widgets/amounts/bitcoin_amount_display.dart';
 import 'package:kumuly_pocket/widgets/amounts/local_currency_amount_display.dart';
 import 'package:kumuly_pocket/widgets/buttons/rectangular_border_button.dart';
@@ -36,7 +37,7 @@ class CashierAmountScreen extends ConsumerWidget {
             size: 24.0,
           ),
           onPressed: () {
-            router.goNamed('sales');
+            router.goNamed(AppRoute.sales.name);
           },
         ),
         title: Text(
@@ -59,7 +60,7 @@ class CashierAmountScreen extends ConsumerWidget {
               size: 24.0,
             ),
             onPressed: () {
-              router.pushNamed('promo-validation-flow');
+              router.pushNamed(AppRoute.promoValidationFlow.name);
             },
           ),
         ],

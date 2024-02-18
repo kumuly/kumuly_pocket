@@ -86,10 +86,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: d5a6314497acc691d0e296ebdf28682e5e4bf8db
+      resolved-ref: bd470c4f3e3aa8a8c376c38c908b4feab065338c
       url: "https://www.github.com/breez/breez-sdk-flutter.git"
     source: git
-    version: "0.2.12"
+    version: "0.3.1"
   build:
     dependency: transitive
     description:
@@ -512,10 +512,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_rust_bridge
-      sha256: "7c5e94d037ccb0de7b5f7de3ff2491548d292b5aad01b01f5a5703f8aac9389b"
+      sha256: "02720226035257ad0b571c1256f43df3e1556a499f6bcb004849a0faaa0e87f0"
       url: "https://pub.dev"
     source: hosted
-    version: "1.82.4"
+    version: "1.82.6"
   flutter_secure_storage:
     dependency: "direct main"
     description:

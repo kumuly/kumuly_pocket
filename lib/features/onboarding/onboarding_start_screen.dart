@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
+import 'package:kumuly_pocket/router/app_router.dart';
 import 'package:kumuly_pocket/widgets/buttons/primary_filled_button.dart';
 import 'package:kumuly_pocket/widgets/buttons/primary_text_button.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
@@ -67,7 +68,7 @@ class OnboardingStartScreen extends ConsumerWidget {
                         PrimaryFilledButton(
                           text: copy.getStarted,
                           onPressed: () {
-                            router.pushNamed('new-user-flow');
+                            router.pushNamed(AppRoute.newUserFlow.name);
                           },
                         ),
                       ],
@@ -90,7 +91,7 @@ class OnboardingStartScreen extends ConsumerWidget {
                         PrimaryTextButton(
                           text: copy.recoverAccess,
                           onPressed: () {
-                            router.pushNamed('recovery-flow');
+                            router.pushNamed(AppRoute.recoveryFlow.name);
                           },
                         ),
                       ],

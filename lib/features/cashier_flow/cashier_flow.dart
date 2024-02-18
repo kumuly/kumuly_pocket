@@ -7,6 +7,7 @@ import 'package:kumuly_pocket/features/cashier_flow/generation/cashier_generatio
 import 'package:kumuly_pocket/features/cashier_flow/paid/cashier_paid_screen.dart';
 import 'package:kumuly_pocket/features/cashier_flow/reception/cashier_reception_controller.dart';
 import 'package:kumuly_pocket/features/cashier_flow/reception/cashier_reception_screen.dart';
+import 'package:kumuly_pocket/router/app_router.dart';
 import 'package:kumuly_pocket/widgets/page_views/page_view_controller.dart';
 
 class CashierFlow extends ConsumerWidget {
@@ -21,16 +22,15 @@ class CashierFlow extends ConsumerWidget {
     ref.watch(cashierGenerationControllerProvider);
     ref.watch(cashierReceptionControllerProvider);
 
-    return WillPopScope(
-      onWillPop: () async {
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (_) async {
         if (pageController.pageController.page!.toInt() == 0) {
-          router.goNamed('sales');
-          return false;
+          router.goNamed(AppRoute.sales.name);
         } else {
           // Invalidate the state to start freh
           ref.invalidate(cashierGenerationControllerProvider);
           pageController.pageController.jumpToPage(0);
-          return false;
         }
       },
       child: PageView(
