@@ -43,6 +43,31 @@ enum AppRoute {
   newUserFlow,
   recoveryFlow,
   paymentDetails,
+  contactId,
+  activity,
+  paidPromos,
+  bitcoinUnit,
+  localCurrency,
+  location,
+  seedBackupFlow,
+  receiveSatsFlow,
+  sendSatsFlow,
+  sendSatsScanner,
+  expiredInvoice,
+  addContactFlow,
+  addContactScanner,
+  chat,
+  promos,
+  promoFlow,
+  promoCode,
+  merchantModeFlow,
+  cashierModeFlow,
+  promoValidationFlow,
+  sales,
+  cashier,
+  myPosts,
+  contacts,
+  forYou,
 }
 
 @riverpod
@@ -58,7 +83,7 @@ GoRouter appRouter(AppRouterRef ref) {
 
       if (!isOnboardingComplete) {
         if (path != '/onboarding' &&
-            path != '/new-user' &&
+            path != '/newUser' &&
             path != '/recovery') {
           return '/onboarding';
         }
@@ -102,86 +127,86 @@ GoRouter appRouter(AppRouterRef ref) {
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
-        path: '/contact-id',
-        name: 'contact-id',
+        path: '/contactId',
+        name: AppRoute.contactId.name,
         builder: (context, state) => const ContactIdScreen(),
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
         path: '/activity',
-        name: 'activity',
+        name: AppRoute.activity.name,
         builder: (context, state) => const ActivitiesScreen(),
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
-        path: '/paid-promos',
-        name: 'paid-promos',
+        path: '/paidPromos',
+        name: AppRoute.paidPromos.name,
         builder: (context, state) => const PaidPromosScreen(),
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
-        path: '/bitcoin-unit',
-        name: 'bitcoin-unit',
+        path: '/bitcoinUnit',
+        name: AppRoute.bitcoinUnit.name,
         builder: (context, state) => const BitcoinUnitSettingsScreen(),
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
-        path: '/local-currency',
-        name: 'local-currency',
+        path: '/localCurrency',
+        name: AppRoute.localCurrency.name,
         builder: (context, state) => const LocalCurrencySettingsScreen(),
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
         path: '/location',
-        name: 'location',
+        name: AppRoute.location.name,
         builder: (context, state) => const LocationSettingsScreen(),
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
-        path: '/seed-backup',
-        name: 'seed-backup-flow',
+        path: '/seedBackup',
+        name: AppRoute.seedBackupFlow.name,
         builder: (context, state) => const SeedBackupFlow(),
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
-        path: '/receive-sats',
-        name: 'receive-sats-flow',
+        path: '/receiveSats',
+        name: AppRoute.receiveSatsFlow.name,
         builder: (context, state) => const ReceiveSatsFlow(),
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
-        path: '/send-sats',
-        name: 'send-sats-flow',
+        path: '/sendSats',
+        name: AppRoute.sendSatsFlow.name,
         builder: (context, state) => const SendSatsFlow(),
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
-        path: '/send-sats-scanner',
-        name: 'send-sats-scanner',
+        path: '/sendSatsScanner',
+        name: AppRoute.sendSatsScanner.name,
         builder: (context, state) => const SendSatsScannerScreen(),
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
-        path: '/expired-invoice',
-        name: 'expired-invoice',
+        path: '/expiredInvoice',
+        name: AppRoute.expiredInvoice.name,
         builder: (context, state) => const SendSatsExpiredInvoiceScreen(),
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
-        path: '/add-contact',
-        name: 'add-contact-flow',
+        path: '/addContact',
+        name: AppRoute.addContactFlow.name,
         builder: (context, state) => const AddContactFlow(),
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
-        path: '/add-contact-scanner',
-        name: 'add-contact-scanner',
+        path: '/addContactScanner',
+        name: AppRoute.addContactScanner.name,
         builder: (context, state) => const AddContactScannerScreen(),
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
         path: '/chat/:id',
-        name: 'chat',
+        name: AppRoute.chat.name,
         builder: (context, state) => ChatScreen(
           id: int.parse(state.pathParameters['id']!),
         ),
@@ -189,13 +214,13 @@ GoRouter appRouter(AppRouterRef ref) {
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
         path: '/promos',
-        name: 'promos',
+        name: AppRoute.promos.name,
         builder: (context, state) => const PromosScreen(),
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
         path: '/promo/:id',
-        name: 'promo-flow',
+        name: AppRoute.promoFlow.name,
         builder: (context, state) {
           return PromoFlow(
             id: state.pathParameters['id']!,
@@ -205,8 +230,8 @@ GoRouter appRouter(AppRouterRef ref) {
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
-        path: '/promo-code/:id',
-        name: 'promo-code',
+        path: '/promoCode/:id',
+        name: AppRoute.promoCode.name,
         builder: (context, state) => PromoCodeScreen(
           id: state.pathParameters['id']!,
           promo: state.extra as Promo,
@@ -215,14 +240,14 @@ GoRouter appRouter(AppRouterRef ref) {
       merchantModeRoute,
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
-        path: '/cashier-mode',
-        name: 'cashier-mode-flow',
+        path: '/cashierMode',
+        name: AppRoute.cashierModeFlow.name,
         builder: (context, state) => const CashierFlow(),
       ),
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
-        path: '/promo-validation',
-        name: 'promo-validation-flow',
+        path: '/promoValidation',
+        name: AppRoute.promoValidationFlow.name,
         builder: (context, state) => const PromoValidationFlow(),
       ),
     ],

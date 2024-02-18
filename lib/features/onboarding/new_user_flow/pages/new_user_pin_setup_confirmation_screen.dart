@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/features/onboarding/onboarding_controller.dart';
+import 'package:kumuly_pocket/router/app_router.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/dialogs/transition_dialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -57,7 +58,7 @@ class NewUserPinSetupConfirmationScreen extends ConsumerWidget {
 
             router.pop(); // pop the transition dialog
             router.pop(); // pop the onboarding flow that was pushed
-            router.goNamed('pocket');
+            router.goNamed(AppRoute.pocket.name);
           } catch (e) {
             if (e is CouldNotConnectToNodeException) {
               print('Could not connect to node');

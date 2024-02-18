@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/features/add_contact_flow/add_contact_controller.dart';
+import 'package:kumuly_pocket/router/app_router.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/buttons/primary_text_button.dart';
@@ -34,7 +35,7 @@ class AddContactCompletedScreen extends ConsumerWidget {
                 Icons.close,
                 color: Palette.neutral[100]!,
               ),
-              onPressed: () => router.goNamed('contacts'),
+              onPressed: () => router.goNamed(AppRoute.contacts.name),
             ),
           ),
         ],
@@ -85,7 +86,7 @@ class AddContactCompletedScreen extends ConsumerWidget {
               size: 16.0,
             ),
             onPressed: () => router.pushReplacementNamed(
-              'chat',
+              AppRoute.chat.name,
               pathParameters: {
                 'id': state.contactId!.toString(),
               },

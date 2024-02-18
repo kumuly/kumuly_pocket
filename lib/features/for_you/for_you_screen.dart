@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/features/for_you/for_you_controller.dart';
+import 'package:kumuly_pocket/router/app_router.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/view_models/promo.dart';
@@ -125,7 +126,7 @@ class PromoCard extends StatelessWidget {
     return InkWell(
       onTap: () {
         router.pushNamed(
-          'promo-flow',
+          AppRoute.promoFlow.name,
           pathParameters: {'id': promo.id!},
           extra: promo,
         );

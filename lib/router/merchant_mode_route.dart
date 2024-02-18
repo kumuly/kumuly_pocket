@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/features/my_posts/my_posts_screen.dart';
 import 'package:kumuly_pocket/features/sales/sales_screen.dart';
 import 'package:kumuly_pocket/features/merchant_mode/merchant_mode_scaffold_with_nested_navigation.dart';
+import 'package:kumuly_pocket/router/app_router.dart';
 
 // Private navigators
 final _shellNavigatorSalesKey =
@@ -26,7 +27,7 @@ final merchantModeRoute = StatefulShellRoute.indexedStack(
         // top route inside branch
         GoRoute(
           path: '/sales',
-          name: 'sales',
+          name: AppRoute.sales.name,
           pageBuilder: (context, state) => const NoTransitionPage(
             child: SalesScreen(),
           ),
@@ -43,7 +44,7 @@ final merchantModeRoute = StatefulShellRoute.indexedStack(
         // top route inside branch
         GoRoute(
           path: '/cashier',
-          name: 'cashier',
+          name: AppRoute.cashier.name,
           pageBuilder: (context, state) => NoTransitionPage(
             child: Container(color: Colors.white),
           ),
@@ -57,8 +58,8 @@ final merchantModeRoute = StatefulShellRoute.indexedStack(
       routes: [
         // top route inside branch
         GoRoute(
-          path: '/my-posts',
-          name: 'my-posts',
+          path: '/myPosts',
+          name: AppRoute.myPosts.name,
           pageBuilder: (context, state) => const NoTransitionPage(
             child: MyPostsScreen(),
           ),

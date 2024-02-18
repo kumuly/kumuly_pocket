@@ -6,6 +6,7 @@ import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/features/pocket/balance/pocket_balance_controller.dart';
 import 'package:kumuly_pocket/features/pocket/transaction_history/pocket_transaction_history_controller.dart';
 import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
+import 'package:kumuly_pocket/router/app_router.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/buttons/focus_mark_icon_button.dart';
 import 'package:kumuly_pocket/widgets/headers/wallet_header.dart';
@@ -128,11 +129,11 @@ class PocketScreen extends ConsumerWidget {
                               () {},
                               () {
                                 router.pop(); // Close bottom sheet
-                                router.pushNamed('send-sats-flow');
+                                router.pushNamed(AppRoute.sendSatsFlow.name);
                               },
                               () {
                                 router.pop(); // Close bottom sheet
-                                router.pushNamed('receive-sats-flow');
+                                router.pushNamed(AppRoute.receiveSatsFlow.name);
                               },
                               () {},
                               () {},

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/enums/local_currency.dart';
 import 'package:kumuly_pocket/features/pocket/menu/pocket_mode_menu_controller.dart';
+import 'package:kumuly_pocket/router/app_router.dart';
 import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/dialogs/transition_dialog.dart';
@@ -62,7 +63,7 @@ class PocketModeScaffoldWithNestedNavigation extends ConsumerWidget {
               : const CircularProgressIndicator(),
         ),
         onQrTap: () {
-          router.pushNamed('contact-id');
+          router.pushNamed(AppRoute.contactId.name);
         },
         children: [
           const DrawerSectionSpace(),
@@ -79,7 +80,7 @@ class PocketModeScaffoldWithNestedNavigation extends ConsumerWidget {
             onTap: () async {
               showTransitionDialog(context, copy.oneMomentPlease);
               await Future.delayed(const Duration(milliseconds: 1500));
-              router.goNamed('sales');
+              router.goNamed(AppRoute.sales.name);
             },
           ),
           const DrawerSectionSpace(),
@@ -104,7 +105,7 @@ class PocketModeScaffoldWithNestedNavigation extends ConsumerWidget {
               color: Palette.neutral[80],
             ),
             title: copy.yourActivity,
-            onTap: () => router.pushNamed('activity'),
+            onTap: () => router.pushNamed(AppRoute.activity.name),
           ),
           const DrawerSectionSpace(),
           DrawerSectionTitle(title: copy.appSettings),
@@ -116,7 +117,7 @@ class PocketModeScaffoldWithNestedNavigation extends ConsumerWidget {
             title: copy.bitcoinUnit,
             subtitle: state != null ? state.bitcoinUnit.name.toUpperCase() : '',
             onTap: () {
-              router.pushNamed('bitcoin-unit');
+              router.pushNamed(AppRoute.bitcoinUnit.name);
             },
           ),
           DrawerItem(
@@ -126,7 +127,7 @@ class PocketModeScaffoldWithNestedNavigation extends ConsumerWidget {
             subtitle:
                 state != null ? state.localCurrency.code.toUpperCase() : '',
             onTap: () {
-              router.pushNamed('local-currency');
+              router.pushNamed(AppRoute.localCurrency.name);
             },
           ),
           DrawerItem(
@@ -134,7 +135,7 @@ class PocketModeScaffoldWithNestedNavigation extends ConsumerWidget {
             title: copy.location,
             subtitle: state != null ? state.location : '',
             onTap: () {
-              router.pushNamed('location');
+              router.pushNamed(AppRoute.location.name);
             },
           ),
           const DrawerSectionSpace(),
@@ -153,7 +154,7 @@ class PocketModeScaffoldWithNestedNavigation extends ConsumerWidget {
             ),
             title: copy.seedWords,
             onTap: () {
-              router.pushNamed('seed-backup-flow');
+              router.pushNamed(AppRoute.seedBackupFlow.name);
             },
           ),
           const DrawerSectionSpace(),
