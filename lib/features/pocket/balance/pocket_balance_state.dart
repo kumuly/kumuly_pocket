@@ -6,20 +6,25 @@ class PocketBalanceState extends Equatable {
   // Todo: add on-chain balance
   const PocketBalanceState({
     this.balanceSat,
+    this.hasPendingBalance = false,
   });
 
   final int? balanceSat;
+  final bool hasPendingBalance;
 
   PocketBalanceState copyWith({
-    int? balanceInSat,
+    int? balanceSat,
+    bool? hasPendingBalance,
   }) {
     return PocketBalanceState(
-      balanceSat: balanceInSat ?? balanceSat,
+      balanceSat: balanceSat ?? this.balanceSat,
+      hasPendingBalance: hasPendingBalance ?? this.hasPendingBalance,
     );
   }
 
   @override
   List<Object?> get props => [
         balanceSat,
+        hasPendingBalance,
       ];
 }

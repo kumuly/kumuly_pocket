@@ -1,9 +1,11 @@
-import 'package:breez_sdk/bridge_generated.dart';
+import 'dart:async';
+
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/entities/paid_invoice_entity.dart';
 import 'package:kumuly_pocket/entities/swap_info_entity.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_controller.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_reception_state.dart';
+import 'package:kumuly_pocket/repositories/lightning_node_repository.dart';
 import 'package:kumuly_pocket/services/lightning_node_service.dart';
 import 'package:kumuly_pocket/widgets/page_views/page_view_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -17,29 +19,36 @@ class ReceiveSatsReceptionController extends _$ReceiveSatsReceptionController {
     final invoice = ref.watch(receiveSatsControllerProvider).invoice!;
     final bitcoinAddress =
         ref.watch(receiveSatsControllerProvider).onChainAddress;
+    StreamSubscription? lightningListener;
+    StreamSubscription? onChainListener;
 
     // Start listening for Lightning payment
-    ref
-        .read(breezeSdkLightningNodeServiceProvider)
-        .waitForPayment(
-          bolt11: invoice.bolt11,
-          paymentHash: invoice.paymentHash,
-        )
-        .then((value) => onPaymentReceived(value));
+    lightningListener = ref
+        .read(breezeSdkLightningNodeRepositoryProvider)
+        .paidInvoiceStream
+        .listen((event) {
+      if (invoice.bolt11 == event.bolt11 ||
+          event.paymentHash == invoice.paymentHash) {
+        onPaymentReceived(event);
+      }
+    });
 
     if (bitcoinAddress != null) {
       // Start listening for a swap from an on-chain transaction
-      ref
+      onChainListener = ref
           .read(breezeSdkLightningNodeServiceProvider)
           .inProgressSwapPolling(const Duration(seconds: 5))
-          .firstWhere(
-            (swap) =>
-                ref.watch(receiveSatsControllerProvider).onChainAddress ==
-                swap.bitcoinAddress,
-          )
-          .then((swap) => onSwapInProgress(swap));
+          .listen((event) {
+        if (event.bitcoinAddress == bitcoinAddress) {
+          onSwapInProgress(event);
+        }
+      });
     }
-
+    ref.onDispose(() {
+      // This is called when the controller is disposed
+      lightningListener?.cancel();
+      onChainListener?.cancel();
+    });
     return const ReceiveSatsReceptionState();
   }
 

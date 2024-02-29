@@ -3,11 +3,12 @@ import 'dart:io';
 
 import 'package:breez_sdk/breez_sdk.dart';
 import 'package:breez_sdk/bridge_generated.dart';
+import 'package:convert/convert.dart';
 import 'package:kumuly_pocket/constants.dart';
 import 'package:kumuly_pocket/entities/invoice_entity.dart';
 import 'package:kumuly_pocket/entities/keysend_payment_details_entity.dart';
-import 'package:kumuly_pocket/entities/paid_invoice_entity.dart';
 import 'package:kumuly_pocket/entities/payment_entity.dart';
+import 'package:kumuly_pocket/entities/swap_in_entity.dart';
 import 'package:kumuly_pocket/entities/swap_info_entity.dart';
 import 'package:kumuly_pocket/enums/app_network.dart';
 import 'package:kumuly_pocket/enums/on_chain_fee_velocity.dart';
@@ -21,11 +22,10 @@ import 'package:kumuly_pocket/repositories/lightning_node_repository.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:sqflite/sqflite.dart';
 
 part 'lightning_node_service.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 LightningNodeService breezeSdkLightningNodeService(
     BreezeSdkLightningNodeServiceRef ref) {
   final lightningNodeRepository =
@@ -37,16 +37,6 @@ LightningNodeService breezeSdkLightningNodeService(
   );
 }
 
-/*@riverpod
-class SpendableBalanceSat extends _$SpendableBalanceSat {
-  @override
-  Stream<int?> build() {
-    final lightningNodeService =
-        ref.watch(breezeSdkLightningNodeServiceProvider);
-    return lightningNodeService.spendableBalanceSat;
-  }
-}*/
-
 @riverpod
 Future<int> spendableBalanceSat(SpendableBalanceSatRef ref) {
   final lightningNodeService = ref.watch(breezeSdkLightningNodeServiceProvider);
@@ -54,10 +44,9 @@ Future<int> spendableBalanceSat(SpendableBalanceSatRef ref) {
 }
 
 abstract class LightningNodeService {
-  Future<PaidInvoiceEntity> waitForPayment({
-    String? bolt11,
-    String? paymentHash,
-  });
+  Stream<int> get onChainBalanceSatStream;
+  Stream<int> get channelsBalanceSatStream;
+  Future<List<SwapInEntity>> get swapInsInProgress;
   Stream<SwapInfoEntity> inProgressSwapPolling(Duration interval);
   Future<void> connect(
     AppNetwork network,
@@ -104,6 +93,96 @@ class BreezSdkLightningNodeService implements LightningNodeService {
 
   final LightningNodeRepository _lightningNodeRepository;
   final BreezSDK _breezSdk;
+
+  @override
+  Stream<int> get onChainBalanceSatStream => _breezSdk.nodeStateStream.map(
+        (state) => state == null ? 0 : state.onchainBalanceMsat ~/ 1000,
+      );
+
+  @override
+  Stream<int> get channelsBalanceSatStream => _breezSdk.nodeStateStream.map(
+        (state) => state == null ? 0 : state.channelsBalanceMsat ~/ 1000,
+      );
+
+  @override
+  Future<List<SwapInEntity>> get swapInsInProgress async {
+    final swapInfo = await _breezSdk.inProgressSwap();
+
+    print('---------------------------------------------');
+    print('swapInfo: $swapInfo');
+
+    if (swapInfo == null) {
+      return [];
+    }
+
+    print('swapInfo.bitcoinAddress: ${swapInfo.bitcoinAddress}');
+    print('swapInfo.createdAt: ${swapInfo.createdAt}');
+    print('swapInfo.lockHeight: ${swapInfo.lockHeight}');
+    print('swapInfo.paymentHash: ${hex.encode(swapInfo.paymentHash)}');
+    print('swapInfo.preimage: ${swapInfo.preimage}');
+    print('swapInfo.privateKey: ${swapInfo.privateKey}');
+    print('swapInfo.publicKey: ${swapInfo.publicKey}');
+    print('swapInfo.swapperPublicKey: ${swapInfo.swapperPublicKey}');
+    print('swapInfo.script: ${swapInfo.script}');
+    print('swapInfo.bolt11: ${swapInfo.bolt11}');
+    print('swapInfo.paidMsat: ${swapInfo.paidMsat}');
+    print('swapInfo.confirmedSats: ${swapInfo.confirmedSats}');
+    print('swapInfo.unconfirmedSats: ${swapInfo.unconfirmedSats}');
+    print('swapInfo.status: ${swapInfo.status}');
+    print('swapInfo.refundTxIds: ${swapInfo.refundTxIds}');
+    print('swapInfo.unconfirmedTxIds: ${swapInfo.unconfirmedTxIds}');
+    print('swapInfo.confirmedTxIds: ${swapInfo.confirmedTxIds}');
+    print('swapInfo.minAllowedDeposit: ${swapInfo.minAllowedDeposit}');
+    print('swapInfo.maxAllowedDeposit: ${swapInfo.maxAllowedDeposit}');
+    print('swapInfo.lastRedeemError: ${swapInfo.lastRedeemError}');
+    print(
+        'swapInfo.channelOpeningFees.validUntil: ${swapInfo.channelOpeningFees?.validUntil}');
+    print(
+        'swapInfo.channelOpeningFees.maxClientToSelfDelay: ${swapInfo.channelOpeningFees?.maxClientToSelfDelay}');
+    print(
+        'swapInfo.channelOpeningFees.maxIdleTime: ${swapInfo.channelOpeningFees?.maxIdleTime}');
+    print(
+        'swapInfo.channelOpeningFees.minMsat: ${swapInfo.channelOpeningFees?.minMsat}');
+    print(
+        'swapInfo.channelOpeningFees.promise: ${swapInfo.channelOpeningFees?.promise}');
+    print(
+        'swapInfo.channelOpeningFees.proportional: ${swapInfo.channelOpeningFees?.proportional}');
+    print('---------------------------------------------');
+
+    return [
+      SwapInEntity(
+        bitcoinAddress: swapInfo.bitcoinAddress,
+        paymentHash: hex.encode(swapInfo.paymentHash),
+        bolt11: swapInfo.bolt11,
+        unconfirmedAmountSat:
+            swapInfo.unconfirmedSats > 0 ? swapInfo.unconfirmedSats : null,
+        confirmedAmountSat:
+            swapInfo.confirmedSats > 0 ? swapInfo.confirmedSats : null,
+        paidAmountSat: swapInfo.paidMsat > 0 ? swapInfo.paidMsat ~/ 1000 : null,
+        txIds: swapInfo.confirmedTxIds,
+      ),
+    ];
+  }
+
+  Future<void> printNodeInfo() async {
+    final nodeInfo = await _breezSdk.nodeInfo();
+    print('Node info: $nodeInfo');
+    print('channelsBalanceMsat: ${nodeInfo!.channelsBalanceMsat ~/ 1000}');
+    print('onchainBalanceMsat: ${nodeInfo.onchainBalanceMsat ~/ 1000}');
+    print(
+        'pendingOnchainBalanceMsat: ${nodeInfo.pendingOnchainBalanceMsat ~/ 1000}');
+    print('utxos: ${nodeInfo.utxos}');
+    print('maxPayableMsat: ${nodeInfo.maxPayableMsat ~/ 1000}');
+    print('maxReceivableMsat: ${nodeInfo.maxReceivableMsat ~/ 1000}');
+    print(
+        'maxSinglePaymentAmountMsat: ${nodeInfo.maxSinglePaymentAmountMsat ~/ 1000}');
+    print('maxChanReserveMsats: ${nodeInfo.maxChanReserveMsats ~/ 1000}');
+    print('connectedPeers: ${nodeInfo.connectedPeers}');
+    print('inboundLiquidityMsats: ${nodeInfo.inboundLiquidityMsats ~/ 1000}');
+  }
+
+  Future<bool> get isSwapInProgress async =>
+      await _breezSdk.inProgressSwap() != null;
 
   @override
   Future<void> connect(
@@ -205,6 +284,18 @@ class BreezSdkLightningNodeService implements LightningNodeService {
         (msat) => msat ~/ 1000,
       );
 
+  Future<void> printRefundables() async {
+    final refundables = await _breezSdk.listRefundables();
+    print('Refundables: ${refundables.length}');
+    for (var refundable in refundables) {
+      print('Refundable}');
+      print('Swap address: ${refundable.bitcoinAddress}');
+      print('Confirmed sats: ${refundable.confirmedSats} sat');
+      print('Unconfirmed sats: ${refundable.unconfirmedSats} sat');
+      print('Paid sats: ${refundable.paidMsat ~/ 1000} sat');
+    }
+  }
+
   @override
   // TODO: implement receptionAmountLimits
   //Future<ReceptionAmountLimits> get receptionAmountLimits =>
@@ -299,19 +390,6 @@ class BreezSdkLightningNodeService implements LightningNodeService {
     return payments
         .map((payment) => _paymentEntityFromPayment(payment))
         .toList();
-  }
-
-  @override
-  Future<PaidInvoiceEntity> waitForPayment(
-      {String? bolt11, String? paymentHash}) {
-    return _lightningNodeRepository.paidInvoiceStream.firstWhere((event) {
-      print('waitForPayment: $event');
-      if ((bolt11 != null && bolt11 == event.bolt11) ||
-          (paymentHash != null && paymentHash == event.paymentHash)) {
-        return true;
-      }
-      return false;
-    });
   }
 
   @override

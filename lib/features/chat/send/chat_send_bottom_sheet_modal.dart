@@ -32,7 +32,8 @@ class ChatSendBottomSheetModal extends ConsumerWidget {
     final state = ref.watch(chatSendControllerProvider(contactId));
     final notifier = ref.read(chatSendControllerProvider(contactId).notifier);
 
-    final pocketBalance = ref.watch(pocketBalanceControllerProvider).balanceSat;
+    final pocketBalance =
+        ref.watch(pocketBalanceControllerProvider).asData?.value;
     final bitcoinUnit = ref.watch(bitcoinUnitProvider);
     final localCurrency = ref.watch(localCurrencyProvider);
     final localCurrencyAmount =

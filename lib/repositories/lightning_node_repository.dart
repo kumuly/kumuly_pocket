@@ -16,7 +16,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'lightning_node_repository.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 LightningNodeRepository breezeSdkLightningNodeRepository(
   BreezeSdkLightningNodeRepositoryRef ref,
 ) {

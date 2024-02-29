@@ -9,6 +9,8 @@ import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/view_models/transaction_list_item_view_model.dart';
 import 'package:kumuly_pocket/widgets/amounts/bitcoin_amount_display.dart';
 import 'package:kumuly_pocket/widgets/amounts/local_currency_amount_display.dart';
+import 'package:kumuly_pocket/widgets/dividers/dashed_divider.dart';
+import 'package:kumuly_pocket/widgets/dividers/dashed_divider_section_heading.dart';
 import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 import 'package:kumuly_pocket/widgets/lists/lazy_list.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -17,7 +19,6 @@ import 'package:lottie/lottie.dart';
 class TransactionList extends StatelessWidget {
   const TransactionList({
     super.key,
-    required this.title,
     required this.transactions,
     required this.loadTransactions,
     required this.limit,
@@ -26,7 +27,6 @@ class TransactionList extends StatelessWidget {
     this.isLoadingError = false,
   });
 
-  final String title;
   final List<TransactionListItemViewModel> transactions;
   final Future<void> Function({bool refresh}) loadTransactions;
   final int limit;
@@ -42,29 +42,24 @@ class TransactionList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Text(
-            title,
-            style: textTheme.caption1(
-              Palette.neutral[120],
-              FontWeight.bold,
-              wordSpacing: 1,
-            ),
-          ),
-        ),
         LazyList(
           neverScrollable: true,
-          items: transactions
-              .map(
-                (transaction) => TransactionListItem(
-                  transaction,
-                  key: Key(
-                    transaction.id,
-                  ),
-                ),
-              )
-              .toList(),
+          items: transactions.asMap().entries.map((entry) {
+            final index = entry.key;
+            final transaction = entry.value;
+            final previousTransaction =
+                index > 0 ? transactions[index - 1] : null;
+            return TransactionListItem(
+              transaction,
+              key: Key(
+                transaction.id,
+              ),
+              showDateDivider: previousTransaction == null ||
+                  previousTransaction.day != transaction.day ||
+                  previousTransaction.month != transaction.month ||
+                  previousTransaction.year != transaction.year,
+            );
+          }).toList(),
           loadItems: loadTransactions,
           limit: limit,
           hasMore: hasMore,
@@ -87,9 +82,14 @@ class TransactionList extends StatelessWidget {
 }
 
 class TransactionListItem extends ConsumerWidget {
-  const TransactionListItem(this.transaction, {required super.key});
+  const TransactionListItem(
+    this.transaction, {
+    required super.key,
+    this.showDateDivider = false,
+  });
 
   final TransactionListItemViewModel transaction;
+  final bool showDateDivider;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -97,73 +97,88 @@ class TransactionListItem extends ConsumerWidget {
     final router = GoRouter.of(context);
 
     final copy = AppLocalizations.of(context)!;
+    final languageCode = Localizations.localeOf(context).languageCode;
 
-    return ListTile(
-      leading: CircleAvatar(
-        backgroundColor: Palette.neutral[20],
-        radius: 16,
-        child: DynamicIcon(
-          icon: transaction.isIncoming
-              ? 'assets/icons/receive_arrow.svg'
-              : 'assets/icons/send_arrow.svg',
-          color:
-              transaction.isIncoming ? Palette.success[50] : Palette.lilac[100],
-          size: 12.5,
-        ),
-      ),
-      title: transaction.isIncoming ? Text(copy.received) : Text(copy.sent),
-      titleTextStyle: textTheme.display2(
-        Palette.neutral[80],
-        FontWeight.w400,
-      ),
-      subtitle: Text(
-        transaction.formattedTimestamp ?? copy.pending,
-        style: textTheme.caption1(
-          Palette.neutral[120],
-          FontWeight.w400,
-        ),
-      ),
-      subtitleTextStyle: textTheme.caption1(
-        Palette.neutral[60],
-        FontWeight.w500,
-      ),
-      trailing: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          BitcoinAmountDisplay(
-            prefix: transaction.isIncoming ? '+ ' : '- ',
-            amountSat: transaction.amountSat,
-            amountStyle: textTheme.display2(
-              transaction.isIncoming
-                  ? Palette.success[50]
-                  : Palette.neutral[120],
-              FontWeight.w500,
-            ),
-            hideUnit: true,
+    return Column(
+      children: [
+        if (showDateDivider)
+          DashedDividerSectionHeading(
+            title: transaction.isToday
+                ? copy.today
+                : transaction.isYesterday
+                    ? copy.yesterday
+                    : transaction.formatLocaleDate(
+                        languageCode,
+                      )!,
           ),
-          LocalCurrencyAmountDisplay(
-            prefix: '≈ ',
-            showSymbol: true,
-            showCode: false,
-            amountSat: transaction.amountSat,
-            amountStyle: textTheme.caption1(
-              Palette.neutral[70],
-              FontWeight.normal,
+        ListTile(
+          leading: CircleAvatar(
+            backgroundColor: Palette.neutral[20],
+            radius: 16,
+            child: DynamicIcon(
+              icon: transaction.isIncoming
+                  ? 'assets/icons/receive_arrow.svg'
+                  : 'assets/icons/send_arrow.svg',
+              color: transaction.isIncoming
+                  ? Palette.success[50]
+                  : Palette.lilac[100],
+              size: 12.5,
             ),
-          )
-        ],
-      ),
-      onTap: () {
-        if (transaction.type == TransactionType.lightningPayment) {
-          router.pushNamed(
-            AppRoute.paymentDetails.name,
-            pathParameters: {
-              'hash': transaction.id,
-            },
-          );
-        }
-      },
+          ),
+          title: transaction.isIncoming ? Text(copy.received) : Text(copy.sent),
+          titleTextStyle: textTheme.display2(
+            Palette.neutral[80],
+            FontWeight.w400,
+          ),
+          subtitle: Text(
+            transaction.formatLocaleTime(
+                  languageCode,
+                ) ??
+                copy.pending,
+          ),
+          subtitleTextStyle: textTheme.caption1(
+            Palette.neutral[60],
+            FontWeight.w500,
+          ),
+          trailing: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              BitcoinAmountDisplay(
+                prefix: transaction.isIncoming ? '+ ' : '- ',
+                amountSat: transaction.amountSat,
+                amountStyle: textTheme.display2(
+                  transaction.isIncoming
+                      ? Palette.success[50]
+                      : Palette.neutral[120],
+                  FontWeight.w500,
+                ),
+                hideUnit: true,
+              ),
+              LocalCurrencyAmountDisplay(
+                prefix: '≈ ',
+                showSymbol: true,
+                showCode: false,
+                amountSat: transaction.amountSat,
+                amountStyle: textTheme.caption1(
+                  Palette.neutral[70],
+                  FontWeight.normal,
+                ),
+              )
+            ],
+          ),
+          onTap: () {
+            if (transaction.type == TransactionType.lightningPayment) {
+              router.pushNamed(
+                AppRoute.paymentDetails.name,
+                pathParameters: {
+                  'hash': transaction.id,
+                },
+              );
+            }
+          },
+        ),
+      ],
     );
   }
 }

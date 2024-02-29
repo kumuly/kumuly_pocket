@@ -5,6 +5,7 @@ import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/amounts/bitcoin_amount_display.dart';
 import 'package:kumuly_pocket/widgets/amounts/local_currency_amount_display.dart';
+import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 
 class WalletHeader extends ConsumerWidget {
   const WalletHeader({
@@ -12,10 +13,12 @@ class WalletHeader extends ConsumerWidget {
     this.actions,
     required this.title,
     required this.balanceSat,
+    this.hasReservedBalance = false,
   });
 
   final String title;
   final int? balanceSat;
+  final bool hasReservedBalance;
   final List<Widget>? actions;
 
   @override
@@ -45,12 +48,34 @@ class WalletHeader extends ConsumerWidget {
                 )
               : Column(
                   children: [
-                    BitcoinAmountDisplay(
-                      amountSat: balanceSat,
-                      amountStyle: textTheme.display7(
-                        Palette.neutral[120],
-                        FontWeight.w700,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        hasReservedBalance
+                            ? const Padding(
+                                padding: EdgeInsets.only(right: kSpacing1),
+                                child: SizedBox(
+                                  width: 24,
+                                ),
+                              )
+                            : const SizedBox(),
+                        BitcoinAmountDisplay(
+                          amountSat: balanceSat,
+                          amountStyle: textTheme.display7(
+                            Palette.neutral[120],
+                            FontWeight.w700,
+                          ),
+                        ),
+                        hasReservedBalance
+                            ? Padding(
+                                padding: const EdgeInsets.only(left: kSpacing1),
+                                child: Icon(Icons.lock_clock_outlined,
+                                    color: Palette.neutral[100], size: 24),
+                              )
+                            : const SizedBox(),
+                      ],
                     ),
                     LocalCurrencyAmountDisplay(
                       prefix: '≈ ',
