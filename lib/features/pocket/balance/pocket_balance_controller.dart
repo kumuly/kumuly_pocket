@@ -1,29 +1,34 @@
 import 'package:kumuly_pocket/features/pocket/balance/pocket_balance_state.dart';
-import 'package:kumuly_pocket/services/lightning_node_service.dart';
+import 'package:kumuly_pocket/services/lightning_node/impl/breez_sdk_lightning_node_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'pocket_balance_controller.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 class PocketBalanceController extends _$PocketBalanceController {
   @override
-  Future<PocketBalanceState> build() async {
-    //ref.invalidate(spendableBalanceSatProvider); // and check which stream to listen to to update the balance automatically
+  FutureOr<PocketBalanceState> build() async {
     final breezSdk = ref.watch(breezeSdkLightningNodeServiceProvider);
 
+    await (breezSdk as BreezSdkLightningNodeService).printNodeInfo();
+
     final channelsBalanceStream =
-        breezSdk.channelsBalanceSatStream.listen((balance) {
-      print('channelsBalanceSatStream: $balance');
-      update((previousState) => previousState.copyWith(
-            balanceSat: balance,
-          ));
+        breezSdk.channelsBalanceSatStream.listen((balance) async {
+      update((previousState) async => previousState.balanceSat == balance
+          ? previousState
+          : previousState.copyWith(
+              balanceSat: balance,
+            ));
     });
     final onChainBalanceStream =
-        breezSdk.onChainBalanceSatStream.listen((balance) {
-      print('onChainBalanceSatStream: $balance');
-      update((previousState) => previousState.copyWith(
-            hasPendingBalance: balance > 0,
-          ));
+        breezSdk.onChainBalanceSatStream.listen((balance) async {
+      update((previousState) async =>
+          previousState.hasPendingBalance != balance > 0
+              ? previousState.copyWith(
+                  balanceSat: await breezSdk.spendableBalanceSat,
+                  hasPendingBalance: await breezSdk.onChainBalanceSat > 0,
+                )
+              : previousState);
     });
 
     ref.onDispose(() {
@@ -31,19 +36,14 @@ class PocketBalanceController extends _$PocketBalanceController {
       onChainBalanceStream.cancel();
     });
 
-    return PocketBalanceState(balanceSat: await breezSdk.spendableBalanceSat);
+    return PocketBalanceState(
+      balanceSat: await breezSdk.spendableBalanceSat,
+      hasPendingBalance: await breezSdk.onChainBalanceSat > 0,
+    );
   }
 
-  Future<void> refresh() async {
+  Future<void> drainOnChainFunds() async {
     final breezSdk = ref.watch(breezeSdkLightningNodeServiceProvider);
-    final onChainBalanceSat = await breezSdk.onChainBalanceSat;
-
-    await (breezSdk as BreezSdkLightningNodeService).printNodeInfo();
-    await breezSdk.swapInsInProgress;
-
-    update((previousState) => previousState.copyWith(
-          balanceSat: ref.refresh(spendableBalanceSatProvider).asData?.value,
-          hasPendingBalance: onChainBalanceSat > 0,
-        ));
+    await breezSdk.drainOnChainFunds();
   }
 }

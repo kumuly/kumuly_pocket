@@ -1,5 +1,5 @@
 import 'package:kumuly_pocket/features/pocket/payment_details/pocket_payment_details_state.dart';
-import 'package:kumuly_pocket/services/lightning_node_service.dart';
+import 'package:kumuly_pocket/services/lightning_node/impl/breez_sdk_lightning_node_service.dart';
 import 'package:kumuly_pocket/view_models/payment_details_view_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

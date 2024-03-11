@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:kumuly_pocket/enums/promo_type.dart';
 import 'package:kumuly_pocket/features/promo_flow/details/promo_details_state.dart';
-import 'package:kumuly_pocket/repositories/lightning_node_repository.dart';
-import 'package:kumuly_pocket/services/lightning_node_service.dart';
+import 'package:kumuly_pocket/services/lightning_node/impl/breez_sdk_lightning_node_service.dart';
+import 'package:kumuly_pocket/services/lightning_node/lightning_node_service.dart';
 import 'package:kumuly_pocket/view_models/promo.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

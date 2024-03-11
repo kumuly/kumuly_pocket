@@ -1,7 +1,8 @@
 import 'package:kumuly_pocket/entities/auth_user_entity.dart';
 import 'package:kumuly_pocket/repositories/firebase_auth_repository.dart';
 import 'package:kumuly_pocket/repositories/lightning_auth_repository.dart';
-import 'package:kumuly_pocket/repositories/lightning_node_repository.dart';
+import 'package:kumuly_pocket/services/lightning_node/impl/breez_sdk_lightning_node_service.dart';
+import 'package:kumuly_pocket/services/lightning_node/lightning_node_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'authentication_service.g.dart';
@@ -13,13 +14,12 @@ AuthenticationService firebaseAuthenticationService(
   final firebaseAuthRepository = ref.watch(firebaseAuthRepositoryImplProvider);
   final lightningAuthRepository =
       ref.watch(firebaseLightningAuthRepositoryProvider);
-  final lightningNodeRepository =
-      ref.watch(breezeSdkLightningNodeRepositoryProvider);
+  final lightningNodeService = ref.watch(breezeSdkLightningNodeServiceProvider);
 
   return FirebaseLightningMessageAuthenticationService(
     firebaseAuthRepository,
     lightningAuthRepository,
-    lightningNodeRepository,
+    lightningNodeService,
   );
 }
 
@@ -34,13 +34,13 @@ class FirebaseLightningMessageAuthenticationService
   FirebaseLightningMessageAuthenticationService(
     this._firebaseAuthRepository,
     this._lightningAuthRepository,
-    this._lightningNodeRepository,
+    this._lightningNodeService,
   );
 
   final FirebaseAuthRepository _firebaseAuthRepository;
 
   final LightningAuthRepository _lightningAuthRepository;
-  final LightningNodeRepository _lightningNodeRepository;
+  final LightningNodeService _lightningNodeService;
 
   @override
   Stream<AuthUserEntity> get authUser {
@@ -60,8 +60,8 @@ class FirebaseLightningMessageAuthenticationService
 
     // Sign the message.
     final signature =
-        await _lightningNodeRepository.signMessage(signInMessage.message);
-    final nodeId = await _lightningNodeRepository.nodeId;
+        await _lightningNodeService.signMessage(signInMessage.message);
+    final nodeId = await _lightningNodeService.nodeId;
 
     // Send the signature to the server.
     final jwt = await _lightningAuthRepository.getJwtForValidSignature(

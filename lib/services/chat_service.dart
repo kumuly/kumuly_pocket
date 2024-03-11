@@ -5,7 +5,8 @@ import 'package:kumuly_pocket/enums/chat_message_type.dart';
 import 'package:kumuly_pocket/providers/local_storage_providers.dart';
 import 'package:kumuly_pocket/repositories/chat_message_repository.dart';
 import 'package:kumuly_pocket/repositories/contact_repository.dart';
-import 'package:kumuly_pocket/services/lightning_node_service.dart';
+import 'package:kumuly_pocket/services/lightning_node/impl/breez_sdk_lightning_node_service.dart';
+import 'package:kumuly_pocket/services/lightning_node/lightning_node_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sqflite/sqflite.dart';
 

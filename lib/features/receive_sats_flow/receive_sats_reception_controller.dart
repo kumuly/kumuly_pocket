@@ -5,8 +5,7 @@ import 'package:kumuly_pocket/entities/paid_invoice_entity.dart';
 import 'package:kumuly_pocket/entities/swap_info_entity.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_controller.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_reception_state.dart';
-import 'package:kumuly_pocket/repositories/lightning_node_repository.dart';
-import 'package:kumuly_pocket/services/lightning_node_service.dart';
+import 'package:kumuly_pocket/services/lightning_node/impl/breez_sdk_lightning_node_service.dart';
 import 'package:kumuly_pocket/widgets/page_views/page_view_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -24,7 +23,7 @@ class ReceiveSatsReceptionController extends _$ReceiveSatsReceptionController {
 
     // Start listening for Lightning payment
     lightningListener = ref
-        .read(breezeSdkLightningNodeRepositoryProvider)
+        .read(breezeSdkLightningNodeServiceProvider)
         .paidInvoiceStream
         .listen((event) {
       if (invoice.bolt11 == event.bolt11 ||

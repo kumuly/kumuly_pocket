@@ -5,7 +5,6 @@ import 'package:kumuly_pocket/theme/custom_theme.dart';
 import 'package:kumuly_pocket/theme/palette.dart';
 import 'package:kumuly_pocket/widgets/amounts/bitcoin_amount_display.dart';
 import 'package:kumuly_pocket/widgets/amounts/local_currency_amount_display.dart';
-import 'package:kumuly_pocket/widgets/icons/dynamic_icon.dart';
 
 class WalletHeader extends ConsumerWidget {
   const WalletHeader({
@@ -24,7 +23,8 @@ class WalletHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
-
+    print('WalletHeader:build:1');
+    print('Walletheader balanceSat: $balanceSat');
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

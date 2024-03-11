@@ -19,7 +19,6 @@ part 'app_startup.g.dart';
 
 @Riverpod(keepAlive: true)
 Future<bool> appStartup(AppStartupRef ref) async {
-  print('in app startup provider');
   ref.onDispose(() {
     // ensure dependent providers are disposed as well
     ref.invalidate(sharedPreferencesProvider);
@@ -65,13 +64,10 @@ class AppStartupWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    print('Starting up');
     final appStartupState = ref.watch(appStartupProvider);
 
-    print('Started up!');
     return appStartupState.when(
       data: (startedUp) {
-        print('In data available');
         return onLoaded(context);
       },
       loading: () => const AppStartupLoadingWidget(),

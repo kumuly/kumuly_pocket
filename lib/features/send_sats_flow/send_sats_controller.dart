@@ -5,8 +5,7 @@ import 'package:kumuly_pocket/enums/payment_request_type.dart';
 import 'package:kumuly_pocket/features/send_sats_flow/send_sats_state.dart';
 import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
 import 'package:kumuly_pocket/providers/settings_providers.dart';
-import 'package:kumuly_pocket/repositories/lightning_node_repository.dart';
-import 'package:kumuly_pocket/services/lightning_node_service.dart';
+import 'package:kumuly_pocket/services/lightning_node/impl/breez_sdk_lightning_node_service.dart';
 import 'package:kumuly_pocket/view_models/bip21.dart';
 import 'package:kumuly_pocket/view_models/invoice.dart';
 import 'package:kumuly_pocket/view_models/lnurl_pay.dart';
@@ -60,7 +59,7 @@ class SendSatsController extends _$SendSatsController {
 
     try {
       final parsedPaymentRequest = await ref
-          .read(breezeSdkLightningNodeRepositoryProvider)
+          .read(breezeSdkLightningNodeServiceProvider)
           .decodePaymentRequest(destination);
 
       final invoice = parsedPaymentRequest.invoice != null

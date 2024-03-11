@@ -1,6 +1,6 @@
 import 'package:kumuly_pocket/entities/swap_in_entity.dart';
 import 'package:kumuly_pocket/features/pocket/pending_transactions/pocket_pending_transactions_state.dart';
-import 'package:kumuly_pocket/services/lightning_node_service.dart';
+import 'package:kumuly_pocket/services/lightning_node/impl/breez_sdk_lightning_node_service.dart';
 import 'package:kumuly_pocket/view_models/swap_in_list_item_view_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -10,7 +10,7 @@ part 'pocket_pending_transactions_controller.g.dart';
 class PocketPendingTransactionsController
     extends _$PocketPendingTransactionsController {
   @override
-  Future<PocketPendingTransactionsState> build() async {
+  FutureOr<PocketPendingTransactionsState> build() async {
     final breezSdk = ref.watch(breezeSdkLightningNodeServiceProvider);
     final (onChainBalanceSat, swapInsInProgress) = await _fetchData();
 

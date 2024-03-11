@@ -4,8 +4,8 @@ import 'package:kumuly_pocket/enums/payment_request_type.dart';
 import 'package:kumuly_pocket/features/add_contact_flow/add_contact_state.dart';
 import 'package:kumuly_pocket/features/contacts/contact_list_controller.dart';
 import 'package:kumuly_pocket/features/contacts/frequent_contacts_controller.dart';
-import 'package:kumuly_pocket/repositories/lightning_node_repository.dart';
 import 'package:kumuly_pocket/services/chat_service.dart';
+import 'package:kumuly_pocket/services/lightning_node/impl/breez_sdk_lightning_node_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'add_contact_controller.g.dart';
@@ -50,7 +50,7 @@ class AddContactController extends _$AddContactController {
 
     try {
       final parsedPaymentRequest = await ref
-          .read(breezeSdkLightningNodeRepositoryProvider)
+          .read(breezeSdkLightningNodeServiceProvider)
           .decodePaymentRequest(id);
 
       if (parsedPaymentRequest.type == PaymentRequestType.nodeId) {

@@ -1,6 +1,6 @@
 import 'package:kumuly_pocket/features/pocket/menu/pocket_mode_menu_state.dart';
 import 'package:kumuly_pocket/providers/settings_providers.dart';
-import 'package:kumuly_pocket/repositories/lightning_node_repository.dart';
+import 'package:kumuly_pocket/services/lightning_node/impl/breez_sdk_lightning_node_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'pocket_mode_menu_controller.g.dart';
@@ -10,7 +10,7 @@ class PocketModeMenuController extends _$PocketModeMenuController {
   @override
   Future<PocketModeMenuState> build() async {
     final nodeId =
-        await ref.watch(breezeSdkLightningNodeRepositoryProvider).nodeId;
+        await ref.watch(breezeSdkLightningNodeServiceProvider).nodeId;
     final bitcoinUnit = ref.watch(bitcoinUnitProvider);
     final localCurrency = ref.watch(localCurrencyProvider);
     final location = 'Leuven, BE';

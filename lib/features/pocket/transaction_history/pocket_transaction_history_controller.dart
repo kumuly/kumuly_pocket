@@ -1,5 +1,5 @@
 import 'package:kumuly_pocket/features/pocket/transaction_history/pocket_transaction_history_state.dart';
-import 'package:kumuly_pocket/services/lightning_node_service.dart';
+import 'package:kumuly_pocket/services/lightning_node/impl/breez_sdk_lightning_node_service.dart';
 import 'package:kumuly_pocket/view_models/transaction_list_item_view_model.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

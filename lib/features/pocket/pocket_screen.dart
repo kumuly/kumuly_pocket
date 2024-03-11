@@ -35,6 +35,8 @@ class PocketScreen extends ConsumerWidget {
         ref.read(pocketBalanceControllerProvider.notifier);
     const kPaymentsLimit = 20;
 
+    print('balanceState in pocket_screen: $balanceState');
+
     final historyState = ref.watch(
       pocketTransactionHistoryControllerProvider(
         kPaymentsLimit,
@@ -73,8 +75,8 @@ class PocketScreen extends ConsumerWidget {
           RefreshIndicator(
             onRefresh: () async {
               ref.invalidate(fiatRatesProvider);
+              ref.invalidate(pocketBalanceControllerProvider);
               await Future.wait([
-                balanceController.refresh(),
                 historyController.fetchTransactions(refresh: true),
                 pendingController.refresh(),
               ]);
@@ -103,7 +105,8 @@ class PocketScreen extends ConsumerWidget {
                       ),
                       iconSize: 24.0,
                       iconColor: Palette.neutral[120]!,
-                      onPressed: () {
+                      onPressed: () async {
+                        await balanceController.drainOnChainFunds();
                         showModalBottomSheet(
                           useRootNavigator: true,
                           elevation: 0,
@@ -261,7 +264,7 @@ class PendingTransactions extends ConsumerWidget {
                   ListTile(
                     leading: const Icon(Icons.more_time_outlined),
                     title: const Text(
-                      'Pending swap in',
+                      'Processing payment',
                     ),
                     titleTextStyle: textTheme.display2(
                       Palette.neutral[80],

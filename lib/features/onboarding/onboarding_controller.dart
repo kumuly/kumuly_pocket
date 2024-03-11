@@ -3,7 +3,7 @@ import 'package:kumuly_pocket/enums/mnemonic_length.dart';
 import 'package:kumuly_pocket/features/onboarding/onboarding_state.dart';
 import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:kumuly_pocket/repositories/onboarding_repository.dart';
-import 'package:kumuly_pocket/services/lightning_node_service.dart';
+import 'package:kumuly_pocket/services/lightning_node/impl/breez_sdk_lightning_node_service.dart';
 import 'package:kumuly_pocket/services/mnemonic_service.dart';
 import 'package:kumuly_pocket/services/pin_derived_encrypted_key_management_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

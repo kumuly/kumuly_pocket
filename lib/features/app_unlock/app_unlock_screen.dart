@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kumuly_pocket/providers/settings_providers.dart';
 import 'package:kumuly_pocket/router/app_router.dart';
-import 'package:kumuly_pocket/services/lightning_node_service.dart';
+import 'package:kumuly_pocket/services/lightning_node/impl/breez_sdk_lightning_node_service.dart';
 import 'package:kumuly_pocket/services/mnemonic_service.dart';
 import 'package:kumuly_pocket/services/pin_derived_encrypted_key_management_service.dart';
 import 'package:kumuly_pocket/widgets/dialogs/transition_dialog.dart';

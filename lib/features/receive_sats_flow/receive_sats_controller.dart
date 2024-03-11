@@ -4,7 +4,7 @@ import 'package:kumuly_pocket/enums/bitcoin_unit.dart';
 import 'package:kumuly_pocket/features/receive_sats_flow/receive_sats_state.dart';
 import 'package:kumuly_pocket/providers/currency_conversion_providers.dart';
 import 'package:kumuly_pocket/providers/settings_providers.dart';
-import 'package:kumuly_pocket/services/lightning_node_service.dart';
+import 'package:kumuly_pocket/services/lightning_node/impl/breez_sdk_lightning_node_service.dart';
 import 'package:kumuly_pocket/view_models/invoice.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
